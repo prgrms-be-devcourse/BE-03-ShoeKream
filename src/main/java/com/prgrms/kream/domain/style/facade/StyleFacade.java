@@ -28,4 +28,9 @@ public class StyleFacade {
 						.build());
 	}
 
+	@Transactional
+	public void delete(long id) {
+		styleService.delete(id);
+	}
+
 }

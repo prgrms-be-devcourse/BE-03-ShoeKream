@@ -23,4 +23,14 @@ public class StyleService {
 
 		return StyleMapper.toDto(savedFeed);
 	}
+
+	@Transactional
+	public void delete(long id) {
+		feedRepository.findById(id)
+				.ifPresent(feed -> {
+					// 관련 테이블의 레코드 삭제 (Cascade)
+					feedRepository.delete(feed);
+				});
+	}
+
 }

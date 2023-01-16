@@ -1,6 +1,8 @@
 package com.prgrms.kream.domain.style.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,14 @@ public class StyleController {
 	public ApiResponse<FeedResponse> register(@RequestBody CreateFeedRequestOfFacade request) {
 		return ApiResponse.of(
 				styleFacade.register(request)
+		);
+	}
+
+	@DeleteMapping("/{id}")
+	public ApiResponse<?> deleteFeed(@PathVariable long id) {
+		styleFacade.delete(id);
+		return ApiResponse.of(
+				"성공적으로 삭제 됐습니다."
 		);
 	}
 
