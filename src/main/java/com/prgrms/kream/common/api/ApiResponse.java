@@ -1,7 +1,10 @@
 package com.prgrms.kream.common.api;
 
+import lombok.Getter;
+
+@Getter
 public class ApiResponse<T> {
-	private T data;
+	private final T data;
 
 	private ApiResponse(T data) {
 		this.data = data;
@@ -15,6 +18,7 @@ public class ApiResponse<T> {
 		return new ErrorResponse(message);
 	}
 
+	@Getter
 	static final class ErrorResponse {
 		private final String error;
 
