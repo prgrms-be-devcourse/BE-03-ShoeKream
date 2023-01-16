@@ -1,0 +1,220 @@
+CREATE TABLE `Member` (
+`id`	BIGINT	NOT NULL,
+`name`	VARCHAR2(20)	NOT NULL,
+`email`	VARCHAR2(20)	NOT NULL,
+`phone`	VARCHAR2(20)	NOT NULL,
+`password`	VARCHAR2(60)	NOT NULL,
+`is_male`	BIT(1)	NOT NULL,
+`authority`	VARCHAR2(20)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NOT NULL
+);
+
+CREATE TABLE `Feed` (
+`id`	BIGINT	NOT NULL,
+`author_id`	BIGINT	NOT NULL,
+`content`	TEXT	NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `Product` (
+`id`	BIGINT	NOT NULL,
+`name`	VARCHAR2(30)	NOT NULL,
+`release_price`	INT	NOT NULL,
+`description`	VARCHAR2(50)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NOT NULL
+);
+
+CREATE TABLE `Order` (
+`id`	BIGINT	NOT NULL,
+`buyer_id`	BIGINT	NOT NULL,
+`seller_id`	BIGINT	NOT NULL,
+`price`	INT	NOT NULL,
+`order_status`	VARCHAR(10)	NOT NULL,
+`order_request`	VARCHAR(50)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `Coupon` (
+`id`	BIGINT	NOT NULL,
+`discount_value`	TINYINT	NOT NULL,
+`name`	VARCHAR2(20)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `Account` (
+`id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`balance`	INT	NOT NULL	DEFAULT 0,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `Transaction` (
+`id`	BIGINT	NOT NULL,
+`account_id`	BIGINT	NOT NULL,
+`account`	INT	NOT NULL,
+`transaction_type`	BIT	NOT NULL,
+`created_at`	TIMESTANP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `FeedLike` (
+`id`	BIGINT	NOT NULL,
+`feed_id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `DeliveryInfo` (
+`id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`name`	VARCHAR2(20)	NOT NULL,
+`phone`	VARCHAR2(20)	NOT NULL,
+`post_code`	VARCHAR2(10)	NOT NULL,
+`address`	VARCHAR2(50)	NOT NULL,
+`detail`	VARCHAR2(30)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `CouponEvent` (
+`id`	BIGINT	NOT NULL,
+`coupon_id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `FeedTag` (
+`id`	BIGINT	NOT NULL,
+`feed_id`	BIGINT	NOT NULL,
+`tag`	VARCHAR2(20)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `FeedProduct` (
+`id`	VARCHAR(255)	NOT NULL,
+`feed_id`	BIGINT	NOT NULL,
+`product_id`	BIGINT	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NOT NULL
+);
+
+CREATE TABLE `ProductOption` (
+`id`	BIGINT	NOT NULL,
+`product_id`	BIGINT	NOT NULL,
+`size`	INT	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NOT NULL
+);
+
+CREATE TABLE `Image` (
+`id`	BIGINT	NOT NULL,
+`unique_name`	VARCHAR2(40)	NOT NULL,
+`original_name`	VARCHAR2(40)	NOT NULL,
+`reference_id`	BIGINT	NOT NULL,
+`table_type`	VARCHAR2(20)	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NOT NULL
+);
+
+CREATE TABLE `SellingBid` (
+`id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`product_option_id`	BIGINT	NOT NULL,
+`price`	INT	NOT NULL,
+`valid_until`	TIMESTAMP	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `BuyingBid` (
+`id`	BIGINT	NOT NULL,
+`member_id`	BIGINT	NOT NULL,
+`product_option_id`	BIGINT	NOT NULL,
+`price`	INT	NOT NULL,
+`valid_until`	TIMESTAMP	NOT NULL,
+`created_at`	TIMESTAMP	NOT NULL,
+`updated_at`	TIMESTAMP	NULL
+);
+
+CREATE TABLE `Follow` (
+`id`	BIGINT	NOT NULL,
+`following_member_id`	BIGINT	NOT NULL,
+`followed_member_id`	BIGINT	NOT NULL
+);
+
+ALTER TABLE `Member` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Feed` ADD CONSTRAINT `PK_FEED` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Product` ADD CONSTRAINT `PK_PRODUCT` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Order` ADD CONSTRAINT `PK_ORDER` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Coupon` ADD CONSTRAINT `PK_COUPON` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Account` ADD CONSTRAINT `PK_ACCOUNT` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Transaction` ADD CONSTRAINT `PK_TRANSACTION` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `FeedLike` ADD CONSTRAINT `PK_FEEDLIKE` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `DeliveryInfo` ADD CONSTRAINT `PK_DELIVERYINFO` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `CouponEvent` ADD CONSTRAINT `PK_COUPONEVENT` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `FeedTag` ADD CONSTRAINT `PK_FEEDTAG` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `FeedProduct` ADD CONSTRAINT `PK_FEEDPRODUCT` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `ProductOption` ADD CONSTRAINT `PK_PRODUCTOPTION` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Image` ADD CONSTRAINT `PK_IMAGE` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `SellingBid` ADD CONSTRAINT `PK_SELLINGBID` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `BuyingBid` ADD CONSTRAINT `PK_BUYINGBID` PRIMARY KEY (
+`id`
+);
+
+ALTER TABLE `Follow` ADD CONSTRAINT `PK_FOLLOW` PRIMARY KEY (
+`id`
+);

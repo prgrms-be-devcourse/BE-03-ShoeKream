@@ -1,4 +1,4 @@
-package com.prgrms.kream.common.response;
+package com.prgrms.kream.common.api;
 
 public class ApiResponse<T> {
 	private T data;
