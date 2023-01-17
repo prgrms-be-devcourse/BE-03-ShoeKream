@@ -65,6 +65,9 @@ public class ImageLocalService implements ImageService {
 	private void storeImage(MultipartFile multipartFile, String uniqueName) {
 		try {
 			File file = new File(getFullPath(uniqueName));
+			if (!file.exists()) {
+				file.mkdirs();
+			}
 			multipartFile.transferTo(file);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
