@@ -34,14 +34,14 @@ public class StyleController {
 	}
 
 	@PutMapping("/{id}")
-	public ApiResponse<FeedResponse> updateFeed(@PathVariable long id, @RequestBody UpdateFeedRequestOfFacade request) {
+	public ApiResponse<FeedResponse> update(@PathVariable long id, @RequestBody UpdateFeedRequestOfFacade request) {
 		return ApiResponse.of(
 				styleFacade.update(id, request)
 		);
 	}
 
 	@DeleteMapping("/{id}")
-	public ApiResponse<String> deleteFeed(@PathVariable long id) {
+	public ApiResponse<String> delete(@PathVariable long id) {
 		styleFacade.delete(id);
 		return ApiResponse.of(
 				"성공적으로 삭제 됐습니다."
