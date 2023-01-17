@@ -19,7 +19,7 @@ public class ApiResponse<T> {
 	}
 
 	@Getter
-	static final class ErrorResponse {
+	public static final class ErrorResponse {
 		private final String error;
 
 		private ErrorResponse(String error) {
