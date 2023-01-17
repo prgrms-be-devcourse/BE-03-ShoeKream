@@ -2,6 +2,7 @@ package com.prgrms.kream.domain.style.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,7 +28,7 @@ public class StyleController {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<FeedResponse> register(@RequestBody CreateFeedRequestOfFacade request) {
+	public ApiResponse<FeedResponse> register(@ModelAttribute CreateFeedRequestOfFacade request) {
 		return ApiResponse.of(
 				styleFacade.register(request)
 		);
