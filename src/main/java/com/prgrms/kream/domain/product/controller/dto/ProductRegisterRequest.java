@@ -1,9 +1,13 @@
-package com.prgrms.kream.domain.product.dto;
+package com.prgrms.kream.domain.product.controller.dto;
+
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public record ProductRegisterRequest(
 		@NotBlank(message = "상품 이름은 필수 입력사항입니다.")
@@ -15,5 +19,7 @@ public record ProductRegisterRequest(
 		int releasePrice,
 
 		@NotBlank(message = "상품 설명을 입력해주세요.")
-		String description) {
+		String description,
+
+		List<MultipartFile> images) {
 }
