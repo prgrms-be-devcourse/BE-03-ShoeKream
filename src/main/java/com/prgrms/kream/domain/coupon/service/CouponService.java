@@ -26,7 +26,7 @@ public class CouponService {
 				);
 	}
 
-	public CouponControllerResponse couponRegister(CouponRegisterRequest couponRegisterRequest) {
+	public CouponControllerResponse registerCoupon(CouponRegisterRequest couponRegisterRequest) {
 		Coupon savedCoupon = couponRepository.save(
 				toCoupon(couponRegisterRequest)
 		);

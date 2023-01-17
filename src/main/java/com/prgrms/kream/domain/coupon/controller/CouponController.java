@@ -39,7 +39,7 @@ public class CouponController {
 	public ApiResponse<CouponControllerResponse> couponRegister(
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {
-		CouponControllerResponse couponControllerResponse = couponService.couponRegister(couponRegisterRequest);
+		CouponControllerResponse couponControllerResponse = couponService.registerCoupon(couponRegisterRequest);
 
 		return ApiResponse.of(couponControllerResponse);
 	}
