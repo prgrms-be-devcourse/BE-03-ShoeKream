@@ -7,6 +7,8 @@ import com.prgrms.kream.domain.member.service.MemberService;
 import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfFacade;
 import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfService;
 import com.prgrms.kream.domain.style.dto.FeedResponse;
+import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfFacade;
+import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfService;
 import com.prgrms.kream.domain.style.service.StyleService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,15 @@ public class StyleFacade {
 				CreateFeedRequestOfService.builder()
 						.content(request.content())
 						.author(memberService.getMember(request.author()))
+						.build());
+	}
+
+	@Transactional
+	public FeedResponse update(long id, UpdateFeedRequestOfFacade request) {
+		return styleService.update(
+				id,
+				UpdateFeedRequestOfService.builder()
+						.content(request.content())
 						.build());
 	}
 
