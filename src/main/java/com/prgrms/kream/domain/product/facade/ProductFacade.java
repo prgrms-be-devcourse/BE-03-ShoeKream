@@ -9,6 +9,7 @@ import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.product.controller.dto.ProductRegisterRequest;
 import com.prgrms.kream.domain.product.controller.dto.ProductRegisterResponse;
+
 import com.prgrms.kream.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
