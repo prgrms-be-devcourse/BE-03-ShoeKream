@@ -1,220 +1,172 @@
-CREATE TABLE `Member` (
-`id`	BIGINT	NOT NULL,
-`name`	VARCHAR2(20)	NOT NULL,
-`email`	VARCHAR2(20)	NOT NULL,
-`phone`	VARCHAR2(20)	NOT NULL,
-`password`	VARCHAR2(60)	NOT NULL,
-`is_male`	BIT(1)	NOT NULL,
-`authority`	VARCHAR2(20)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NOT NULL
+drop table if exists `account` cascade;
+drop table if exists feed cascade;
+drop table if exists `order` cascade;
+drop table if exists product cascade;
+drop table if exists coupon_event cascade;
+drop table if exists buying_bid cascade;
+drop table if exists delivery_info cascade;
+drop table if exists coupon cascade;
+drop table if exists feed_like cascade;
+drop table if exists feed_product cascade;
+drop table if exists feed_tag cascade;
+drop table if exists follow cascade;
+drop table if exists image cascade;
+drop table if exists product_option cascade;
+drop table if exists selling_bid cascade;
+drop table if exists `transaction` cascade;
+drop table if exists `member` cascade;
+
+
+CREATE TABLE `member` (
+                          `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          `name`	VARCHAR(20)	NOT NULL,
+                          `email`	VARCHAR(20) UNIQUE	NOT NULL,
+                          `phone`	VARCHAR(20)	NOT NULL,
+                          `password`	VARCHAR(60)	NOT NULL,
+                          `is_male`	BIT(1)	NOT NULL,
+                          `authority`	VARCHAR(20)	NOT NULL,
+                          `created_at`	TIMESTAMP	NOT NULL,
+                          `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Feed` (
-`id`	BIGINT	NOT NULL,
-`author_id`	BIGINT	NOT NULL,
-`content`	TEXT	NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `feed` (
+                        `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                        `author_id`	BIGINT	NOT NULL,
+                        `content`	VARCHAR(255)	NOT NULL,
+                        `created_at`	TIMESTAMP	NOT NULL,
+                        `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Product` (
-`id`	BIGINT	NOT NULL,
-`name`	VARCHAR2(30)	NOT NULL,
-`release_price`	INT	NOT NULL,
-`description`	VARCHAR2(50)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NOT NULL
+CREATE TABLE `product` (
+                           `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                           `name`	VARCHAR(30)	NOT NULL,
+                           `release_price`	INT	NOT NULL,
+                           `description`	VARCHAR(50)	NOT NULL,
+                           `created_at`	TIMESTAMP	NOT NULL,
+                           `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Order` (
-`id`	BIGINT	NOT NULL,
-`buyer_id`	BIGINT	NOT NULL,
-`seller_id`	BIGINT	NOT NULL,
-`price`	INT	NOT NULL,
-`order_status`	VARCHAR(10)	NOT NULL,
-`order_request`	VARCHAR(50)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `order` (
+                         `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                         `buyer_id`	BIGINT	NOT NULL,
+                         `seller_id`	BIGINT	NOT NULL,
+                         `price`	INT	NOT NULL,
+                         `order_status`	VARCHAR(10)	NOT NULL,
+                         `order_request`	VARCHAR(50)	NOT NULL,
+                         `created_at`	TIMESTAMP	NOT NULL,
+                         `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Coupon` (
-`id`	BIGINT	NOT NULL,
-`discount_value`	TINYINT	NOT NULL,
-`name`	VARCHAR2(20)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `coupon` (
+                          `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          `discount_value`	TINYINT	NOT NULL,
+                          `name`	VARCHAR(20)	NOT NULL,
+                          `amount`	INT	NOT NULL,
+                          `created_at`	TIMESTAMP	NOT NULL,
+                          `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Account` (
-`id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`balance`	INT	NOT NULL	DEFAULT 0,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `account` (
+                           `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                           `member_id`	BIGINT	NOT NULL,
+                           `balance`	INT	NOT NULL	DEFAULT 0,
+                           `created_at`	TIMESTAMP	NOT NULL,
+                           `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Transaction` (
-`id`	BIGINT	NOT NULL,
-`account_id`	BIGINT	NOT NULL,
-`account`	INT	NOT NULL,
-`transaction_type`	BIT	NOT NULL,
-`created_at`	TIMESTANP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `transaction` (
+                               `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                               `account_id`	BIGINT	NOT NULL,
+                               `account`	INT	NOT NULL,
+                               `transaction_type`	BIT	NOT NULL,
+                               `created_at`	TIMESTAMP	NOT NULL,
+                               `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `FeedLike` (
-`id`	BIGINT	NOT NULL,
-`feed_id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `feed_like` (
+                             `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                             `feed_id`	BIGINT	NOT NULL,
+                             `member_id`	BIGINT	NOT NULL,
+                             `created_at`	TIMESTAMP	NOT NULL,
+                             `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `DeliveryInfo` (
-`id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`name`	VARCHAR2(20)	NOT NULL,
-`phone`	VARCHAR2(20)	NOT NULL,
-`post_code`	VARCHAR2(10)	NOT NULL,
-`address`	VARCHAR2(50)	NOT NULL,
-`detail`	VARCHAR2(30)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `delivery_info` (
+                                 `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                 `member_id`	BIGINT	NOT NULL,
+                                 `name`	VARCHAR(20)	NOT NULL,
+                                 `phone`	VARCHAR(20)	NOT NULL,
+                                 `post_code`	VARCHAR(10)	NOT NULL,
+                                 `address`	VARCHAR(50)	NOT NULL,
+                                 `detail`	VARCHAR(30)	NOT NULL,
+                                 `created_at`	TIMESTAMP	NOT NULL,
+                                 `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `CouponEvent` (
-`id`	BIGINT	NOT NULL,
-`coupon_id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `coupon_event` (
+                                `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                `coupon_id`	    BIGINT	        NOT NULL,
+                                `member_id`	    BIGINT	        NOT NULL,
+                                `created_at`	TIMESTAMP	    NOT NULL,
+                                `updated_at`	TIMESTAMP	    NOT NULL
 );
 
-CREATE TABLE `FeedTag` (
-`id`	BIGINT	NOT NULL,
-`feed_id`	BIGINT	NOT NULL,
-`tag`	VARCHAR2(20)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `feed_tag` (
+                            `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                            `feed_id`	BIGINT	NOT NULL,
+                            `tag`	VARCHAR(20)	NOT NULL,
+                            `created_at`	TIMESTAMP	NOT NULL,
+                            `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `FeedProduct` (
-`id`	VARCHAR(255)	NOT NULL,
-`feed_id`	BIGINT	NOT NULL,
-`product_id`	BIGINT	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NOT NULL
+CREATE TABLE `feed_product` (
+                                `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                `feed_id`	BIGINT	NOT NULL,
+                                `product_id`	BIGINT	NOT NULL,
+                                `created_at`	TIMESTAMP	NOT NULL,
+                                `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `ProductOption` (
-`id`	BIGINT	NOT NULL,
-`product_id`	BIGINT	NOT NULL,
-`size`	INT	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NOT NULL
+CREATE TABLE `product_option` (
+                                  `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                  `product_id`	BIGINT	NOT NULL,
+                                  `size`	SMALLINT	NOT NULL,
+                                  `created_at`	TIMESTAMP	NOT NULL,
+                                  `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Image` (
-`id`	BIGINT	NOT NULL,
-`unique_name`	VARCHAR2(40)	NOT NULL,
-`original_name`	VARCHAR2(40)	NOT NULL,
-`reference_id`	BIGINT	NOT NULL,
-`table_type`	VARCHAR2(20)	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NOT NULL
+CREATE TABLE `image` (
+                         `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                         `full_path`   VARCHAR(60) NOT NULL,
+                         `original_name` VARCHAR(40) NOT NULL,
+                         `reference_id`  BIGINT      NOT NULL,
+                         `domain_type`   VARCHAR(20) NOT NULL,
+                         `created_at`    TIMESTAMP   NOT NULL,
+                         `updated_at`    TIMESTAMP   NOT NULL
 );
 
-CREATE TABLE `SellingBid` (
-`id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`product_option_id`	BIGINT	NOT NULL,
-`price`	INT	NOT NULL,
-`valid_until`	TIMESTAMP	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `selling_bid` (
+                               `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                               `member_id`	BIGINT	NOT NULL,
+                               `product_option_id`	BIGINT	NOT NULL,
+                               `price`	INT	NOT NULL,
+                               `valid_until`	TIMESTAMP	NOT NULL,
+                               `created_at`	TIMESTAMP	NOT NULL,
+                               `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `BuyingBid` (
-`id`	BIGINT	NOT NULL,
-`member_id`	BIGINT	NOT NULL,
-`product_option_id`	BIGINT	NOT NULL,
-`price`	INT	NOT NULL,
-`valid_until`	TIMESTAMP	NOT NULL,
-`created_at`	TIMESTAMP	NOT NULL,
-`updated_at`	TIMESTAMP	NULL
+CREATE TABLE `buying_bid` (
+                              `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                              `member_id`	BIGINT	NOT NULL,
+                              `product_option_id`	BIGINT	NOT NULL,
+                              `price`	INT	NOT NULL,
+                              `valid_until`	TIMESTAMP	NOT NULL,
+                              `created_at`	TIMESTAMP	NOT NULL,
+                              `updated_at`	TIMESTAMP	NOT NULL
 );
 
-CREATE TABLE `Follow` (
-`id`	BIGINT	NOT NULL,
-`following_member_id`	BIGINT	NOT NULL,
-`followed_member_id`	BIGINT	NOT NULL
-);
-
-ALTER TABLE `Member` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Feed` ADD CONSTRAINT `PK_FEED` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Product` ADD CONSTRAINT `PK_PRODUCT` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Order` ADD CONSTRAINT `PK_ORDER` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Coupon` ADD CONSTRAINT `PK_COUPON` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Account` ADD CONSTRAINT `PK_ACCOUNT` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Transaction` ADD CONSTRAINT `PK_TRANSACTION` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `FeedLike` ADD CONSTRAINT `PK_FEEDLIKE` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `DeliveryInfo` ADD CONSTRAINT `PK_DELIVERYINFO` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `CouponEvent` ADD CONSTRAINT `PK_COUPONEVENT` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `FeedTag` ADD CONSTRAINT `PK_FEEDTAG` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `FeedProduct` ADD CONSTRAINT `PK_FEEDPRODUCT` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `ProductOption` ADD CONSTRAINT `PK_PRODUCTOPTION` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Image` ADD CONSTRAINT `PK_IMAGE` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `SellingBid` ADD CONSTRAINT `PK_SELLINGBID` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `BuyingBid` ADD CONSTRAINT `PK_BUYINGBID` PRIMARY KEY (
-`id`
-);
-
-ALTER TABLE `Follow` ADD CONSTRAINT `PK_FOLLOW` PRIMARY KEY (
-`id`
+CREATE TABLE `follow` (
+                          `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          `following_member_id`	BIGINT	NOT NULL,
+                          `followed_member_id`	BIGINT	NOT NULL
 );
