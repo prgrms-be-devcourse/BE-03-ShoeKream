@@ -1,6 +1,6 @@
 package com.prgrms.kream.domain.coupon.model;
 
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.*;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
