@@ -31,7 +31,7 @@ public class Image extends BaseTimeEntity {
 	@Column(name = "original_name", nullable = false)
 	private String originalName;
 
-	@Column(name = "unique_name", nullable = false)
+	@Column(name = "full_path", nullable = false)
 	private String fullPath;
 
 	@Column(name = "reference_id", nullable = false)
