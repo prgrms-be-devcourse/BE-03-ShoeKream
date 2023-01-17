@@ -1,10 +1,15 @@
 package com.prgrms.kream.domain.bid.facade;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
 import com.prgrms.kream.domain.bid.dto.SellingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.SellingBidDto;
+import com.prgrms.kream.domain.bid.dto.SellingBidFindRequest;
 import com.prgrms.kream.domain.bid.service.SellingBidService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,5 +22,12 @@ public class SellingBidFacade {
 	@Transactional
 	public SellingBidCreateResponse createSellingBid(SellingBidCreateRequest request){
 		return sellingBidService.createSellingBid(request);
+	}
+
+	@Transactional(readOnly = true)
+	public SellingBidDto findOneSellingBidById(Long id){
+		List<Long> ids = Collections.singletonList(id);
+		SellingBidFindRequest request = new SellingBidFindRequest(ids);
+		return sellingBidService.findOneSellingBidById(request);
 	}
 }
