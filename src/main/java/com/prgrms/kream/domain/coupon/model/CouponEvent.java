@@ -2,14 +2,16 @@ package com.prgrms.kream.domain.coupon.model;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
+import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,26 +19,22 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "coupon")
+@Table(name = "coupon_event")
 @NoArgsConstructor(access = PROTECTED)
-public class Coupon extends BaseTimeEntity {
+public class CouponEvent extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "discount_value", nullable = false, unique = false, length = 3)
-	private int discountValue;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Coupon coupon;
 
-	@Column(name = "name", nullable = false, unique = false)
-	private String name;
-
-	@Column(name = "amount", nullable = false, unique = false)
-	private int amount;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Member member;
 
 	@Builder
-	public Coupon(int discountValue, String name, int amount) {
-		this.discountValue = discountValue;
-		this.name = name;
-		this.amount = amount;
+	public CouponEvent(Coupon coupon, Member member) {
+		this.coupon = coupon;
+		this.member = member;
 	}
 }
