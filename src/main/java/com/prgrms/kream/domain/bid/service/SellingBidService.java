@@ -32,4 +32,9 @@ public class SellingBidService {
 				.map(BidMapper::SellingBidToDto)
 				.orElseThrow(EntityNotFoundException::new);
 	}
+
+	@Transactional
+	public void deleteOneSellingBidById(Long id){
+		repository.deleteById(id);
+	}
 }

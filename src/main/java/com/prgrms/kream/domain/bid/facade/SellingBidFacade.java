@@ -17,17 +17,22 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SellingBidFacade {
-	private final SellingBidService sellingBidService;
+	private final SellingBidService service;
 
 	@Transactional
 	public SellingBidCreateResponse createSellingBid(SellingBidCreateRequest request){
-		return sellingBidService.createSellingBid(request);
+		return service.createSellingBid(request);
 	}
 
 	@Transactional(readOnly = true)
 	public SellingBidDto findOneSellingBidById(Long id){
 		List<Long> ids = Collections.singletonList(id);
 		SellingBidFindRequest request = new SellingBidFindRequest(ids);
-		return sellingBidService.findOneSellingBidById(request);
+		return service.findOneSellingBidById(request);
+	}
+
+	@Transactional
+	public void deleteOneSellingBidById(Long id){
+		service.deleteOneSellingBidById(id);
 	}
 }
