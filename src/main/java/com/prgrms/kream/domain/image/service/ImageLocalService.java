@@ -1,5 +1,7 @@
 package com.prgrms.kream.domain.image.service;
 
+import static com.prgrms.kream.common.mapper.ImageMapper.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +19,7 @@ import com.prgrms.kream.domain.image.repository.ImageRepository;
 @Service
 public class ImageLocalService implements ImageService {
 
-	private String uploadPath;
+	private final String uploadPath;
 
 	private final ImageRepository imageRepository;
 
@@ -26,11 +28,18 @@ public class ImageLocalService implements ImageService {
 		this.imageRepository = imageRepository;
 	}
 
+	@Override
 	public void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		if (multipartFiles != null && !multipartFiles.isEmpty()) {
 			List<Image> images = uploadImages(multipartFiles, referenceId, domainType);
 			imageRepository.saveAll(images);
 		}
+	}
+
+	@Override
+	public List<String> getAll(Long referenceId, DomainType domainType) {
+		List<Image> images = imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
+		return toImagePathDto(images);
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
@@ -56,9 +65,6 @@ public class ImageLocalService implements ImageService {
 	private void storeImage(MultipartFile multipartFile, String uniqueName) {
 		try {
 			File file = new File(getFullPath(uniqueName));
-			if (!file.exists()) {
-				file.mkdirs();
-			}
 			multipartFile.transferTo(file);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
