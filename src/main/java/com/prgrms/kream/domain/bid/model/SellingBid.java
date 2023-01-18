@@ -39,7 +39,8 @@ public class SellingBid extends BaseTimeEntity {
 	private LocalDateTime validUntil;
 
 	@Builder
-	public SellingBid(Long memberId, Long productOptionId, int price, LocalDateTime validUntil) {
+	public SellingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil) {
+		this.id = id;
 		this.memberId = memberId;
 		this.productOptionId = productOptionId;
 		this.price = price;

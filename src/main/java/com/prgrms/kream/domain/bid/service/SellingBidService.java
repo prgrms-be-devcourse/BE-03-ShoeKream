@@ -12,6 +12,7 @@ import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
 import com.prgrms.kream.domain.bid.dto.SellingBidCreateResponse;
 import com.prgrms.kream.domain.bid.dto.SellingBidDto;
 import com.prgrms.kream.domain.bid.dto.SellingBidFindRequest;
+import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,8 @@ public class SellingBidService {
 
 	@Transactional
 	public SellingBidCreateResponse createSellingBid(SellingBidCreateRequest request) {
-		return sellingBidToCreateResponse(repository.save(createRequestToSellingBid(request)));
+		SellingBid entity = createRequestToSellingBid(request);
+		return sellingBidToCreateResponse(repository.save(entity));
 	}
 
 	@Transactional(readOnly = true)

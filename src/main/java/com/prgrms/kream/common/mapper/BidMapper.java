@@ -8,6 +8,7 @@ import com.prgrms.kream.domain.bid.model.SellingBid;
 public class BidMapper {
 	public static SellingBid createRequestToSellingBid(SellingBidCreateRequest request) {
 		return SellingBid.builder()
+				.id(request.id())
 				.memberId(request.memberId())
 				.productOptionId(request.productOptionId())
 				.price(request.price())
