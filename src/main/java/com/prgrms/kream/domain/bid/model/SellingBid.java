@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "SellingBid")
+@Table(name = "selling_bid")
 @NoArgsConstructor(access = PROTECTED)
 public class SellingBid extends BaseTimeEntity {
 	@Id
