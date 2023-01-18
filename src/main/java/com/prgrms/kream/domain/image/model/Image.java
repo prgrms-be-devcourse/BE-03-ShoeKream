@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "IMAGE")
+@Table(name = "image")
 @NoArgsConstructor(access = PROTECTED)
 public class Image extends BaseTimeEntity {
 
