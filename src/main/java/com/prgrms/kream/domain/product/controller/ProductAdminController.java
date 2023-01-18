@@ -1,5 +1,7 @@
 package com.prgrms.kream.domain.product.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +26,7 @@ public class ProductAdminController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public ApiResponse<ProductRegisterResponse> register(
-			@ModelAttribute ProductRegisterRequest productRegisterRequest) {
+			@ModelAttribute @Valid ProductRegisterRequest productRegisterRequest) {
 
 		return ApiResponse.of(productFacade.register(productRegisterRequest));
 	}

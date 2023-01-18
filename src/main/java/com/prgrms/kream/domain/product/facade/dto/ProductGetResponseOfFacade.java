@@ -1,6 +1,6 @@
 package com.prgrms.kream.domain.product.facade.dto;
 
-public record ProductDto(
+public record ProductGetResponseOfFacade(
 		Long id,
 		String name,
 		int releasePrice,
