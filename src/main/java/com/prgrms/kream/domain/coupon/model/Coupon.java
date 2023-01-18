@@ -34,7 +34,8 @@ public class Coupon extends BaseTimeEntity {
 	private int amount;
 
 	@Builder
-	public Coupon(int discountValue, String name, int amount) {
+	public Coupon(Long id, int discountValue, String name, int amount) {
+		this.id = id;
 		this.discountValue = discountValue;
 		this.name = name;
 		this.amount = amount;
