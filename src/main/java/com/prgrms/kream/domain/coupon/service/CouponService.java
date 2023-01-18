@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
-import com.prgrms.kream.domain.coupon.dto.CouponControllerResponse;
 import com.prgrms.kream.domain.coupon.dto.CouponRegisterRequest;
+import com.prgrms.kream.domain.coupon.dto.CouponRegisterResponse;
 import com.prgrms.kream.domain.coupon.model.Coupon;
 import com.prgrms.kream.domain.coupon.repository.CouponRepository;
 
@@ -26,11 +26,11 @@ public class CouponService {
 				);
 	}
 
-	public CouponControllerResponse registerCoupon(CouponRegisterRequest couponRegisterRequest) {
+	public CouponRegisterResponse registerCoupon(CouponRegisterRequest couponRegisterRequest) {
 		Coupon savedCoupon = couponRepository.save(
 				toCoupon(couponRegisterRequest)
 		);
 
-		return toCouponControllerResponse(savedCoupon);
+		return toCouponRegisterResponse(savedCoupon);
 	}
 }

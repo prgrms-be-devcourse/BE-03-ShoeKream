@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.coupon.dto.CouponControllerResponse;
 import com.prgrms.kream.domain.coupon.dto.CouponRegisterRequest;
+import com.prgrms.kream.domain.coupon.dto.CouponRegisterResponse;
 import com.prgrms.kream.domain.coupon.service.CouponService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,12 +36,12 @@ public class CouponController {
 	 */
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<CouponControllerResponse> couponRegister(
+	public ApiResponse<CouponRegisterResponse> couponRegister(
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {
-		CouponControllerResponse couponControllerResponse = couponService.registerCoupon(couponRegisterRequest);
+		CouponRegisterResponse couponRegisterResponse = couponService.registerCoupon(couponRegisterRequest);
 
-		return ApiResponse.of(couponControllerResponse);
+		return ApiResponse.of(couponRegisterResponse);
 	}
 
 
