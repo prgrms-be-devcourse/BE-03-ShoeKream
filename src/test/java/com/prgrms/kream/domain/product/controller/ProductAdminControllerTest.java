@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
@@ -18,6 +19,8 @@ import com.prgrms.kream.MysqlTestContainer;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@DisplayName("Controller layer를 통해 ")
 public class ProductAdminControllerTest extends MysqlTestContainer {
 
 	@Autowired
@@ -35,12 +38,15 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 				.file(mockMultipartFile)
 				.param("name", "나이키 데이브레이크")
 				.param("releasePrice", "100000")
-				.param("description", "23년 출시");
+				.param("description", "23년 출시")
+				.param("sizes", "200");
 
 		//when
 		ResultActions resultActions = mockMvc.perform(request);
 
 		//then
-		resultActions.andExpect(status().isCreated());
+		resultActions
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.data.id").value(1));
 	}
 }

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "IMAGE")
+@Table(name = "image")
 @NoArgsConstructor(access = PROTECTED)
 public class Image extends BaseTimeEntity {
 
@@ -28,17 +28,17 @@ public class Image extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "original_name", nullable = false)
+	@Column(name = "original_name", nullable = false, unique = false)
 	private String originalName;
 
-	@Column(name = "full_path", nullable = false)
+	@Column(name = "full_path", nullable = false, unique = false)
 	private String fullPath;
 
-	@Column(name = "reference_id", nullable = false)
+	@Column(name = "reference_id", nullable = false, unique = false)
 	private Long referenceId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "domain_type", nullable = false)
+	@Column(name = "domain_type", nullable = false, unique = false)
 	private DomainType domainType;
 
 	@Builder
