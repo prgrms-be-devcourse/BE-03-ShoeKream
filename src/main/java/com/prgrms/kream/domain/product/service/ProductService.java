@@ -9,10 +9,10 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.model.Product;
-import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 
@@ -28,8 +28,9 @@ public class ProductService {
 	public ProductRegisterResponse register(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		Product product = productRepository.save(toProduct(productRegisterFacadeRequest));
 
-		List<ProductOption> productOptions = toProductOption(productRegisterFacadeRequest.sizes(), product);
-		productOptionRepository.saveAll(productOptions);
+		productOptionRepository.saveAll(
+				toProductOptions(productRegisterFacadeRequest.sizes(), product)
+		);
 
 		return toProductRegisterResponse(product.getId());
 	}
@@ -38,5 +39,9 @@ public class ProductService {
 		Product product = productRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
 		return toProductGetFacadeResponse(product);
+	}
+
+	public List<ProductGetAllResponse> getAll() {
+		return toProductGetAllResponses(productRepository.findAll());
 	}
 }

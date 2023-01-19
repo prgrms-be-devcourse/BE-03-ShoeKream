@@ -5,16 +5,18 @@ import java.util.stream.Collectors;
 
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.model.ProductOption;
 
-public class ProductMapper {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-	private ProductMapper() {
-	}
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ProductMapper {
 
 	public static Product toProduct(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		return Product.builder()
@@ -45,13 +47,20 @@ public class ProductMapper {
 				productGetFacadeResponse.releasePrice(), productGetFacadeResponse.description(), imagePaths);
 	}
 
-	public static List<ProductOption> toProductOption(List<Integer> sizes, Product product) {
+	public static List<ProductOption> toProductOptions(List<Integer> sizes, Product product) {
 		return sizes.stream()
 				.map(size ->
 						ProductOption.builder()
 								.size(size)
 								.product(product)
 								.build())
+				.collect(Collectors.toList());
+	}
+
+	public static List<ProductGetAllResponse> toProductGetAllResponses(List<Product> products) {
+		return products.stream()
+				.map(product -> new ProductGetAllResponse(
+						product.getId(), product.getName(), product.getReleasePrice(), product.getDescription()))
 				.collect(Collectors.toList());
 	}
 }

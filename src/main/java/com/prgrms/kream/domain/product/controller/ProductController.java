@@ -1,5 +1,7 @@
 package com.prgrms.kream.domain.product.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.facade.ProductFacade;
 
@@ -24,5 +27,11 @@ public class ProductController {
 	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<ProductGetResponse> get(@PathVariable Long id) {
 		return ApiResponse.of(productFacade.get(id));
+	}
+
+	@GetMapping
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<List<ProductGetAllResponse>> getAll() {
+		return ApiResponse.of(productFacade.getAll());
 	}
 }
