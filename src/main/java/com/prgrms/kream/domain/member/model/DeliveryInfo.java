@@ -44,7 +44,9 @@ public class DeliveryInfo extends BaseTimeEntity {
 	private Long memberId;
 
 	@Builder
-	public DeliveryInfo(Long id, String name, Phone phone, String postCode, String address, String detail, Long memberId) {
+	public DeliveryInfo(
+			Long id, String name, Phone phone, String postCode, String address, String detail, Long memberId
+	) {
 		this.id = id;
 		this.name = name;
 		this.phone = phone;

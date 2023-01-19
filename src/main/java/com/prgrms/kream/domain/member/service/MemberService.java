@@ -32,5 +32,4 @@ public class MemberService {
 	private boolean isDuplicatedEmail(String email) {
 		return memberRepository.existsMemberByEmail(email);
 	}
-
 }
