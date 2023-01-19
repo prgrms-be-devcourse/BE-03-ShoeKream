@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
@@ -17,29 +19,26 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "product")
+@Table(name = "product_option")
 @NoArgsConstructor(access = PROTECTED)
-public class Product extends BaseTimeEntity {
+public class ProductOption extends BaseTimeEntity {
 
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name", nullable = false, unique = false)
-	private String name;
+	@Column(name = "size", nullable = false, columnDefinition = "SMALLINT")
+	private Integer size;
 
-	@Column(name = "release_price", nullable = false, unique = false)
-	private int releasePrice;
-
-	@Column(name = "description", nullable = false, unique = false)
-	private String description;
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
 
 	@Builder
-	public Product(Long id, String name, int releasePrice, String description) {
+	public ProductOption(Long id, Integer size, Product product) {
 		this.id = id;
-		this.name = name;
-		this.releasePrice = releasePrice;
-		this.description = description;
+		this.size = size;
+		this.product = product;
 	}
 }

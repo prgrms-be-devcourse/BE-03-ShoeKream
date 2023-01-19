@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.product.controller.dto;
+package com.prgrms.kream.domain.product.dto.request;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import com.prgrms.kream.domain.product.validator.ShoeSize;
 
 public record ProductRegisterRequest(
 		@NotBlank(message = "상품 이름은 필수 입력사항입니다.")
@@ -20,6 +22,8 @@ public record ProductRegisterRequest(
 
 		@NotBlank(message = "상품 설명을 입력해주세요.")
 		String description,
+
+		List<@ShoeSize(message = "잘못된 형식의 신발 사이즈가 입력되었습니다.") Integer> sizes,
 
 		List<MultipartFile> images) {
 }
