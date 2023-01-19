@@ -9,8 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
+import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
-import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
@@ -41,7 +42,7 @@ public class ProductFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public List<ProductGetAllResponse> getAll() {
-		return productService.getAll();
+	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
+		return productService.getAll(productGetAllRequest);
 	}
 }

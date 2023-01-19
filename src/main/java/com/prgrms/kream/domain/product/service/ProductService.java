@@ -2,14 +2,14 @@ package com.prgrms.kream.domain.product.service;
 
 import static com.prgrms.kream.common.mapper.ProductMapper.*;
 
-import java.util.List;
-
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
-import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.model.Product;
@@ -41,7 +41,10 @@ public class ProductService {
 		return toProductGetFacadeResponse(product);
 	}
 
-	public List<ProductGetAllResponse> getAll() {
-		return toProductGetAllResponses(productRepository.findAll());
+	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
+		Slice<Product> products = productRepository.findAllByCursor(
+				productGetAllRequest.cursorId(), toPageable(productGetAllRequest));
+
+		return toProductGetAllResponses(products);
 	}
 }

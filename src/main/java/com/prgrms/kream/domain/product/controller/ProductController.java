@@ -1,16 +1,18 @@
 package com.prgrms.kream.domain.product.controller;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
+import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
+import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.facade.ProductFacade;
 
@@ -31,7 +33,8 @@ public class ProductController {
 
 	@GetMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<List<ProductGetAllResponse>> getAll() {
-		return ApiResponse.of(productFacade.getAll());
+	public ApiResponse<ProductGetAllResponses> getAll(
+			@ModelAttribute @Valid ProductGetAllRequest productGetAllRequest) {
+		return ApiResponse.of(productFacade.getAll(productGetAllRequest));
 	}
 }
