@@ -10,8 +10,11 @@ import com.prgrms.kream.domain.member.model.Authority;
 
 public record MemberRegisterRequest(
 		@NotBlank
+		@Length(max = 20)
 		String name,
 		@Email
+		@NotBlank
+		@Length(max = 20)
 		String email,
 		@NotBlank
 		@Length(min = 11, max = 11)
