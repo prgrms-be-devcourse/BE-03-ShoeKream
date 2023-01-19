@@ -33,4 +33,9 @@ public class BuyingBidService {
 				.map(BidMapper::toBuyingBidFindResponse)
 				.orElseThrow(EntityNotFoundException::new);
 	}
+
+	@Transactional
+	public void deleteOneBuyingBidById(Long id){
+		repository.deleteById(id);
+	}
 }

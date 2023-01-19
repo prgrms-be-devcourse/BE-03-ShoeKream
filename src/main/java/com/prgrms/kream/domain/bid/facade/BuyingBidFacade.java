@@ -30,4 +30,9 @@ public class BuyingBidFacade {
 		BuyingBidFindRequest buyingBidFindRequest = new BuyingBidFindRequest(ids);
 		return service.findOneBuyingBidById(buyingBidFindRequest);
 	}
+
+	@Transactional
+	public void deleteOneBuyingBidById(Long id){
+		service.deleteOneBuyingBidById(id);
+	}
 }
