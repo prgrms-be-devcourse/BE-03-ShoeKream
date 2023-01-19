@@ -33,7 +33,8 @@ public class CouponEvent extends BaseTimeEntity {
 	private Member member;
 
 	@Builder
-	public CouponEvent(Coupon coupon, Member member) {
+	public CouponEvent(Long id, Coupon coupon, Member member) {
+		this.id = id;
 		this.coupon = coupon;
 		this.member = member;
 	}
