@@ -34,13 +34,13 @@ public class SellingBidController {
 	}
 
 	@GetMapping("/{id}")
-	@ResponseStatus(HttpStatus.FOUND)
+	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<SellingBidFindResponse> findOne(@PathVariable("id") Long id) {
 		return ApiResponse.of(facade.findOneSellingBidById(id));
 	}
 
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<String> deleteOne(@PathVariable("id") Long id) {
 		facade.deleteOneSellingBidById(id);
 		return ApiResponse.of("판매 입찰이 삭제되었습니다");

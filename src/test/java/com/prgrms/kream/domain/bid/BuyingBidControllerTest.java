@@ -63,7 +63,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 
 		// Then
 		resultActions
-				.andExpect(status().isFound())
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.memberId").value(2))
 				.andExpect(jsonPath("$.data.productOptionId").value(3))
 				.andExpect(jsonPath("$.data.price").value(45600))
