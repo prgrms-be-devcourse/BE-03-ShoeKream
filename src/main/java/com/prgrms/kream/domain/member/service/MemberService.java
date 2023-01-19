@@ -24,7 +24,7 @@ public class MemberService {
 			throw new DuplicatedEmailException("중복된 이메일입니다.");
 		}
 		Member member = memberRepository.save(
-				MemberMapper.memberRegisterRequestToMember(memberRegisterRequest)
+				MemberMapper.toMember(memberRegisterRequest)
 		);
 		return new MemberRegisterResponse(member.getId());
 	}

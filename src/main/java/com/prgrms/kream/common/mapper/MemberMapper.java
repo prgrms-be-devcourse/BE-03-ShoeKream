@@ -5,7 +5,7 @@ import com.prgrms.kream.domain.member.model.Member;
 
 public class MemberMapper {
 
-	public static Member memberRegisterRequestToMember(MemberRegisterRequest memberRegisterRequest) {
+	public static Member toMember(MemberRegisterRequest memberRegisterRequest) {
 		return Member.builder()
 				.name(memberRegisterRequest.name())
 				.email(memberRegisterRequest.email())
@@ -15,5 +15,4 @@ public class MemberMapper {
 				.isMale(memberRegisterRequest.isMale())
 				.build();
 	}
-
 }
