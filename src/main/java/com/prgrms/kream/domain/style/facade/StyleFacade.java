@@ -1,16 +1,17 @@
 package com.prgrms.kream.domain.style.facade;
 
+import static com.prgrms.kream.common.mapper.StyleMapper.*;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
-import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfFacade;
-import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfService;
-import com.prgrms.kream.domain.style.dto.FeedResponse;
-import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfFacade;
-import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfService;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.response.RegisterFeedFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
 import com.prgrms.kream.domain.style.service.StyleService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,24 +27,34 @@ public class StyleFacade {
 	private final ImageService imageService;
 
 	@Transactional
-	public FeedResponse register(CreateFeedRequestOfFacade request) {
-		FeedResponse response = styleService.register(
-				CreateFeedRequestOfService.builder()
-						.content(request.content())
-						.author(memberService.getMember(request.author()))
-						.build());
+	public RegisterFeedFacadeResponse register(RegisterFeedFacadeRequest registerFeedFacadeRequest) {
+		RegisterFeedFacadeResponse registerFeedFacadeResponse = toRegisterFeedFacadeResponse(
+				styleService.register(
+						toRegisterFeedServiceRequest(
+								registerFeedFacadeRequest,
+								memberService.getMember(registerFeedFacadeRequest.author())
+						)
+				)
+		);
 
-		imageService.register(request.images(), response.id(), DomainType.FEED);
-		return response;
+		// 이미지 등록 서비스 호출
+		imageService.register(
+				registerFeedFacadeRequest.images(),
+				registerFeedFacadeResponse.id(),
+				DomainType.FEED
+		);
+
+		return registerFeedFacadeResponse;
 	}
 
 	@Transactional
-	public FeedResponse update(long id, UpdateFeedRequestOfFacade request) {
-		return styleService.update(
-				id,
-				UpdateFeedRequestOfService.builder()
-						.content(request.content())
-						.build());
+	public UpdateFeedFacadeResponse update(long id, UpdateFeedFacadeRequest updateFeedFacadeRequest) {
+		return toUpdateFeedFacadeResponse(
+				styleService.update(
+						id,
+						toUpdateFeedServiceRequest(updateFeedFacadeRequest)
+				)
+		);
 	}
 
 	@Transactional

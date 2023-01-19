@@ -14,9 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.member.model.Member;
-import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfService;
-import com.prgrms.kream.domain.style.dto.FeedResponse;
-import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfService;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
@@ -39,7 +40,11 @@ class StyleServiceTest {
 
 	private final Member MEMBER = Member.builder()
 			.id(1L)
-			.name("김창규")
+			.email("kimc980106@naver.com")
+			.phone("010-8610-7463")
+			.password("1234")
+			.isMale(true)
+			.authority("ADMIN")
 			.build();
 
 	private final Feed FEED = Feed.builder()
@@ -55,10 +60,9 @@ class StyleServiceTest {
 	void testRegister() {
 		when(feedRepository.save(any())).thenReturn(FEED);
 		when(feedTagRepository.saveAll(any())).thenReturn(FEED_TAGS.stream().toList());
-		FeedResponse feedResponse = styleService.register(getCreateRequest());
+		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
 
-		assertThat(feedResponse.author()).isEqualTo(MEMBER.getName());
-		assertThat(feedResponse.content()).isEqualTo(FEED.getContent());
+		assertThat(feedResponse.id()).isEqualTo(1L);
 	}
 
 	@Test
@@ -75,31 +79,24 @@ class StyleServiceTest {
 	void testUpdate() {
 		when(feedRepository.save(any())).thenReturn(FEED);
 		when(feedTagRepository.saveAll(any())).thenReturn(FEED_TAGS.stream().toList());
-		FeedResponse feedResponse = styleService.register(getCreateRequest());
+		styleService.register(getRegisterFeedServiceRequest());
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
-		FeedResponse updatedFeedResponse = styleService.update(
-				FEED.getId(),
-				getUpdateRequest("이 피드의 태그는 총 #한개 입니다.")
-		);
+		UpdateFeedServiceResponse updateFeedServiceResponse =
+				styleService.update(
+						FEED.getId(),
+						getUpdateFeedServiceRequest("이 피드의 태그는 총 #한개 입니다.")
+				);
 
-		assertThat(updatedFeedResponse.author()).isEqualTo(MEMBER.getName());
-		assertThat(updatedFeedResponse.content()).isEqualTo(FEED.getContent());
-		assertThat(updatedFeedResponse.author()).isEqualTo(feedResponse.author());
-		assertThat(updatedFeedResponse.content()).isNotEqualTo(feedResponse.content());
+		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
-	private CreateFeedRequestOfService getCreateRequest() {
-		return CreateFeedRequestOfService.builder()
-				.content(FEED.getContent())
-				.author(MEMBER)
-				.build();
+	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
+		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER);
 	}
 
-	private UpdateFeedRequestOfService getUpdateRequest(String content) {
-		return UpdateFeedRequestOfService.builder()
-				.content(content)
-				.build();
+	private UpdateFeedServiceRequest getUpdateFeedServiceRequest(String content) {
+		return new UpdateFeedServiceRequest(content);
 	}
 
 }

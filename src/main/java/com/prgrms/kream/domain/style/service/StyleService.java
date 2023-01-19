@@ -1,14 +1,18 @@
 package com.prgrms.kream.domain.style.service;
 
+import static com.prgrms.kream.common.mapper.StyleMapper.*;
+
 import java.util.Set;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.kream.common.mapper.StyleMapper;
-import com.prgrms.kream.domain.style.dto.CreateFeedRequestOfService;
-import com.prgrms.kream.domain.style.dto.FeedResponse;
-import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfService;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
@@ -25,21 +29,23 @@ public class StyleService {
 	private final FeedTagRepository feedTagRepository;
 
 	@Transactional
-	public FeedResponse register(CreateFeedRequestOfService request) {
-		Feed savedFeed = feedRepository.save(StyleMapper.toEntity(request));
+	public RegisterFeedServiceResponse register(RegisterFeedServiceRequest registerFeedServiceRequest) {
+		Feed savedFeed = feedRepository.save(
+				toFeed(registerFeedServiceRequest)
+		);
 
 		// 태그 추출 및 데이터 삽입
 		Set<FeedTag> feedTags = TagExtractor.extract(savedFeed);
 		feedTagRepository.saveAll(feedTags);
 
-		return StyleMapper.toDto(savedFeed);
+		return toRegisterFeedServiceResponse(savedFeed);
 	}
 
 	@Transactional
-	public FeedResponse update(long id, UpdateFeedRequestOfService request) {
+	public UpdateFeedServiceResponse update(long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
 		Feed updatedFeed = feedRepository.findById(id)
 				.map(feed -> {
-					feed.updateContent(request.content());
+					feed.updateContent(updateFeedServiceRequest.content());
 					Feed entity = feedRepository.save(feed);
 
 					feedTagRepository.deleteAllByFeed(entity);
@@ -49,9 +55,9 @@ public class StyleService {
 
 					return entity;
 				})
-				.orElseThrow(NoSuchFieldError::new);
+				.orElseThrow(EntityNotFoundException::new);
 
-		return StyleMapper.toDto(updatedFeed);
+		return toUpdateFeedServiceResponse(updatedFeed);
 	}
 
 	@Transactional

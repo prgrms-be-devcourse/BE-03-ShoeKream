@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
-import com.prgrms.kream.domain.style.dto.UpdateFeedRequestOfFacade;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,7 +72,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(put("/api/v1/feed/" + memberId)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedRequestOfFacade("이 피드의 태그는 총 #한개 입니다.")
+								new UpdateFeedFacadeRequest("이 피드의 태그는 총 #한개 입니다.")
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
