@@ -22,7 +22,7 @@ public class MemberController {
 
 	private final MemberFacade memberFacade;
 
-	@PostMapping("")
+	@PostMapping
 	@ResponseStatus(CREATED)
 	public ApiResponse<MemberRegisterResponse> register(
 			@RequestBody MemberRegisterRequest memberRegisterRequest
