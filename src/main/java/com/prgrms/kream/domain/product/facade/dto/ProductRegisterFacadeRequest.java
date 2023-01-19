@@ -2,7 +2,7 @@ package com.prgrms.kream.domain.product.facade.dto;
 
 import java.util.List;
 
-public record ProductRegisterRequestOfFacade(
+public record ProductRegisterFacadeRequest(
 		String name,
 		int releasePrice,
 		String description,

@@ -26,13 +26,13 @@ public class Product extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, unique = false)
 	private String name;
 
-	@Column(name = "release_price", nullable = false)
+	@Column(name = "release_price", nullable = false, unique = false)
 	private int releasePrice;
 
-	@Column(name = "description", nullable = false)
+	@Column(name = "description", nullable = false, unique = false)
 	private String description;
 
 	@Builder

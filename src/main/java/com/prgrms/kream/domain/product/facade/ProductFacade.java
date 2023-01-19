@@ -11,7 +11,7 @@ import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.product.controller.dto.ProductGetResponse;
 import com.prgrms.kream.domain.product.controller.dto.ProductRegisterRequest;
 import com.prgrms.kream.domain.product.controller.dto.ProductRegisterResponse;
-import com.prgrms.kream.domain.product.facade.dto.ProductGetResponseOfFacade;
+import com.prgrms.kream.domain.product.facade.dto.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,14 +25,14 @@ public class ProductFacade {
 
 	public ProductRegisterResponse register(ProductRegisterRequest productRegisterRequest) {
 		ProductRegisterResponse productRegisterResponse
-				= productService.register(toProductRegisterRequestOfFacade(productRegisterRequest));
+				= productService.register(toProductRegisterFacadeRequest(productRegisterRequest));
 		imageService.register(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
 		return productRegisterResponse;
 	}
 
 	public ProductGetResponse get(Long productId) {
-		ProductGetResponseOfFacade productGetResponseOfFacade = productService.get(productId);
+		ProductGetFacadeResponse productGetFacadeResponse = productService.get(productId);
 		List<String> imagePaths = imageService.getAll(productId, DomainType.PRODUCT);
-		return toProductGetResponse(productGetResponseOfFacade, imagePaths);
+		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
 }
