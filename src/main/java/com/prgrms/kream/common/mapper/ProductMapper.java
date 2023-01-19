@@ -3,11 +3,11 @@ package com.prgrms.kream.common.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.prgrms.kream.domain.product.controller.dto.ProductGetResponse;
-import com.prgrms.kream.domain.product.controller.dto.ProductRegisterRequest;
-import com.prgrms.kream.domain.product.controller.dto.ProductRegisterResponse;
-import com.prgrms.kream.domain.product.facade.dto.ProductGetFacadeResponse;
-import com.prgrms.kream.domain.product.facade.dto.ProductRegisterFacadeRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.model.ProductOption;
 

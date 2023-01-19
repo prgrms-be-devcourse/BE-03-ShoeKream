@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.product.controller.dto.ProductGetResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.facade.ProductFacade;
 
 import lombok.RequiredArgsConstructor;

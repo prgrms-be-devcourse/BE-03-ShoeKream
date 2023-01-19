@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.product.facade.dto;
+package com.prgrms.kream.domain.product.dto.request;
 
 import java.util.List;
 
