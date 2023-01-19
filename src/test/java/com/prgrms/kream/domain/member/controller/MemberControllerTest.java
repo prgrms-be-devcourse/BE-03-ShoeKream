@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc

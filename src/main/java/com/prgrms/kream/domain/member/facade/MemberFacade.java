@@ -2,8 +2,8 @@ package com.prgrms.kream.domain.member.facade;
 
 import org.springframework.stereotype.Service;
 
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
-import com.prgrms.kream.domain.member.dto.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;

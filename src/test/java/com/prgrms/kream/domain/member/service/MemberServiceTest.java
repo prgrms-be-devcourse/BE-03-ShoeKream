@@ -10,8 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
-import com.prgrms.kream.domain.member.dto.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
