@@ -1,13 +1,11 @@
 package com.prgrms.kream.domain.member.model;
 
-import static javax.persistence.EnumType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,9 +18,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "member")
+@Table(name = "delivery_info")
 @NoArgsConstructor(access = PROTECTED)
-public class Member extends BaseTimeEntity {
+public class DeliveryInfo extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
@@ -30,32 +28,31 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "name", nullable = false, unique = false, length = 20)
 	private String name;
 
-	@Column(name = "email", nullable = false, unique = true, length = 20)
-	private String email;
-
 	@Embedded
 	private Phone phone;
 
-	@Embedded
-	private Password password;
+	@Column(name = "post_code", nullable = false, unique = false, length = 10)
+	private String postCode;
 
-	@Column(name = "is_male", nullable = false, unique = false)
-	private Boolean isMale;
+	@Column(name = "address", nullable = false, unique = false, length = 50)
+	private String address;
 
-	@Enumerated(value = STRING)
-	@Column(name = "authority", nullable = false, unique = false)
-	private Authority authority;
+	@Column(name = "detail", nullable = false, unique = false, length = 30)
+	private String detail;
+
+	@Column(name = "member_id", nullable = false, unique = false)
+	private Long memberId;
 
 	@Builder
-	public Member(
-			Long id, String name, String email, String phone, String password, Boolean isMale, Authority authority
+	public DeliveryInfo(
+			Long id, String name, Phone phone, String postCode, String address, String detail, Long memberId
 	) {
 		this.id = id;
 		this.name = name;
-		this.email = email;
-		this.phone = new Phone(phone);
-		this.password = new Password(password);
-		this.isMale = isMale;
-		this.authority = authority;
+		this.phone = phone;
+		this.postCode = postCode;
+		this.address = address;
+		this.detail = detail;
+		this.memberId = memberId;
 	}
 }

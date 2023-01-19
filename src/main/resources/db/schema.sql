@@ -137,7 +137,7 @@ CREATE TABLE `product_option` (
 
 CREATE TABLE `image` (
                          `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                         `full_path`   VARCHAR(60) NOT NULL,
+                         `full_path`   VARCHAR(255) NOT NULL,
                          `original_name` VARCHAR(40) NOT NULL,
                          `reference_id`  BIGINT      NOT NULL,
                          `domain_type`   VARCHAR(20) NOT NULL,
