@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.common.exception.DuplicatedEmailException;
 import com.prgrms.kream.common.mapper.MemberMapper;
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
-import com.prgrms.kream.domain.member.dto.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 

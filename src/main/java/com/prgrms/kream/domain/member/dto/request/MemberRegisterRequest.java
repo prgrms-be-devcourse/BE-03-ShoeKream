@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.member.dto;
+package com.prgrms.kream.domain.member.dto.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

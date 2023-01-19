@@ -2,7 +2,7 @@ package com.prgrms.kream.common.mapper;
 
 import static lombok.AccessLevel.*;
 
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.NoArgsConstructor;

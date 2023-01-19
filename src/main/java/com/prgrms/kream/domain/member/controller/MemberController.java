@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.member.dto.MemberRegisterRequest;
-import com.prgrms.kream.domain.member.dto.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
 import lombok.RequiredArgsConstructor;
