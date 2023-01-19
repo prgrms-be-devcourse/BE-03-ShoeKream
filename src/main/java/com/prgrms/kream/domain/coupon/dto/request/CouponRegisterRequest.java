@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.coupon.dto;
+package com.prgrms.kream.domain.coupon.dto.request;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

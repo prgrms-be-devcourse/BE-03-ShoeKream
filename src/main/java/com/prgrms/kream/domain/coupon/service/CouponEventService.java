@@ -4,8 +4,8 @@ import static com.prgrms.kream.common.mapper.CouponEventMapper.*;
 
 import org.springframework.stereotype.Service;
 
-import com.prgrms.kream.domain.coupon.dto.CouponEventControllerResponse;
-import com.prgrms.kream.domain.coupon.dto.CouponEventServiceResponse;
+import com.prgrms.kream.domain.coupon.dto.CouponEventDto;
+import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 import com.prgrms.kream.domain.coupon.repository.CouponEventRepository;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class CouponEventService {
 	private final CouponEventRepository couponEventRepository;
 
-	public CouponEventControllerResponse registerCouponEvent(CouponEventServiceResponse couponEventServiceResponse) {
+	public CouponEventDto registerCouponEvent(CouponEventServiceRequest couponEventServiceResponse) {
 		CouponEvent savedCouponEvent = couponEventRepository.save(
 				toCouponEvent(couponEventServiceResponse)
 		);

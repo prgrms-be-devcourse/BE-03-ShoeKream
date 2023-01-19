@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 
 import com.prgrms.kream.MysqlTestContainer;
-import com.prgrms.kream.domain.coupon.dto.CouponRegisterRequest;
+import com.prgrms.kream.domain.coupon.dto.request.CouponRegisterRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.coupon.dto.CouponEventControllerResponse;
-import com.prgrms.kream.domain.coupon.dto.CouponEventRegisterRequest;
+import com.prgrms.kream.domain.coupon.dto.CouponEventDto;
+import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.facade.CouponFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -27,19 +27,16 @@ public class CouponEventController {
 	/**
 	 * 멤버에게 쿠폰을 발급한다.
 	 * @author goseungwon
-	 * @throw MethodArgumentNotValidException
-	 * 					couponEventRegisterRequest.coupon_id 가 blank 인 경우,
-	 * 					couponEventRegisterRequest.member_id 가 blank 인 경우
-	 * @param couponEventRegisterRequest
+	 * @param couponEventRegisterRequest 쿠폰 id, 멤버 id
 	 * @return CouponEventControllerResponse
 	 * @see CouponFacade
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<CouponEventControllerResponse> applyCouponEvent(
+	public ApiResponse<CouponEventDto> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		CouponEventControllerResponse couponEventControllerResponse =
+		CouponEventDto couponEventControllerResponse =
 				couponFacade.applyCouponEvent(couponEventRegisterRequest);
 
 		return ApiResponse.of(couponEventControllerResponse);
