@@ -26,16 +26,16 @@ public class SellingBid extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "member_id", nullable = false)
+	@Column(name = "member_id", nullable = false, unique = false)
 	private Long memberId;
 
-	@Column(name = "product_option_id", nullable = false)
+	@Column(name = "product_option_id", nullable = false, unique = false)
 	private Long productOptionId;
 
-	@Column(name = "price", nullable = false)
+	@Column(name = "price", nullable = false, unique = false)
 	private int price;
 
-	@Column(name = "valid_until", nullable = false)
+	@Column(name = "valid_until", nullable = false, unique = false)
 	private LocalDateTime validUntil;
 
 	@Builder

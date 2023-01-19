@@ -1,5 +1,7 @@
 package com.prgrms.kream.domain.bid.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,7 @@ import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/selling_bid")
+@RequestMapping("/api/v1/selling-bid")
 @RequiredArgsConstructor
 public class SellingBidController {
 	private final SellingBidFacade facade;
@@ -27,15 +29,13 @@ public class SellingBidController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public ApiResponse<SellingBidCreateResponse> register(
-			@RequestBody SellingBidCreateRequest request) {
-		SellingBidCreateResponse response = facade.createSellingBid(request);
-		return ApiResponse.of(response);
+			@RequestBody @Valid SellingBidCreateRequest request) {
+		return ApiResponse.of(facade.createSellingBid(request));
 	}
 
 	@GetMapping("/{id}")
 	public ApiResponse<SellingBidDto> findOne(@PathVariable("id") Long id) {
-		SellingBidDto dto = facade.findOneSellingBidById(id);
-		return ApiResponse.of(dto);
+		return ApiResponse.of(facade.findOneSellingBidById(id));
 	}
 
 	@DeleteMapping("/{id}")
