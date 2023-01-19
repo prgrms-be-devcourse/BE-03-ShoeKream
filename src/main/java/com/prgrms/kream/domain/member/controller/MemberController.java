@@ -2,6 +2,8 @@ package com.prgrms.kream.domain.member.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,7 @@ public class MemberController {
 	@PostMapping
 	@ResponseStatus(CREATED)
 	public ApiResponse<MemberRegisterResponse> register(
-			@RequestBody MemberRegisterRequest memberRegisterRequest
+			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
 	) {
 		return ApiResponse.of(memberFacade.register(memberRegisterRequest));
 	}
