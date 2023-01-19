@@ -13,36 +13,36 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
-import com.prgrms.kream.domain.bid.dto.response.SellingBidCreateResponse;
-import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
-import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
+import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.response.BuyingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
+import com.prgrms.kream.domain.bid.facade.BuyingBidFacade;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/selling-bid")
 @RequiredArgsConstructor
-public class SellingBidController {
-	private final SellingBidFacade facade;
+public class BuyingBidController {
+	private final BuyingBidFacade facade;
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<SellingBidCreateResponse> register(
-			@RequestBody @Valid SellingBidCreateRequest request) {
-		return ApiResponse.of(facade.createSellingBid(request));
+	public ApiResponse<BuyingBidCreateResponse> register(
+			@RequestBody @Valid BuyingBidCreateRequest buyingBidCreateRequest) {
+		return ApiResponse.of(facade.createBuyingBid(buyingBidCreateRequest));
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<SellingBidFindResponse> findOne(@PathVariable("id") Long id) {
-		return ApiResponse.of(facade.findOneSellingBidById(id));
+	public ApiResponse<BuyingBidFindResponse> findOne(@PathVariable("id") Long id) {
+		return ApiResponse.of(facade.findOneBuyingBidById(id));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<String> deleteOne(@PathVariable("id") Long id) {
-		facade.deleteOneSellingBidById(id);
-		return ApiResponse.of("판매 입찰이 삭제되었습니다");
+		facade.deleteOneBuyingBidById(id);
+		return ApiResponse.of("구매 입찰이 삭제되었습니다");
 	}
 }
