@@ -1,7 +1,8 @@
-package com.prgrms.kream.domain.bid.dto;
+package com.prgrms.kream.domain.bid.dto.request;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public record SellingBidCreateRequest(
@@ -16,6 +17,7 @@ public record SellingBidCreateRequest(
 
 		@NotNull(message = "상품의 가격은 필수 입력값입니다")
 		int price,
+		@NotBlank(message = "판매 입찰의 유효 기간을 정확하게 입력해주세요")
 		LocalDateTime validUntil
 ) {
 }

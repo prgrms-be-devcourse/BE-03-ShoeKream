@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateResponse;
-import com.prgrms.kream.domain.bid.dto.SellingBidDto;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
 import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -34,11 +34,13 @@ public class SellingBidController {
 	}
 
 	@GetMapping("/{id}")
-	public ApiResponse<SellingBidDto> findOne(@PathVariable("id") Long id) {
+	@ResponseStatus(HttpStatus.FOUND)
+	public ApiResponse<SellingBidFindResponse> findOne(@PathVariable("id") Long id) {
 		return ApiResponse.of(facade.findOneSellingBidById(id));
 	}
 
 	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<String> deleteOne(@PathVariable("id") Long id) {
 		facade.deleteOneSellingBidById(id);
 		return ApiResponse.of("판매 입찰이 삭제되었습니다");

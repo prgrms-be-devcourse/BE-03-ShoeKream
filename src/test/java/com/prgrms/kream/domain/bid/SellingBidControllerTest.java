@@ -1,4 +1,4 @@
-package com.prgrms.kream.bid;
+package com.prgrms.kream.domain.bid;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.prgrms.kream.MysqlTestContainer;
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -38,7 +38,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		// When
 		ResultActions resultActions =
 				mockMvc.perform(
-						post("/api/v1/selling_bid")
+						post("/api/v1/selling-bid")
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
@@ -56,11 +56,11 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		// Given
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/selling_bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/selling-bid/{id}", 1));
 
 		// Then
 		resultActions
-				.andExpect(status().isOk())
+				.andExpect(status().isFound())
 				.andExpect(jsonPath("$.data.memberId").value(2))
 				.andExpect(jsonPath("$.data.productOptionId").value(3))
 				.andExpect(jsonPath("$.data.price").value(45600))
@@ -73,7 +73,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		// Given
 
 		// When
-		ResultActions resultActions = mockMvc.perform(delete("/api/v1/selling_bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(delete("/api/v1/selling-bid/{id}", 1));
 
 		// Then
 		resultActions

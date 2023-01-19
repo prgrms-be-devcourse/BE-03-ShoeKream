@@ -1,8 +1,8 @@
-package com.prgrms.kream.domain.bid.dto;
+package com.prgrms.kream.domain.bid.dto.response;
 
 import java.time.LocalDateTime;
 
-public record SellingBidDto(
+public record SellingBidFindResponse(
 		Long id,
 		Long memberId,
 		Long productOptionId,

@@ -1,4 +1,4 @@
-package com.prgrms.kream.bid;
+package com.prgrms.kream.domain.bid;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -17,10 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateResponse;
-import com.prgrms.kream.domain.bid.dto.SellingBidDto;
-import com.prgrms.kream.domain.bid.dto.SellingBidFindRequest;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidFindRequest;
 import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
 import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
@@ -79,7 +79,7 @@ public class SellingBidServiceTest {
 		when(repository.findById(id)).thenReturn(Optional.of(entity));
 
 		// When
-		SellingBidDto dto = service.findOneSellingBidById(findRequest);
+		SellingBidFindResponse dto = service.findOneSellingBidById(findRequest);
 
 		// Then
 		assertThat(dto.id()).isEqualTo(entity.getId());

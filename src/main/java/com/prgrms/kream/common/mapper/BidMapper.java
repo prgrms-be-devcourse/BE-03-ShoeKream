@@ -1,32 +1,32 @@
 package com.prgrms.kream.common.mapper;
 
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateRequest;
-import com.prgrms.kream.domain.bid.dto.SellingBidCreateResponse;
-import com.prgrms.kream.domain.bid.dto.SellingBidDto;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
 import com.prgrms.kream.domain.bid.model.SellingBid;
 
 public class BidMapper {
-	public static SellingBid createRequestToSellingBid(SellingBidCreateRequest request) {
+	public static SellingBid toSellingBid(SellingBidCreateRequest sellingBidCreateRequest) {
 		return SellingBid.builder()
-				.id(request.id())
-				.memberId(request.memberId())
-				.productOptionId(request.productOptionId())
-				.price(request.price())
-				.validUntil(request.validUntil())
+				.id(sellingBidCreateRequest.id())
+				.memberId(sellingBidCreateRequest.memberId())
+				.productOptionId(sellingBidCreateRequest.productOptionId())
+				.price(sellingBidCreateRequest.price())
+				.validUntil(sellingBidCreateRequest.validUntil())
 				.build();
 	}
 
-	public static SellingBidCreateResponse sellingBidToCreateResponse(SellingBid entity) {
-		return new SellingBidCreateResponse(entity.getId());
+	public static SellingBidCreateResponse toCreateResponse(SellingBid sellingBid) {
+		return new SellingBidCreateResponse(sellingBid.getId());
 	}
 
-	public static SellingBidDto SellingBidToDto(SellingBid entity){
-		return new SellingBidDto(
-				entity.getId(),
-				entity.getMemberId(),
-				entity.getProductOptionId(),
-				entity.getPrice(),
-				entity.getValidUntil()
+	public static SellingBidFindResponse toSellingBidFindResponse(SellingBid sellingBid){
+		return new SellingBidFindResponse(
+				sellingBid.getId(),
+				sellingBid.getMemberId(),
+				sellingBid.getProductOptionId(),
+				sellingBid.getPrice(),
+				sellingBid.getValidUntil()
 		);
 	}
 }

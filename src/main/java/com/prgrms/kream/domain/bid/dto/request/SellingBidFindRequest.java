@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.bid.dto;
+package com.prgrms.kream.domain.bid.dto.request;
 
 import java.util.List;
 
