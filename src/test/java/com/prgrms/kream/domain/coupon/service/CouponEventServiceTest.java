@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
-import com.prgrms.kream.domain.coupon.dto.CouponEventDto;
+import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.model.Coupon;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
@@ -51,7 +51,7 @@ class CouponEventServiceTest {
 
 		//when
 		when(couponEventRepository.save(any(CouponEvent.class))).thenReturn(couponEvent);
-		CouponEventDto couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventServiceRequest);
+		CouponEventResponse couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventServiceRequest);
 
 		//then
 		assertThat(couponEventControllerResponse.id()).isEqualTo(couponEvent.getId());

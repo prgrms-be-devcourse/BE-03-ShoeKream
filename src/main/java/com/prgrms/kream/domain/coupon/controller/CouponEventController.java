@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.coupon.dto.CouponEventDto;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
+import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.facade.CouponFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -33,10 +33,10 @@ public class CouponEventController {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<CouponEventDto> applyCouponEvent(
+	public ApiResponse<CouponEventResponse> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		CouponEventDto couponEventControllerResponse =
+		CouponEventResponse couponEventControllerResponse =
 				couponFacade.applyCouponEvent(couponEventRegisterRequest);
 
 		return ApiResponse.of(couponEventControllerResponse);

@@ -1,22 +1,24 @@
 package com.prgrms.kream.common.mapper;
 
-import com.prgrms.kream.domain.coupon.dto.CouponEventDto;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
+import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 
-public class CouponEventMapper {
-	private CouponEventMapper() {
-	}
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-	public static CouponEvent toCouponEvent(CouponEventServiceRequest couponEventServiceResponse) {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class CouponEventMapper {
+
+	public static CouponEvent toCouponEvent(CouponEventServiceRequest couponEventServiceRequest) {
 		return CouponEvent.builder()
-				.coupon(couponEventServiceResponse.coupon())
-				.member(couponEventServiceResponse.member())
+				.coupon(couponEventServiceRequest.coupon())
+				.member(couponEventServiceRequest.member())
 				.build();
 	}
 
-	public static CouponEventDto toCouponEventControllerResponse(CouponEvent couponEvent) {
-		return new CouponEventDto(
+	public static CouponEventResponse toCouponEventResponse(CouponEvent couponEvent) {
+		return new CouponEventResponse(
 				couponEvent.getId(),
 				couponEvent.getCoupon(),
 				couponEvent.getMember()
