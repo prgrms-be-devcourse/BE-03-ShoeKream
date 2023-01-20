@@ -62,10 +62,10 @@ public class CouponServiceTest {
 		when(couponRepository.findById(1L)).thenReturn(Optional.of(coupon));
 
 		//when
-		Coupon couponById = couponService.getCouponById(coupon.getId());
+		CouponResponse couponById = couponService.getCouponById(coupon.getId());
 
 		//then
-		assertThat(couponById.getId()).isEqualTo(coupon.getId());
+		assertThat(couponById.id()).isEqualTo(coupon.getId());
 	}
 
 	@Test

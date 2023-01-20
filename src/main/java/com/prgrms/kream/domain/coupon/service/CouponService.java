@@ -19,11 +19,13 @@ public class CouponService {
 
 	private final CouponRepository couponRepository;
 
-	public Coupon getCouponById(Long couponId) {
-		return couponRepository.findById(couponId)
-				.orElseThrow(
-						() -> new NoSuchElementException("존재하지 않는 Coupon couponId: " + couponId)
-				);
+	public CouponResponse getCouponById(Long couponId) {
+		return toCouponResponse(
+				couponRepository.findById(couponId)
+						.orElseThrow(
+								() -> new NoSuchElementException("존재하지 않는 Coupon couponId: " + couponId)
+						)
+		);
 	}
 
 	public CouponResponse registerCoupon(CouponRegisterRequest couponRegisterRequest) {

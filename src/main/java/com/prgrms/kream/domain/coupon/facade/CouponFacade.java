@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
-import com.prgrms.kream.domain.coupon.model.Coupon;
+import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.service.CouponEventService;
 import com.prgrms.kream.domain.coupon.service.CouponService;
 import com.prgrms.kream.domain.member.model.Member;
@@ -23,10 +23,11 @@ public class CouponFacade {
 
 	@Transactional
 	public CouponEventResponse applyCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
+		//TODO merge 후 memberDto로 수정
 		Member member = memberService.getMemberById(couponEventRegisterRequest.memberId());
-		Coupon coupon = couponService.getCouponById(couponEventRegisterRequest.couponId());
+		CouponResponse couponResponse = couponService.getCouponById(couponEventRegisterRequest.couponId());
 
 		return couponEventService.registerCouponEvent(
-				new CouponEventServiceRequest(member, coupon));
+				new CouponEventServiceRequest(member, couponResponse));
 	}
 }
