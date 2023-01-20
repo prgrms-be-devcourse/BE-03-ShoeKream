@@ -28,7 +28,7 @@ public class CouponEventController {
 	 * 멤버에게 쿠폰을 발급한다.
 	 * @author goseungwon
 	 * @param couponEventRegisterRequest 쿠폰 id, 멤버 id
-	 * @return CouponEventControllerResponse
+	 * @return CouponEventResponse
 	 * @see CouponFacade
 	 */
 	@PostMapping
@@ -36,10 +36,10 @@ public class CouponEventController {
 	public ApiResponse<CouponEventResponse> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		CouponEventResponse couponEventControllerResponse =
+		CouponEventResponse couponEventResponse =
 				couponFacade.applyCouponEvent(couponEventRegisterRequest);
 
-		return ApiResponse.of(couponEventControllerResponse);
+		return ApiResponse.of(couponEventResponse);
 	}
 
 	/**

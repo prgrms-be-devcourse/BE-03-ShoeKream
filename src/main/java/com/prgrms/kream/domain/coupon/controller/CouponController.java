@@ -26,7 +26,7 @@ public class CouponController {
 	 * 관리자가 쿠폰을 생성한다.
 	 * @author goseungwon
 	 * @param couponRegisterRequest 할인율, 쿠폰 이름, 쿠폰 수량
-	 * @return CouponControllerResponse
+	 * @return CouponResponse
 	 * @see CouponService
 	 */
 	@PostMapping
@@ -34,9 +34,9 @@ public class CouponController {
 	public ApiResponse<CouponResponse> couponRegister(
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {
-		CouponResponse couponRegisterResponse = couponService.registerCoupon(couponRegisterRequest);
+		CouponResponse couponResponse = couponService.registerCoupon(couponRegisterRequest);
 
-		return ApiResponse.of(couponRegisterResponse);
+		return ApiResponse.of(couponResponse);
 	}
 
 

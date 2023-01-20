@@ -16,9 +16,9 @@ import lombok.RequiredArgsConstructor;
 public class CouponEventService {
 	private final CouponEventRepository couponEventRepository;
 
-	public CouponEventResponse registerCouponEvent(CouponEventServiceRequest couponEventServiceResponse) {
+	public CouponEventResponse registerCouponEvent(CouponEventServiceRequest couponEventServiceRequest) {
 		CouponEvent savedCouponEvent = couponEventRepository.save(
-				toCouponEvent(couponEventServiceResponse)
+				toCouponEvent(couponEventServiceRequest)
 		);
 
 		return toCouponEventResponse(savedCouponEvent);
