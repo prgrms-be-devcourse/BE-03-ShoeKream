@@ -4,5 +4,5 @@ import java.util.List;
 
 public record ProductGetAllResponses(
 		List<ProductGetAllResponse> productGetAllResponses,
-		boolean hasNext) {
+		Long lastId) {
 }

@@ -3,10 +3,6 @@ package com.prgrms.kream.common.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-
-import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
@@ -62,15 +58,11 @@ public class ProductMapper {
 				.collect(Collectors.toList());
 	}
 
-	public static ProductGetAllResponses toProductGetAllResponses(Slice<Product> products) {
-		List<ProductGetAllResponse> productGetAllResponses = products.getContent().stream()
+	public static ProductGetAllResponses toProductGetAllResponses(List<Product> products, Long lastId) {
+		List<ProductGetAllResponse> productGetAllResponse = products.stream()
 				.map(product -> new ProductGetAllResponse(
 						product.getId(), product.getName(), product.getReleasePrice(), product.getDescription()))
 				.collect(Collectors.toList());
-		return new ProductGetAllResponses(productGetAllResponses, products.hasNext());
-	}
-
-	public static Pageable toPageable(ProductGetAllRequest productGetAllRequest) {
-		return Pageable.ofSize(productGetAllRequest.pageSize());
+		return new ProductGetAllResponses(productGetAllResponse, lastId);
 	}
 }
