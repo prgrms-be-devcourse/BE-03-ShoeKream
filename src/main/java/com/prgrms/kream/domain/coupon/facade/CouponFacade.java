@@ -28,6 +28,7 @@ public class CouponFacade {
 		CouponResponse couponResponse = couponService.getCouponById(couponEventRegisterRequest.couponId());
 
 		return couponEventService.registerCouponEvent(
-				new CouponEventServiceRequest(member, couponResponse));
+				new CouponEventServiceRequest(member, couponResponse)
+		);
 	}
 }

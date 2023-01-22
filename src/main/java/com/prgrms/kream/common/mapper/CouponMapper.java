@@ -18,6 +18,15 @@ public class CouponMapper {
 				.build();
 	}
 
+	public static Coupon toCoupon(CouponResponse couponResponse) {
+		return Coupon.builder()
+				.id(couponResponse.id())
+				.discountValue(couponResponse.discountValue())
+				.name(couponResponse.name())
+				.amount(couponResponse.amount())
+				.build();
+	}
+
 	public static CouponResponse toCouponResponse(Coupon coupon) {
 		return new CouponResponse(
 				coupon.getId(),
