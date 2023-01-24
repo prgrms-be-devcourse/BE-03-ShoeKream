@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedFacadeResponse;
@@ -30,10 +31,7 @@ public class StyleFacade {
 	public RegisterFeedFacadeResponse register(RegisterFeedFacadeRequest registerFeedFacadeRequest) {
 		RegisterFeedFacadeResponse registerFeedFacadeResponse = toRegisterFeedFacadeResponse(
 				styleService.register(
-						toRegisterFeedServiceRequest(
-								registerFeedFacadeRequest,
-								memberService.getMember(registerFeedFacadeRequest.author())
-						)
+						toRegisterFeedServiceRequest(registerFeedFacadeRequest)
 				)
 		);
 
@@ -60,6 +58,20 @@ public class StyleFacade {
 	@Transactional
 	public void delete(long id) {
 		styleService.delete(id);
+	}
+
+	@Transactional
+	public void registerFeedLike(LikeFeedFacadeRequest likeFeedFacadeRequest) {
+		styleService.registerFeedLike(
+				toLikeFeedServiceRequest(likeFeedFacadeRequest)
+		);
+	}
+
+	@Transactional
+	public void deleteFeedLike(LikeFeedFacadeRequest likeFeedFacadeRequest) {
+		styleService.deleteFeedLike(
+				toLikeFeedServiceRequest(likeFeedFacadeRequest)
+		);
 	}
 
 }

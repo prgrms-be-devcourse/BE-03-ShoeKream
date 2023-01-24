@@ -28,7 +28,7 @@ public class TagExtractor {
 		// 태그 변환
 		return tags.stream()
 				.map(tag -> FeedTag.builder()
-						.feed(feed)
+						.feedId(feed.getId())
 						.tag(tag)
 						.build())
 				.collect(Collectors.toUnmodifiableSet());

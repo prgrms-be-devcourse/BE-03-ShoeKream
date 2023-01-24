@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "feed_tag")
+@Table(name = "feed_like")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FeedTag extends BaseTimeEntity {
+public class FeedLike extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +27,14 @@ public class FeedTag extends BaseTimeEntity {
 	@Column(name = "feed_id", nullable = false, unique = false)
 	private Long feedId;
 
-	@Column(name = "tag", nullable = false, unique = false, length = 20)
-	private String tag;
+	@Column(name = "member_id", nullable = false, unique = false)
+	private Long memberId;
 
 	@Builder
-	public FeedTag(Long id, Long feedId, String tag) {
+	public FeedLike(Long id, Long feedId, Long memberId) {
 		this.id = id;
 		this.feedId = feedId;
-		this.tag = tag;
+		this.memberId = memberId;
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.prgrms.kream.common.mapper;
 
-import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
@@ -14,6 +16,7 @@ import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedLike;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,23 +28,23 @@ public class StyleMapper {
 	) {
 		return new RegisterFeedFacadeRequest(
 				registerFeedRequest.content(),
-				registerFeedRequest.author(),
+				registerFeedRequest.authorId(),
 				registerFeedRequest.images()
 		);
 	}
 
 	public static RegisterFeedServiceRequest toRegisterFeedServiceRequest(
-			RegisterFeedFacadeRequest registerFeedFacadeRequest, Member author) {
+			RegisterFeedFacadeRequest registerFeedFacadeRequest) {
 		return new RegisterFeedServiceRequest(
 				registerFeedFacadeRequest.content(),
-				author
+				registerFeedFacadeRequest.authorId()
 		);
 	}
 
 	public static Feed toFeed(RegisterFeedServiceRequest registerFeedServiceRequest) {
 		return Feed.builder()
 				.content(registerFeedServiceRequest.content())
-				.author(registerFeedServiceRequest.author())
+				.authorId(registerFeedServiceRequest.authorId())
 				.build();
 	}
 
@@ -76,6 +79,23 @@ public class StyleMapper {
 
 	public static UpdateFeedResponse toUpdateFeedResponse(UpdateFeedFacadeResponse updateFeedFacadeResponse) {
 		return new UpdateFeedResponse(updateFeedFacadeResponse.id());
+	}
+
+	public static LikeFeedFacadeRequest toLikeFeedFacadeRequest(long id, LikeFeedRequest likeFeedRequest) {
+		return new LikeFeedFacadeRequest(id, likeFeedRequest.memberId());
+	}
+
+	public static LikeFeedServiceRequest toLikeFeedServiceRequest(LikeFeedFacadeRequest likeFeedFacadeRequest) {
+		return new LikeFeedServiceRequest(
+				likeFeedFacadeRequest.feedId(),
+				likeFeedFacadeRequest.memberId());
+	}
+
+	public static FeedLike toFeedLike(LikeFeedServiceRequest likeFeedServiceRequest) {
+		return FeedLike.builder()
+				.feedId(likeFeedServiceRequest.feedId())
+				.memberId(likeFeedServiceRequest.memberId())
+				.build();
 	}
 
 }
