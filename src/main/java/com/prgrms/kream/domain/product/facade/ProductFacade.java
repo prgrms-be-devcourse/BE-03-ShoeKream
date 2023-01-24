@@ -4,6 +4,8 @@ import static com.prgrms.kream.common.mapper.ProductMapper.*;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class ProductFacade {
 	private final ProductService productService;
 	private final ImageService imageService;
 
+	@CacheEvict(value = "products", allEntries = true)
 	@Transactional
 	public ProductRegisterResponse register(ProductRegisterRequest productRegisterRequest) {
 		ProductRegisterResponse productRegisterResponse
@@ -41,6 +44,7 @@ public class ProductFacade {
 		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
 
+	@Cacheable(cacheNames = "products", key = "#productGetAllRequest")
 	@Transactional(readOnly = true)
 	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
 		return productService.getAll(productGetAllRequest);
