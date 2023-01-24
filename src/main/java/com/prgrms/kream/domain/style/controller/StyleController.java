@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedResponse;
@@ -65,4 +66,29 @@ public class StyleController {
 		styleFacade.delete(id);
 	}
 
+	@PostMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void registerFeedLike(
+			@PathVariable long id,
+			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
+		styleFacade.registerFeedLike(
+				toLikeFeedFacadeRequest(
+						id,
+						likeFeedRequest
+				)
+		);
+	}
+
+	@DeleteMapping("/{id}/like")
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteFeedLike(
+			@PathVariable long id,
+			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
+		styleFacade.deleteFeedLike(
+				toLikeFeedFacadeRequest(
+						id,
+						likeFeedRequest
+				)
+		);
+	}
 }
