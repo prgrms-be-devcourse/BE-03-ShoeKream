@@ -5,12 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
-import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,15 +27,14 @@ public class Feed extends BaseTimeEntity {
 	@Column(name = "content", nullable = false, unique = false, length = 255)
 	private String content;
 
-	@ManyToOne
-	@JoinColumn(name = "author_id", nullable = false, unique = false)
-	private Member author;
+	@Column(name = "author_id", nullable = false, unique = false)
+	private Long authorId;
 
 	@Builder
-	public Feed(Long id, String content, Member author) {
+	public Feed(Long id, String content, Long authorId) {
 		this.id = id;
 		this.content = content;
-		this.author = author;
+		this.authorId = authorId;
 	}
 
 	public void updateContent(String content) {
