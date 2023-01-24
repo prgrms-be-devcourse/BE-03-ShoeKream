@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
 import com.prgrms.kream.domain.style.facade.StyleFacade;
@@ -41,7 +44,20 @@ public class StyleController {
 				toRegisterFeedResponse(
 						styleFacade.register(
 								toRegisterFeedFacadeRequest(registerFeedRequest)
-						))
+						)
+				)
+		);
+	}
+
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedResponses> get(GetFeedRequest getFeedRequest) {
+		return ApiResponse.of(
+				toGetFeedResponses(
+						styleFacade.get(
+								toGetFeedFacadeRequest(getFeedRequest)
+						)
+				)
 		);
 	}
 

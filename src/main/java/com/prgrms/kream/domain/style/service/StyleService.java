@@ -2,16 +2,20 @@ package com.prgrms.kream.domain.style.service;
 
 import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
@@ -43,6 +47,13 @@ public class StyleService {
 		feedTagRepository.saveAll(feedTags);
 
 		return toRegisterFeedServiceResponse(savedFeed);
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses get(GetFeedServiceRequest getFeedServiceRequest) {
+		return toGetFeedServiceResponses(
+				feedRepository.findAllById(getFeedServiceRequest.ids())
+		);
 	}
 
 	@Transactional
@@ -91,6 +102,18 @@ public class StyleService {
 				likeFeedServiceRequest.feedId(),
 				likeFeedServiceRequest.memberId()
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Long> getAllByTag(String tag) {
+		return feedTagRepository.findAllByTag(tag).stream()
+				.map(FeedTag::getFeedId)
+				.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public Long getFeedLike(Long id) {
+		return feedLikeRepository.countByFeedId(id);
 	}
 
 }

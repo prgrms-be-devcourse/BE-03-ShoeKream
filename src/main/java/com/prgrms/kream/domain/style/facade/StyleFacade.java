@@ -2,15 +2,20 @@ package com.prgrms.kream.domain.style.facade;
 
 import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
+import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedFacadeResponses;
+import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedFacadeResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
 import com.prgrms.kream.domain.style.service.StyleService;
@@ -43,6 +48,33 @@ public class StyleFacade {
 		);
 
 		return registerFeedFacadeResponse;
+	}
+
+	@Transactional
+	public GetFeedFacadeResponses get(GetFeedFacadeRequest getFeedFacadeRequest) {
+		GetFeedServiceResponses getFeedServiceResponses;
+		if (getFeedFacadeRequest.tag() != null) {
+			getFeedServiceResponses = styleService.get(
+					toGetFeedServiceRequest(
+							styleService.getAllByTag(getFeedFacadeRequest.tag())
+					)
+			);
+		} else {
+			getFeedServiceResponses = styleService.get(
+					toGetFeedServiceRequest(getFeedFacadeRequest)
+			);
+		}
+
+		return toGetFeedFacadeResponses(
+				getFeedServiceResponses.getFeedServiceResponses().stream()
+						.map(getFeedServiceResponse ->
+								toGetFeedFacadeResponse(
+										getFeedServiceResponse,
+										styleService.getFeedLike(getFeedServiceResponse.id()),
+										imageService.getAll(getFeedServiceResponse.id(), DomainType.FEED)
+								))
+						.collect(Collectors.toList())
+		);
 	}
 
 	@Transactional
