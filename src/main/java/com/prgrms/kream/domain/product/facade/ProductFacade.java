@@ -37,6 +37,7 @@ public class ProductFacade {
 		return productRegisterResponse;
 	}
 
+	@Cacheable(cacheNames = "product", key = "#productId")
 	@Transactional(readOnly = true)
 	public ProductGetResponse get(Long productId) {
 		ProductGetFacadeResponse productGetFacadeResponse = productService.get(productId);
