@@ -13,13 +13,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedLike;
 import com.prgrms.kream.domain.style.model.FeedTag;
+import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
 import com.prgrms.kream.domain.style.repository.FeedTagRepository;
 import com.prgrms.kream.domain.style.service.StyleService;
@@ -35,25 +39,33 @@ class StyleServiceTest {
 	@Mock
 	private FeedTagRepository feedTagRepository;
 
+	@Mock
+	private FeedLikeRepository feedLikeRepository;
+
 	@InjectMocks
 	private StyleService styleService;
 
 	private final Member MEMBER = Member.builder()
 			.id(1L)
 			.email("kimc980106@naver.com")
-			.phone("010-8610-7463")
-			.password("1234")
+			.phone("01086107463")
+			.password("qwer1234!")
 			.isMale(true)
-			.authority("ADMIN")
+			.authority(Authority.ROLE_ADMIN)
 			.build();
 
 	private final Feed FEED = Feed.builder()
 			.id(1L)
 			.content("이 피드의 태그는 #총 #두개 입니다.")
-			.author(MEMBER)
+			.authorId(MEMBER.getId())
 			.build();
 
 	private final Set<FeedTag> FEED_TAGS = TagExtractor.extract(FEED);
+
+	private final FeedLike FEED_LIKE = FeedLike.builder()
+			.feedId(FEED.getId())
+			.memberId(MEMBER.getId())
+			.build();
 
 	@Test
 	@DisplayName("피드를 등록할 수 있다.")
@@ -91,12 +103,38 @@ class StyleServiceTest {
 		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
+	@Test
+	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
+	void testLikeFeed() {
+		when(feedLikeRepository.existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId())).thenReturn(false);
+		when(feedLikeRepository.save(any())).thenReturn(FEED_LIKE);
+
+		styleService.registerFeedLike(getLikeFeedServiceRequest());
+
+		verify(feedLikeRepository).existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
+		verify(feedLikeRepository).save(any());
+	}
+
+	@Test
+	@DisplayName("피드에 사용자의 좋아요를 취소할 수 있다.")
+	void testUnlikeFeed() {
+		doNothing().when(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
+
+		styleService.deleteFeedLike(getLikeFeedServiceRequest());
+
+		verify(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
+	}
+
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
-		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER);
+		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER.getId());
 	}
 
 	private UpdateFeedServiceRequest getUpdateFeedServiceRequest(String content) {
 		return new UpdateFeedServiceRequest(content);
+	}
+
+	private LikeFeedServiceRequest getLikeFeedServiceRequest() {
+		return new LikeFeedServiceRequest(FEED.getId(), MEMBER.getId());
 	}
 
 }

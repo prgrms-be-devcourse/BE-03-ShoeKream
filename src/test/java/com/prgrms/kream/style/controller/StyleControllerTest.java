@@ -17,9 +17,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,10 +46,10 @@ class StyleControllerTest extends MysqlTestContainer {
 		Member member = Member.builder()
 				.name("김창규")
 				.email("kimc980106@naver.com")
-				.phone("010-8610-7463")
-				.password("1234")
+				.phone("01086107463")
+				.password("qwer1234!")
 				.isMale(true)
-				.authority("ADMIN")
+				.authority(Authority.ROLE_ADMIN)
 				.build();
 		memberId = memberRepository.save(member).getId();
 
@@ -61,7 +63,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/feed")
 						.file(mockImage)
 						.param("content", "이 피드의 태그는 #총 #두개 입니다.")
-						.param("author", String.valueOf(memberId)))
+						.param("authorId", String.valueOf(member.getId())))
 				.andExpect(status().isCreated())
 				.andDo(print());
 	}
@@ -69,10 +71,34 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Test
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() throws Exception {
-		mockMvc.perform(put("/api/v1/feed/" + memberId)
+		mockMvc.perform(put("/api/v1/feed/1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedFacadeRequest("이 피드의 태그는 총 #한개 입니다.")
+								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.")
+						)))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
+	void testLikeFeed() throws Exception {
+		mockMvc.perform(post("/api/v1/feed/1/like")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(
+						new LikeFeedRequest(memberId)
+				)))
+				.andExpect(status().isCreated())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
+	void testUnlikeFeed() throws Exception {
+		mockMvc.perform(delete("/api/v1/feed/1/like")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(
+								new LikeFeedRequest(memberId)
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
