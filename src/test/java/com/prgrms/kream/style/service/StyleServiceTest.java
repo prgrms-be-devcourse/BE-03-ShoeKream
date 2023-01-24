@@ -3,6 +3,7 @@ package com.prgrms.kream.style.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -123,6 +124,16 @@ class StyleServiceTest {
 		styleService.deleteFeedLike(getLikeFeedServiceRequest());
 
 		verify(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
+	}
+
+	@Test
+	@DisplayName("태그 기준으로 피드 식별자를 조회할 수 있다.")
+	void testGetFeedsByTag() {
+		when(feedTagRepository.findAllByTag(any())).thenReturn(FEED_TAGS.stream().toList());
+
+		List<Long> feeds = styleService.getAllByTag(FEED_TAGS.stream().toList().get(0).getTag());
+
+		assertThat(feeds).isNotEmpty();
 	}
 
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
