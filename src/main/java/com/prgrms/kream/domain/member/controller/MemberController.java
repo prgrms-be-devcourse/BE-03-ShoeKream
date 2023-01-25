@@ -2,10 +2,14 @@ package com.prgrms.kream.domain.member.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +48,23 @@ public class MemberController {
 			@RequestBody @Valid MemberLoginRequest memberLoginRequest,
 			HttpServletResponse httpServletResponse
 	) {
-		httpServletResponse.addHeader(accessToken, memberFacade.login(memberLoginRequest).token());
+		httpServletResponse.addCookie(
+				new Cookie(accessToken, memberFacade.login(memberLoginRequest).token())
+		);
 		return ApiResponse.of("로그인 성공하였습니다.");
+	}
+
+	@GetMapping("/logout")
+	@ResponseStatus(OK)
+	public ApiResponse<String> logout(HttpServletResponse httpServletResponse) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication != null && !authentication.getPrincipal().equals("anonymousUser")) {
+			Cookie cookie = new Cookie(accessToken, "");
+			cookie.setMaxAge(0);
+			httpServletResponse.addCookie(cookie);
+		}
+
+		return ApiResponse.of("로그아웃 성공하였습니다.");
 	}
 }
