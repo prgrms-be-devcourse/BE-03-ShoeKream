@@ -54,8 +54,8 @@ public class ProductServiceTest {
 				.build();
 
 		//mocking
-		given(productRepository.save(any(Product.class)))
-				.willReturn(product);
+		when(productRepository.save(any(Product.class)))
+				.thenReturn(product);
 
 		//when
 		ProductRegisterResponse result = productService.register(productRegisterFacadeRequest);
@@ -78,8 +78,8 @@ public class ProductServiceTest {
 				.build();
 
 		//mocking
-		given(productRepository.findById(productId))
-				.willReturn(Optional.of(product));
+		when(productRepository.findById(productId))
+				.thenReturn(Optional.of(product));
 
 		//when
 		ProductGetFacadeResponse result = productService.get(productId);
@@ -120,8 +120,8 @@ public class ProductServiceTest {
 		);
 
 		//mocking
-		given(productRepository.findAllByCursor(cursorId, pageSize))
-				.willReturn(products);
+		when(productRepository.findAllByCursor(cursorId, pageSize))
+				.thenReturn(products);
 
 		//when
 		ProductGetAllResponses productGetAllResponses = productService.getAll(productGetAllRequest);
@@ -129,5 +129,32 @@ public class ProductServiceTest {
 		//then
 		assertThat(productGetAllResponses.productGetAllResponses()).hasSize(2);
 		assertThat(productGetAllResponses.productGetAllResponses()).usingRecursiveComparison().isEqualTo(products);
+	}
+
+	@Test
+	@DisplayName("상품을 삭제한다")
+	void delete() {
+		//given
+		Long productId = 1L;
+
+		Product product = Product.builder()
+				.id(1L)
+				.name("Nike Dunk Low")
+				.releasePrice(129000)
+				.description("Black")
+				.build();
+
+		//mocking
+		when(productRepository.findById(productId))
+				.thenReturn(Optional.of(product));
+		doNothing()
+				.when(productRepository).delete(any(Product.class));
+
+		//when
+		productService.delete(productId);
+
+		//then
+		verify(productRepository, times(1)).delete(product);
+		verify(productOptionRepository, times(1)).deleteAllByProduct(product);
 	}
 }

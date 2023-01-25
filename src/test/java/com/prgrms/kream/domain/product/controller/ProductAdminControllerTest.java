@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 
 @SpringBootTest
@@ -30,8 +33,19 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 	@Autowired
 	ProductRepository productRepository;
 
+	@BeforeEach
+	void insertData() {
+		Product product = Product.builder()
+				.name("Nike Dunk Low")
+				.releasePrice(129000)
+				.description("Retro Black")
+				.build();
+
+		productRepository.save(product);
+	}
+
 	@AfterEach
-	void clearDataAfter() {
+	void clearData() {
 		productRepository.deleteAll();
 	}
 
@@ -53,6 +67,22 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 		//then
 		resultActions
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.data.id").value(1));
+				.andExpect(jsonPath("$.data.id").value(2));
+	}
+
+	@Test
+	@DisplayName("삭제 요청을 받아 상품을 삭제한다")
+	void delete() throws Exception {
+		//given
+		Long productId = 1L;
+
+		//when
+		ResultActions resultActions
+				= mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/admin/product/{id}", productId));
+
+		//then
+		resultActions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").value("삭제되었습니다."));
 	}
 }
