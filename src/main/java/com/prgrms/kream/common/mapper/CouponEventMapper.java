@@ -1,5 +1,7 @@
 package com.prgrms.kream.common.mapper;
 
+import static com.prgrms.kream.common.mapper.CouponMapper.*;
+
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
@@ -12,7 +14,8 @@ public class CouponEventMapper {
 
 	public static CouponEvent toCouponEvent(CouponEventServiceRequest couponEventServiceRequest) {
 		return CouponEvent.builder()
-				.coupon(couponEventServiceRequest.coupon())
+				.coupon(toCoupon(couponEventServiceRequest.couponResponse()))
+				//TODO merge 후 memberDto 로 변경
 				.member(couponEventServiceRequest.member())
 				.build();
 	}
