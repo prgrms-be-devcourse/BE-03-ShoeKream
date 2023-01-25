@@ -1,6 +1,5 @@
 package com.prgrms.kream.domain.product.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
@@ -66,11 +65,11 @@ class ProductControllerTest extends MysqlTestContainer {
 	@DisplayName("조회 요청을 받아 상품 상세 정보를 조회한다")
 	void get() throws Exception {
 		//given
-		Long id = 1L;
+		Long productId = 1L;
 
 		//when
 		ResultActions resultActions
-				= mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product/{id}", id));
+				= mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product/{id}", productId));
 
 		//then
 		resultActions
@@ -90,7 +89,8 @@ class ProductControllerTest extends MysqlTestContainer {
 		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize);
 
 		//when
-		ResultActions resultActions = mockMvc.perform(post("/api/v1/product")
+		ResultActions resultActions
+				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(objectMapper.writeValueAsString(productGetAllRequest)));
 

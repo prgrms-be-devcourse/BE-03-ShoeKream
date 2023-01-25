@@ -11,4 +11,6 @@ public interface ImageService {
 	void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType);
 
 	List<String> getAll(Long referenceId, DomainType domainType);
+
+	void deleteAllByProduct(Long productId);
 }

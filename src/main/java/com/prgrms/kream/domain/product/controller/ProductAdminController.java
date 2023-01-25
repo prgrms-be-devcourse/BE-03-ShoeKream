@@ -3,7 +3,9 @@ package com.prgrms.kream.domain.product.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,5 +31,12 @@ public class ProductAdminController {
 			@ModelAttribute @Valid ProductRegisterRequest productRegisterRequest) {
 
 		return ApiResponse.of(productFacade.register(productRegisterRequest));
+	}
+
+	@DeleteMapping("/{id}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<String> delete(@PathVariable Long id) {
+		productFacade.delete(id);
+		return ApiResponse.of("삭제되었습니다.");
 	}
 }

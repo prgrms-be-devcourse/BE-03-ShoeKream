@@ -50,4 +50,10 @@ public class ProductFacade {
 	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
 		return productService.getAll(productGetAllRequest);
 	}
+
+	@Transactional
+	public void delete(Long id) {
+		imageService.deleteAllByProduct(id);
+		productService.delete(id);
+	}
 }
