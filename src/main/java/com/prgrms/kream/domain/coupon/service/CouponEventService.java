@@ -2,7 +2,6 @@ package com.prgrms.kream.domain.coupon.service;
 
 import static com.prgrms.kream.common.mapper.CouponEventMapper.*;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
@@ -10,6 +9,7 @@ import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 import com.prgrms.kream.domain.coupon.repository.CouponEventRepository;
 import com.prgrms.kream.domain.member.model.Member;
+import com.sun.jdi.request.DuplicateRequestException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ public class CouponEventService {
 			CouponEvent savedCouponEvent = couponEventRepository.save(entity);
 			return toCouponEventResponse(savedCouponEvent);
 		} else {
-			throw new DuplicateKeyException("쿠폰을 중복으로 받을 수 없습니다.");
+			throw new DuplicateRequestException("쿠폰을 중복으로 받을 수 없습니다.");
 		}
 	}
 

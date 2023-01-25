@@ -2,7 +2,6 @@ package com.prgrms.kream.common.exception;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.common.api.ApiResponse.ErrorResponse;
+import com.sun.jdi.request.DuplicateRequestException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,8 +41,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(DuplicateKeyException.class)
-	public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
+	@ExceptionHandler(DuplicateRequestException.class)
+	public ErrorResponse handleDuplicateRequestException(DuplicateRequestException exception) {
 		log.warn("중복 참여", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
