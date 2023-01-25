@@ -50,6 +50,11 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getTrendingFeeds() {
+		return merge(styleService.getTrendingFeeds());
+	}
+
+	@Transactional(readOnly = true)
 	public GetFeedFacadeResponses getNewestFeeds() {
 		return merge(styleService.getNewestFeeds());
 	}

@@ -47,6 +47,11 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getTrendingFeeds() {
+		return toGetFeedServiceResponses(feedRepository.findAllByTopLikes());
+	}
+
+	@Transactional(readOnly = true)
 	public GetFeedServiceResponses getNewestFeeds() {
 		return toGetFeedServiceResponses(feedRepository.findAllByRecent());
 	}

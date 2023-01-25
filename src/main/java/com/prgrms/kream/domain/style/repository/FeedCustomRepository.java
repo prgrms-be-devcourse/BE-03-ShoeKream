@@ -10,4 +10,6 @@ public interface FeedCustomRepository {
 
 	List<Feed> findAllByRecent();
 
+	List<Feed> findAllByTopLikes();
+
 }

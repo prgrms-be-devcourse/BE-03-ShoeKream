@@ -43,4 +43,12 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 				.fetch();
 	}
 
+	@Override
+	public List<Feed> findAllByTopLikes() {
+		return jpaQueryFactory
+				.selectFrom(qFeed)
+				.orderBy(qFeed.likes.desc(), qFeed.createdAt.desc())
+				.fetch();
+	}
+
 }

@@ -50,6 +50,16 @@ public class StyleController {
 		);
 	}
 
+	@GetMapping("/trending")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedResponses> getTrendingFeeds() {
+		return ApiResponse.of(
+				toGetFeedResponses(
+						styleFacade.getTrendingFeeds()
+				)
+		);
+	}
+
 	@GetMapping("/newest")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<GetFeedResponses> getNewestFeeds() {
