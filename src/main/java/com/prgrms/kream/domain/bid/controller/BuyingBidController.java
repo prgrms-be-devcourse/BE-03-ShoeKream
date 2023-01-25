@@ -21,7 +21,7 @@ import com.prgrms.kream.domain.bid.facade.BuyingBidFacade;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/selling-bid")
+@RequestMapping("/api/v1/buying-bid")
 @RequiredArgsConstructor
 public class BuyingBidController {
 	private final BuyingBidFacade facade;
