@@ -53,4 +53,12 @@ public class ProductService {
 
 		return toProductGetAllResponses(products, lastId);
 	}
+
+	@Transactional
+	public void delete(Long id) {
+		Product product = productRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
+		productOptionRepository.deleteAllByProduct(product);
+		productRepository.delete(product);
+	}
 }

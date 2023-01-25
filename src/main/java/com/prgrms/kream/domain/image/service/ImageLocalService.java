@@ -42,6 +42,11 @@ public class ImageLocalService implements ImageService {
 		return toImagePathDto(images);
 	}
 
+	@Override
+	public void deleteAllByProduct(Long productId) {
+		imageRepository.deleteAllByReferenceId(productId);
+	}
+
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		return multipartFiles.stream()
 				.map(multipartFile -> uploadImage(multipartFile, referenceId, domainType))
