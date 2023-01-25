@@ -1,4 +1,4 @@
-package com.prgrms.kream.style.controller;
+package com.prgrms.kream.domain.style.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;

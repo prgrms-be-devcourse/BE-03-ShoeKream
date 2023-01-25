@@ -33,6 +33,7 @@ CREATE TABLE `feed` (
                         `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         `author_id`	BIGINT	NOT NULL,
                         `content`	VARCHAR(255)	NOT NULL,
+                        `likes`     INT NOT NULL DEFAULT 0,
                         `created_at`	TIMESTAMP	NOT NULL,
                         `updated_at`	TIMESTAMP	NOT NULL
 );
@@ -47,14 +48,15 @@ CREATE TABLE `product` (
 );
 
 CREATE TABLE `order` (
-                         `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                         `buyer_id`	BIGINT	NOT NULL,
-                         `seller_id`	BIGINT	NOT NULL,
-                         `price`	INT	NOT NULL,
-                         `order_status`	VARCHAR(10)	NOT NULL,
-                         `order_request`	VARCHAR(50)	NOT NULL,
-                         `created_at`	TIMESTAMP	NOT NULL,
-                         `updated_at`	TIMESTAMP	NOT NULL
+                         `id`          BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                         `buyer_id`    BIGINT NOT NULL,
+                         `seller_id`   BIGINT NOT NULL,
+                         `product_option_id`    BIGINT NOT NULL,
+                         `price`   INT    NOT NULL,
+                         `order_status`    VARCHAR(10)    NOT NULL,
+                         `order_request`   VARCHAR(50)    NOT NULL,
+                         `created_at`  TIMESTAMP  NOT NULL,
+                         `updated_at`  TIMESTAMP  NOT NULL
 );
 
 CREATE TABLE `coupon` (
@@ -75,12 +77,12 @@ CREATE TABLE `account` (
 );
 
 CREATE TABLE `transaction` (
-                               `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                               `account_id`	BIGINT	NOT NULL,
-                               `account`	INT	NOT NULL,
-                               `transaction_type`	BIT	NOT NULL,
-                               `created_at`	TIMESTAMP	NOT NULL,
-                               `updated_at`	TIMESTAMP	NOT NULL
+                               `id`            BIGINT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                               `account_id`    BIGINT NOT NULL,
+                               `account`   INT    NOT NULL,
+                               `transaction_type`  VARCHAR(10)    NOT NULL,
+                               `created_at`    TIMESTAMP  NOT NULL,
+                               `updated_at`    TIMESTAMP  NOT NULL
 );
 
 CREATE TABLE `feed_like` (

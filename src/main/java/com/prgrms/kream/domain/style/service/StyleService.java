@@ -2,16 +2,13 @@ package com.prgrms.kream.domain.style.service;
 
 import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
@@ -50,10 +47,13 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses get(GetFeedServiceRequest getFeedServiceRequest) {
-		return toGetFeedServiceResponses(
-				feedRepository.findAllById(getFeedServiceRequest.ids())
-		);
+	public GetFeedServiceResponses getNewestFeeds() {
+		return toGetFeedServiceResponses(feedRepository.findAllByRecent());
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getAllByTag(String tag) {
+		return toGetFeedServiceResponses(feedRepository.findAllByTag(tag));
 	}
 
 	@Transactional
@@ -92,28 +92,35 @@ public class StyleService {
 				likeFeedServiceRequest.feedId(),
 				likeFeedServiceRequest.memberId()
 		)) {
+			feedRepository.findById(likeFeedServiceRequest.feedId())
+					.map(feed -> {
+						feed.increaseLikes();
+						return feedRepository.save(feed);
+					})
+					.orElseThrow(EntityNotFoundException::new);
+
 			feedLikeRepository.save(toFeedLike(likeFeedServiceRequest));
 		}
 	}
 
 	@Transactional
 	public void deleteFeedLike(LikeFeedServiceRequest likeFeedServiceRequest) {
-		feedLikeRepository.deleteByFeedIdAndMemberId(
+		if (feedLikeRepository.existsByFeedIdAndMemberId(
 				likeFeedServiceRequest.feedId(),
 				likeFeedServiceRequest.memberId()
-		);
-	}
+		)) {
+			feedRepository.findById(likeFeedServiceRequest.feedId())
+					.map(feed -> {
+						feed.decreaseLikes();
+						return feedRepository.save(feed);
+					})
+					.orElseThrow(EntityNotFoundException::new);
 
-	@Transactional(readOnly = true)
-	public List<Long> getAllByTag(String tag) {
-		return feedTagRepository.findAllByTag(tag).stream()
-				.map(FeedTag::getFeedId)
-				.collect(Collectors.toList());
-	}
-
-	@Transactional(readOnly = true)
-	public Long getFeedLike(Long id) {
-		return feedLikeRepository.countByFeedId(id);
+			feedLikeRepository.deleteByFeedIdAndMemberId(
+					likeFeedServiceRequest.feedId(),
+					likeFeedServiceRequest.memberId()
+			);
+		}
 	}
 
 }
