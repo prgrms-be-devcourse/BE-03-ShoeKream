@@ -22,28 +22,35 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-		log.warn("잘못된 입력", exception);
+		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NoSuchElementException.class)
 	public ErrorResponse handleNoSuchElementException(NoSuchElementException exception) {
-		log.warn("존재하지 않습니다.", exception);
+		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
-		log.warn("잘못된 요청", exception);
+		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(DuplicateRequestException.class)
 	public ErrorResponse handleDuplicateRequestException(DuplicateRequestException exception) {
-		log.warn("중복 참여", exception);
+		log.warn("", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ErrorResponse handleIllegalArgumentException(IllegalArgumentException exception) {
+		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }

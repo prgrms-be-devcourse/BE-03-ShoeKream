@@ -40,4 +40,13 @@ public class Coupon extends BaseTimeEntity {
 		this.name = name;
 		this.amount = amount;
 	}
+
+	public void decreaseAmount() {
+		if (amount > 0) {
+			amount--;
+			return;
+		}
+		throw new IllegalArgumentException("쿠폰 수량이 전부 소진되었습니다.");
+	}
+
 }

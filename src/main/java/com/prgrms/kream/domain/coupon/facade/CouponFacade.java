@@ -24,8 +24,9 @@ public class CouponFacade {
 	@Transactional
 	public CouponEventResponse applyCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
 		//TODO merge 후 memberDto로 수정
-		Member member = memberService.getMemberById(couponEventRegisterRequest.memberId());
+		Member member = memberService.getMember(couponEventRegisterRequest.memberId());
 		CouponResponse couponResponse = couponService.getCouponById(couponEventRegisterRequest.couponId());
+		couponService.decreaseCouponAmount(couponResponse.id());
 
 		return couponEventService.registerCouponEvent(
 				new CouponEventServiceRequest(member, couponResponse)

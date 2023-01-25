@@ -20,12 +20,18 @@ public class CouponService {
 	private final CouponRepository couponRepository;
 
 	public CouponResponse getCouponById(Long couponId) {
-		return toCouponResponse(
-				couponRepository.findById(couponId)
-						.orElseThrow(
-								() -> new NoSuchElementException("존재하지 않는 Coupon couponId: " + couponId)
-						)
-		);
+		return toCouponResponse(getCoupon(couponId));
+	}
+
+	private Coupon getCoupon(Long couponId) {
+		return couponRepository.findById(couponId)
+				.orElseThrow(
+						() -> new NoSuchElementException("존재하지 않는 Coupon couponId: " + couponId)
+				);
+	}
+
+	public void decreaseCouponAmount(Long couponId) {
+		getCoupon(couponId).decreaseAmount();
 	}
 
 	public CouponResponse registerCoupon(CouponRegisterRequest couponRegisterRequest) {
