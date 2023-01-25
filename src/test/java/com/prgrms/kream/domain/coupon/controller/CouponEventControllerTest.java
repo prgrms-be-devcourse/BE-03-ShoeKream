@@ -48,4 +48,34 @@ class CouponEventControllerTest extends MysqlTestContainer {
 		resultActions.andExpect(status().isCreated());
 	}
 
+	@Test
+	@DisplayName("쿠폰 중복 발급 테스트")
+	void overLapApplyCouponEvent() throws Exception {
+		//given
+		CouponEventRegisterRequest couponEventRegisterRequest = new CouponEventRegisterRequest(1L, 1L);
+
+		//when
+		mockMvc.perform(
+				post("/api/v1/coupon")
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding(StandardCharsets.UTF_8)
+						.content(
+								objectMapperBuilder.build()
+										.writeValueAsString(couponEventRegisterRequest)
+						)
+		);
+		ResultActions resultActions = mockMvc.perform(
+				post("/api/v1/coupon")
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding(StandardCharsets.UTF_8)
+						.content(
+								objectMapperBuilder.build()
+										.writeValueAsString(couponEventRegisterRequest)
+						)
+		);
+
+		//then
+		resultActions.andExpect(status().isBadRequest());
+	}
+
 }

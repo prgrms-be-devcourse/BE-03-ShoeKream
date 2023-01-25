@@ -2,6 +2,7 @@ package com.prgrms.kream.common.exception;
 
 import java.util.NoSuchElementException;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,6 +37,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
 		log.warn("잘못된 요청", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(DuplicateKeyException.class)
+	public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
+		log.warn("중복 참여", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }
