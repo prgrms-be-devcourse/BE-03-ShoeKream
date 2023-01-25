@@ -20,7 +20,7 @@ public class CouponEventService {
 
 	@Transactional
 	public CouponEventResponse registerCouponEvent(CouponEventServiceRequest couponEventServiceRequest) {
-		if (checkOverLapApply(couponEventServiceRequest.memberId())) {
+		if (!checkOverLapApply(couponEventServiceRequest.memberId(), couponEventServiceRequest.couponId())) {
 			CouponEvent entity = toCouponEvent(couponEventServiceRequest);
 			CouponEvent savedCouponEvent = couponEventRepository.save(entity);
 			return toCouponEventResponse(savedCouponEvent);
@@ -28,7 +28,7 @@ public class CouponEventService {
 		throw new DuplicateRequestException("쿠폰을 중복으로 받을 수 없습니다.");
 	}
 
-	private boolean checkOverLapApply(Long memberId) {
-		return couponEventRepository.findByMemberId(memberId).isEmpty();
+	private boolean checkOverLapApply(Long memberId, Long couponId) {
+		return couponEventRepository.existsByMemberIdAndCouponId(memberId, couponId);
 	}
 }
