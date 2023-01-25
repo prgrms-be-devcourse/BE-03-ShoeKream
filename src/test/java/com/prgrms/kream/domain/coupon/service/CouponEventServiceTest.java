@@ -13,15 +13,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.dao.DuplicateKeyException;
 
-import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
+import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.model.Coupon;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 import com.prgrms.kream.domain.coupon.repository.CouponEventRepository;
 import com.prgrms.kream.domain.member.model.Member;
+import com.sun.jdi.request.DuplicateRequestException;
 
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -45,18 +45,24 @@ class CouponEventServiceTest {
 		CouponResponse couponResponse = toCouponResponse(coupon);
 		Member member = Member.builder()
 				.id(1L)
-				.email("email")
+				.email("test@test.com")
+				.phone("01012345678")
+				.password("1234asdf!@#$")
+				.isMale(true)
+				// .authority("ADMIN")
 				.name("name")
 				.build();
-		CouponEventServiceRequest couponEventServiceRequest = new CouponEventServiceRequest(member, couponResponse);
+		CouponEventServiceRequest couponEventServiceRequest =
+				new CouponEventServiceRequest(member.getId(), couponResponse.id());
 		CouponEvent couponEvent = CouponEvent.builder()
 				.id(1L)
-				.coupon(coupon)
-				.member(couponEventServiceRequest.member())
+				.couponId(coupon.getId())
+				.memberId(couponEventServiceRequest.memberId())
 				.build();
 
 		//when
-		when(couponEventRepository.save(any(CouponEvent.class))).thenReturn(couponEvent);
+		when(couponEventRepository.save(any(CouponEvent.class)))
+				.thenReturn(couponEvent);
 		CouponEventResponse couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventServiceRequest);
 
 		//then
@@ -76,24 +82,30 @@ class CouponEventServiceTest {
 		CouponResponse couponResponse = toCouponResponse(coupon);
 		Member member = Member.builder()
 				.id(1L)
-				.email("email")
+				.email("test@test.com")
+				.phone("01012345678")
+				.password("1234asdf!@#$")
+				.isMale(true)
+				// .authority("ADMIN")
 				.name("name")
 				.build();
-		CouponEventServiceRequest couponEventServiceRequest = new CouponEventServiceRequest(member, couponResponse);
+		CouponEventServiceRequest couponEventServiceRequest =
+				new CouponEventServiceRequest(member.getId(), couponResponse.id());
 		CouponEvent couponEvent = CouponEvent.builder()
 				.id(1L)
-				.coupon(coupon)
-				.member(couponEventServiceRequest.member())
+				.couponId(coupon.getId())
+				.memberId(couponEventServiceRequest.memberId())
 				.build();
 
 		//when
-		when(couponEventRepository.findByMember(any(Member.class))).thenReturn(Optional.ofNullable(couponEvent));
+		when(couponEventRepository.findByMemberId(any(Long.class)))
+				.thenReturn(Optional.ofNullable(couponEvent));
 
 
 		//then
 		assertThatThrownBy(
 				() -> couponEventService.registerCouponEvent(couponEventServiceRequest)
-				).isInstanceOf(DuplicateKeyException.class)
+				).isInstanceOf(DuplicateRequestException.class)
 				.hasMessage("쿠폰을 중복으로 받을 수 없습니다.");
 	}
 

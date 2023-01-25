@@ -6,10 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
-import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.service.CouponEventService;
 import com.prgrms.kream.domain.coupon.service.CouponService;
-import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,13 +21,15 @@ public class CouponFacade {
 
 	@Transactional
 	public CouponEventResponse applyCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
-		//TODO merge 후 memberDto로 수정
-		Member member = memberService.getMember(couponEventRegisterRequest.memberId());
-		CouponResponse couponResponse = couponService.getCouponById(couponEventRegisterRequest.couponId());
-		couponService.decreaseCouponAmount(couponResponse.id());
+		memberService.getMember(couponEventRegisterRequest.memberId());
+		couponService.getCouponById(couponEventRegisterRequest.couponId());
+		couponService.decreaseCouponAmount(couponEventRegisterRequest.couponId());
 
 		return couponEventService.registerCouponEvent(
-				new CouponEventServiceRequest(member, couponResponse)
+				new CouponEventServiceRequest(
+						couponEventRegisterRequest.memberId(),
+						couponEventRegisterRequest.couponId()
+				)
 		);
 	}
 }
