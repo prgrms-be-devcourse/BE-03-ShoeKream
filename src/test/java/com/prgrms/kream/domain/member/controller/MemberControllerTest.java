@@ -6,15 +6,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import javax.servlet.http.Cookie;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
@@ -30,6 +35,9 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Value("${jwt.accessToken}")
+	private String accessToken;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -81,22 +89,29 @@ class MemberControllerTest extends MysqlTestContainer {
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberLoginRequest))
 				).andExpect(status().isOk())
-				.andExpect(header().exists("access_token"))
+				.andExpect(header().exists("Set-Cookie"))
 				.andDo(print())
 				.andReturn();
 	}
 
 	@Test
-	@DisplayName("로그인 - 실패 비밀번호 불일치")
-	void login_fail() throws Exception {
+	@DisplayName("로그아웃 - 성공")
+	void logout_success() throws Exception {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
-				"hello@naver.com", "P!12345678"
+				"hello@naver.com", "Pa!12345678"
 		);
 
-		mockMvc.perform(post("/api/v1/member/login")
+		MvcResult mvcResult = mockMvc.perform(post("/api/v1/member/login")
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberLoginRequest))
-				).andExpect(status().is4xxClientError())
+				).andExpect(status().isOk())
+				.andReturn();
+
+		Cookie tokenCookie = mvcResult.getResponse().getCookie(accessToken);
+
+		mockMvc.perform(get("/api/v1/member/logout").cookie(tokenCookie))
+				.andExpect(status().isOk())
+				.andExpect(header().string("Set-Cookie", Matchers.startsWith(accessToken + "=; Max-Age=0;")))
 				.andDo(print());
 	}
 }
