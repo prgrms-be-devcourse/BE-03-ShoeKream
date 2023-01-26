@@ -10,6 +10,7 @@ public class OrderMapper {
 				.id(orderCreateServiceRequest.id())
 				.buyerId(orderCreateServiceRequest.buyerId())
 				.sellerId(orderCreateServiceRequest.sellerId())
+				.productOptionId(orderCreateServiceRequest.productOptionId())
 				.price(orderCreateServiceRequest.price())
 				.orderRequest(orderCreateServiceRequest.orderRequest())
 				.build();
