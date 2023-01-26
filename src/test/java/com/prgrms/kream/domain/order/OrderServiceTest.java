@@ -33,8 +33,8 @@ public class OrderServiceTest {
 	Long sellerId = 3L;
 
 	@Test
-	@DisplayName("판매 입찰 기반 주문 생성 테스트")
-	void orderCreateBySellingBidTest() {
+	@DisplayName("입찰 기반 주문 생성 테스트")
+	void orderCreateByBidTest() {
 		// Given
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderId, buyerId, sellerId, 4L, 1500, "문 앞에 놔주세요.");
