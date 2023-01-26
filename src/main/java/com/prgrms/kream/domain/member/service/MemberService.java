@@ -1,11 +1,17 @@
 package com.prgrms.kream.domain.member.service;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.common.exception.DuplicatedEmailException;
+import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.common.mapper.MemberMapper;
+import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
@@ -18,6 +24,8 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 
+	private final Jwt jwt;
+
 	@Transactional
 	public MemberRegisterResponse register(MemberRegisterRequest memberRegisterRequest) {
 		if (isDuplicatedEmail(memberRegisterRequest.email())) {
@@ -27,6 +35,19 @@ public class MemberService {
 				MemberMapper.toMember(memberRegisterRequest)
 		);
 		return new MemberRegisterResponse(member.getId());
+	}
+
+	@Transactional
+	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
+		Member member = memberRepository.findByEmail(memberLoginRequest.email())
+				.orElseThrow(EntityNotFoundException::new);
+
+		if (member.isNotValidPassword(memberLoginRequest.password())) {
+			throw new BadCredentialsException("잘못된 비밀번호 입니다.");
+		}
+		String[] roles = new String[] {member.getAuthority().name()};
+
+		return new MemberLoginResponse(jwt.sign(Jwt.Claims.from(member.getId(), roles)));
 	}
 
 	private boolean isDuplicatedEmail(String email) {
