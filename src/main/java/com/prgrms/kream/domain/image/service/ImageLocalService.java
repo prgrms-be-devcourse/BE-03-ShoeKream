@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.prgrms.kream.common.exception.UploadFailedException;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
@@ -77,7 +78,7 @@ public class ImageLocalService implements ImageService {
 			}
 			multipartFile.transferTo(new File(getFullPath(uniqueName)));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UploadFailedException("save to local failed");
 		}
 	}
 

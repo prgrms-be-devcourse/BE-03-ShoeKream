@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.prgrms.kream.common.exception.UploadFailedException;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
@@ -77,7 +78,7 @@ public class ImageS3Service implements ImageService {
 			objectMetadata.setContentLength(multipartFile.getInputStream().available());
 			amazonS3.putObject(bucket, uniqueName, multipartFile.getInputStream(), objectMetadata);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new UploadFailedException("save to s3 failed");
 		}
 
 		return amazonS3.getUrl(bucket, uniqueName).toString();
