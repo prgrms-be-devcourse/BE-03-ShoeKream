@@ -57,6 +57,7 @@ public class StyleMapper {
 		return Feed.builder()
 				.content(registerFeedServiceRequest.content())
 				.authorId(registerFeedServiceRequest.authorId())
+				.likes(0L)
 				.build();
 	}
 
@@ -90,6 +91,7 @@ public class StyleMapper {
 				feed.getId(),
 				feed.getAuthorId(),
 				feed.getContent(),
+				feed.getLikes(),
 				feed.getCreatedAt(),
 				feed.getUpdatedAt()
 		);
@@ -105,13 +107,12 @@ public class StyleMapper {
 
 	public static GetFeedFacadeResponse toGetFeedFacadeResponse(
 			GetFeedServiceResponse getFeedServiceResponse,
-			Long likes,
 			List<String> images) {
 		return new GetFeedFacadeResponse(
 				getFeedServiceResponse.id(),
 				getFeedServiceResponse.authorId(),
 				getFeedServiceResponse.content(),
-				likes,
+				getFeedServiceResponse.likes(),
 				images,
 				getFeedServiceResponse.createdAt(),
 				getFeedServiceResponse.updatedAt()
