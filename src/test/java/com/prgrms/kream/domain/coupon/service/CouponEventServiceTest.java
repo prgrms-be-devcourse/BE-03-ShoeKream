@@ -4,15 +4,12 @@ import static com.prgrms.kream.common.mapper.CouponMapper.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
@@ -23,7 +20,6 @@ import com.prgrms.kream.domain.coupon.repository.CouponEventRepository;
 import com.prgrms.kream.domain.member.model.Member;
 import com.sun.jdi.request.DuplicateRequestException;
 
-@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 class CouponEventServiceTest {
 	@Mock
@@ -91,15 +87,10 @@ class CouponEventServiceTest {
 				.build();
 		CouponEventServiceRequest couponEventServiceRequest =
 				new CouponEventServiceRequest(member.getId(), couponResponse.id());
-		CouponEvent couponEvent = CouponEvent.builder()
-				.id(1L)
-				.couponId(coupon.getId())
-				.memberId(couponEventServiceRequest.memberId())
-				.build();
 
 		//when
-		when(couponEventRepository.findByMemberId(any(Long.class)))
-				.thenReturn(Optional.ofNullable(couponEvent));
+		when(couponEventRepository.existsByMemberIdAndCouponId(any(Long.class), any(Long.class)))
+				.thenReturn(true);
 
 
 		//then

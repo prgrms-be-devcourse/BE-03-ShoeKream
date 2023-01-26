@@ -3,8 +3,9 @@ package com.prgrms.kream.domain.coupon.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,14 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import com.prgrms.kream.domain.coupon.dto.request.CouponRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.model.Coupon;
 import com.prgrms.kream.domain.coupon.repository.CouponRepository;
 
-@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class CouponServiceTest {
 	@Mock
@@ -77,7 +76,7 @@ public class CouponServiceTest {
 
 		//then
 		assertThatThrownBy(() ->
-				couponService.getCouponById(1L)).isInstanceOf(NoSuchElementException.class)
+				couponService.getCouponById(1L)).isInstanceOf(EntityNotFoundException.class)
 				.hasMessage("존재하지 않는 Coupon couponId: 1");
 	}
 
