@@ -19,12 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 	private final OrderFacade orderFacade;
 
-	@PostMapping
+	@PostMapping("/selling-bid")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<OrderCreateResponse> register(
+	public ApiResponse<OrderCreateResponse> registerBySellingBid(
 			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
 		OrderCreateResponse orderCreateResponse = orderFacade.createOrderBySellingBid(orderCreateFacadeRequest);
+		return ApiResponse.of(orderCreateResponse);
+	}
+
+	@PostMapping("/buying-bid")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<OrderCreateResponse> registerByBuyingBid(
+			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
+	) {
+		OrderCreateResponse orderCreateResponse = orderFacade.createOrderByBuyingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
 	}
 }

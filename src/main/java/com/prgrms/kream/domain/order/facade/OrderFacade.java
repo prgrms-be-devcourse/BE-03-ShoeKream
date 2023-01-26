@@ -1,7 +1,10 @@
 package com.prgrms.kream.domain.order.facade;
 
+import com.prgrms.kream.domain.bid.dto.request.BuyingBidFindRequest;
 import com.prgrms.kream.domain.bid.dto.request.SellingBidFindRequest;
+import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
 import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
+import com.prgrms.kream.domain.bid.service.BuyingBidService;
 import com.prgrms.kream.domain.bid.service.SellingBidService;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
@@ -18,18 +21,37 @@ public class OrderFacade {
 	private final OrderService orderService;
 	private final SellingBidService sellingBidService;
 
+	private final BuyingBidService buyingBidService;
+
 	@Transactional
 	public OrderCreateResponse createOrderBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
 		SellingBidFindResponse sellingBidFindResponse =
 				sellingBidService.findOneSellingBidById(new SellingBidFindRequest(
-						Collections.singletonList(orderCreateFacadeRequest.sellingBidId())));
+						Collections.singletonList(orderCreateFacadeRequest.bidId())));
 
 		// TODO 자신의 ID를 가져오는 방법 생각하기
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), 0L, sellingBidFindResponse.memberId(),
-						sellingBidFindResponse.price(), orderCreateFacadeRequest.orderRequest());
+						sellingBidFindResponse.productOptionId(), sellingBidFindResponse.price(),
+						orderCreateFacadeRequest.orderRequest());
 
 		sellingBidService.deleteOneSellingBidById(sellingBidFindResponse.id());
+
+		return orderService.createOrder(orderCreateServiceRequest);
+	}
+
+	@Transactional
+	public OrderCreateResponse createOrderByBuyingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
+		BuyingBidFindResponse buyingBidFindResponse =
+				buyingBidService.findOneBuyingBidById(new BuyingBidFindRequest(
+						Collections.singletonList(orderCreateFacadeRequest.bidId())));
+
+		OrderCreateServiceRequest orderCreateServiceRequest =
+				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), buyingBidFindResponse.memberId(), 0L,
+						buyingBidFindResponse.productOptionId(), buyingBidFindResponse.price(),
+						orderCreateFacadeRequest.orderRequest());
+
+		buyingBidService.deleteOneBuyingBidById(buyingBidFindResponse.id());
 
 		return orderService.createOrder(orderCreateServiceRequest);
 	}
