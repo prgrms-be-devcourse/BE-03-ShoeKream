@@ -48,12 +48,12 @@ public class StyleService {
 
 	@Transactional(readOnly = true)
 	public GetFeedServiceResponses getTrendingFeeds() {
-		return toGetFeedServiceResponses(feedRepository.findAllByTopLikes());
+		return toGetFeedServiceResponses(feedRepository.findAllOrderByLikesDesc());
 	}
 
 	@Transactional(readOnly = true)
 	public GetFeedServiceResponses getNewestFeeds() {
-		return toGetFeedServiceResponses(feedRepository.findAllByRecent());
+		return toGetFeedServiceResponses(feedRepository.findAllOrderByCreatedAtDesc());
 	}
 
 	@Transactional(readOnly = true)

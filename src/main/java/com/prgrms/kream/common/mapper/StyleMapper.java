@@ -57,7 +57,7 @@ public class StyleMapper {
 		return Feed.builder()
 				.content(registerFeedServiceRequest.content())
 				.authorId(registerFeedServiceRequest.authorId())
-				.likes(0)
+				.likes(0L)
 				.build();
 	}
 

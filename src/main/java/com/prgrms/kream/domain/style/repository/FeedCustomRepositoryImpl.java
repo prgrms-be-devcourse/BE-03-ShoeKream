@@ -36,7 +36,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	}
 
 	@Override
-	public List<Feed> findAllByRecent() {
+	public List<Feed> findAllOrderByCreatedAtDesc() {
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.orderBy(qFeed.id.desc())
@@ -44,7 +44,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	}
 
 	@Override
-	public List<Feed> findAllByTopLikes() {
+	public List<Feed> findAllOrderByLikesDesc() {
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.orderBy(qFeed.likes.desc(), qFeed.createdAt.desc())

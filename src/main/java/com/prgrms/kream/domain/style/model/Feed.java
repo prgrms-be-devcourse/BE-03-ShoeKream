@@ -31,10 +31,10 @@ public class Feed extends BaseTimeEntity {
 	private Long authorId;
 
 	@Column(name = "likes", nullable = false, unique = false)
-	private Integer likes;
+	private Long likes;
 
 	@Builder
-	public Feed(Long id, String content, Long authorId, Integer likes) {
+	public Feed(Long id, String content, Long authorId, Long likes) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -50,7 +50,7 @@ public class Feed extends BaseTimeEntity {
 	}
 
 	public void decreaseLikes() {
-		this.likes = (likes > 0) ? likes - 1: 0;
+		this.likes = (likes > 0) ? likes - 1L: 0;
 	}
 
 }

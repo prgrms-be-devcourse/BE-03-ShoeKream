@@ -33,7 +33,7 @@ CREATE TABLE `feed` (
                         `id`	        BIGINT	        NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         `author_id`	BIGINT	NOT NULL,
                         `content`	VARCHAR(255)	NOT NULL,
-                        `likes`     INT NOT NULL DEFAULT 0,
+                        `likes`     BIGINT NOT NULL DEFAULT 0,
                         `created_at`	TIMESTAMP	NOT NULL,
                         `updated_at`	TIMESTAMP	NOT NULL
 );

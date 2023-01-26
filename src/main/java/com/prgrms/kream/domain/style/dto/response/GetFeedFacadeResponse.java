@@ -7,7 +7,7 @@ public record GetFeedFacadeResponse(
 		Long id,
 		Long authorId,
 		String content,
-		Integer likes,
+		Long likes,
 		List<String> images,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt

@@ -6,7 +6,7 @@ public record GetFeedServiceResponse(
 		Long id,
 		Long authorId,
 		String content,
-		Integer likes,
+		Long likes,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
 ) {
