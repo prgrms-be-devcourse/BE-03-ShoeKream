@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
@@ -28,6 +29,7 @@ class CouponEventControllerTest extends MysqlTestContainer {
 	Jackson2ObjectMapperBuilder objectMapperBuilder;
 
 	@Test
+	@Transactional
 	@DisplayName("쿠폰 발급 테스트")
 	void applyCouponEvent() throws Exception {
 		//given
@@ -49,6 +51,7 @@ class CouponEventControllerTest extends MysqlTestContainer {
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("쿠폰 중복 발급 테스트")
 	void overLapApplyCouponEvent() throws Exception {
 		//given

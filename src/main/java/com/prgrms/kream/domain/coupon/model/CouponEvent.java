@@ -3,15 +3,12 @@ package com.prgrms.kream.domain.coupon.model;
 import static lombok.AccessLevel.*;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
-import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -25,17 +22,13 @@ public class CouponEvent extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Coupon coupon;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Member member;
+	private Long couponId;
+	private Long memberId;
 
 	@Builder
-	public CouponEvent(Long id, Coupon coupon, Member member) {
+	public CouponEvent(Long id, Long couponId, Long memberId) {
 		this.id = id;
-		this.coupon = coupon;
-		this.member = member;
+		this.couponId = couponId;
+		this.memberId = memberId;
 	}
 }

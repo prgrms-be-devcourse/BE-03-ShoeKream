@@ -1,6 +1,6 @@
 package com.prgrms.kream.domain.coupon.model;
 
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.prgrms.kream.common.exception.OutOfStockException;
 import com.prgrms.kream.common.model.BaseTimeEntity;
 
 import lombok.Builder;
@@ -40,4 +41,13 @@ public class Coupon extends BaseTimeEntity {
 		this.name = name;
 		this.amount = amount;
 	}
+
+	public void decreaseAmount() {
+		if (amount > 0) {
+			amount--;
+			return;
+		}
+		throw new OutOfStockException("쿠폰 수량이 전부 소진되었습니다.");
+	}
+
 }
