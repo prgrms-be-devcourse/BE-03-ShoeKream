@@ -47,6 +47,7 @@ public class ImageS3Service implements ImageService {
 
 	@Override
 	public void deleteAllByProduct(Long productId) {
+		imageRepository.deleteAllByReferenceId(productId);
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
@@ -69,11 +70,12 @@ public class ImageS3Service implements ImageService {
 	}
 
 	private String storeAndGetPath(MultipartFile multipartFile, String uniqueName) {
-		ObjectMetadata objMeta = new ObjectMetadata();
+		ObjectMetadata objectMetadata = new ObjectMetadata();
 
 		try {
-			objMeta.setContentLength(multipartFile.getInputStream().available());
-			amazonS3.putObject(bucket, uniqueName, multipartFile.getInputStream(), objMeta);
+			objectMetadata.setContentType(multipartFile.getContentType());
+			objectMetadata.setContentLength(multipartFile.getInputStream().available());
+			amazonS3.putObject(bucket, uniqueName, multipartFile.getInputStream(), objectMetadata);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
