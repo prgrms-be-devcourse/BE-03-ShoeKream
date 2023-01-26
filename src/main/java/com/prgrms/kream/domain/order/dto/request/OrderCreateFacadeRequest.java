@@ -6,8 +6,8 @@ import org.hibernate.validator.constraints.Length;
 public record OrderCreateFacadeRequest(
 		@NotNull(message = "주문 ID는 필수 입력 사항입니다")
 		Long orderId,
-		@NotNull(message = "주문의 대상이 되는 판매 입찰의 ID는 필수 입력사항압니다")
-		Long sellingBidId,
+		@NotNull(message = "주문의 대상이 되는 입찰의 ID는 필수 입력사항압니다")
+		Long bidId,
 		@Length(max = 50, message = "주문 요청사항은 최대로 50자 까지만 입력 가능합니다")
 		String orderRequest
 ) {

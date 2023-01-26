@@ -3,7 +3,9 @@ package com.prgrms.kream.domain.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.model.BuyingBid;
 import com.prgrms.kream.domain.bid.model.SellingBid;
+import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
@@ -33,6 +35,9 @@ public class OrderControllerTest extends MysqlTestContainer {
 	SellingBidRepository sellingBidRepository;
 
 	@Autowired
+	BuyingBidRepository buyingBidRepository;
+
+	@Autowired
 	Jackson2ObjectMapperBuilder objectMapperBuilder;
 
 	@Test
@@ -54,7 +59,38 @@ public class OrderControllerTest extends MysqlTestContainer {
 		// When
 		ResultActions resultActions =
 				mockMvc.perform(
-						post("/api/v1/order")
+						post("/api/v1/order/selling-bid")
+								.contentType(MediaType.APPLICATION_JSON)
+								.characterEncoding("UTF-8")
+								.content(
+										objectMapperBuilder.build().writeValueAsString(orderCreateFacadeRequest)
+								)
+				).andDo(print());
+
+		// Then
+		resultActions.andExpect(status().isCreated());
+	}
+
+	@Test
+	@DisplayName("판매 입찰 기반 주문 생성 테스트")
+	void createOrderByBuyingBid() throws Exception {
+		// Given
+		BuyingBid buyingBid = BuyingBid.builder()
+				.id(1L)
+				.price(45600)
+				.memberId(2L)
+				.productOptionId(3L)
+				.validUntil(LocalDateTime.now().plusDays(30))
+				.build();
+		buyingBidRepository.save(buyingBid);
+
+		OrderCreateFacadeRequest orderCreateFacadeRequest =
+				new OrderCreateFacadeRequest(4L, 1L, "문 앞에 놔주세요.");
+
+		// When
+		ResultActions resultActions =
+				mockMvc.perform(
+						post("/api/v1/order/buying-bid")
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
