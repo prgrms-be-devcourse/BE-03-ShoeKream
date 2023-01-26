@@ -1,6 +1,6 @@
 package com.prgrms.kream.common.exception;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler(NoSuchElementException.class)
-	public ErrorResponse handleNoSuchElementException(NoSuchElementException exception) {
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
 		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
@@ -48,8 +48,8 @@ public class GlobalExceptionHandler {
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ErrorResponse handleIllegalArgumentException(IllegalArgumentException exception) {
+	@ExceptionHandler(OutOfStockException.class)
+	public ErrorResponse handleOutOfStockException(OutOfStockException exception) {
 		log.warn("", exception);
 		return ApiResponse.error(exception.getMessage());
 	}

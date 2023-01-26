@@ -2,7 +2,7 @@ package com.prgrms.kream.domain.coupon.service;
 
 import static com.prgrms.kream.common.mapper.CouponMapper.*;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class CouponService {
 	private Coupon getCoupon(Long couponId) {
 		return couponRepository.findById(couponId)
 				.orElseThrow(
-						() -> new NoSuchElementException("존재하지 않는 Coupon couponId: " + couponId)
+						() -> new EntityNotFoundException("존재하지 않는 Coupon couponId: " + couponId)
 				);
 	}
 

@@ -21,7 +21,8 @@ public class CouponFacade {
 
 	@Transactional
 	public CouponEventResponse applyCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
-		memberService.getMember(couponEventRegisterRequest.memberId());
+		//TODO memberService 에 getMember 생기면 주석 해제
+		// memberService.getMember(couponEventRegisterRequest.memberId());
 		couponService.getCouponById(couponEventRegisterRequest.couponId());
 		couponService.decreaseCouponAmount(couponEventRegisterRequest.couponId());
 
