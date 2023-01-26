@@ -3,6 +3,7 @@ package com.prgrms.kream.domain.style.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
@@ -43,7 +45,7 @@ class StyleServiceTest {
 	@InjectMocks
 	private StyleService styleService;
 
-	private final Member MEMBER = Member.builder()
+	private static final Member MEMBER = Member.builder()
 			.id(1L)
 			.email("kimc980106@naver.com")
 			.phone("01086107463")
@@ -52,15 +54,16 @@ class StyleServiceTest {
 			.authority(Authority.ROLE_ADMIN)
 			.build();
 
-	private final Feed FEED = Feed.builder()
+	private static final Feed FEED = Feed.builder()
 			.id(1L)
 			.content("이 피드의 태그는 #총 #두개 입니다.")
 			.authorId(MEMBER.getId())
+			.likes(0L)
 			.build();
 
-	private final Set<FeedTag> FEED_TAGS = TagExtractor.extract(FEED);
+	private static final Set<FeedTag> FEED_TAGS = TagExtractor.extract(FEED);
 
-	private final FeedLike FEED_LIKE = FeedLike.builder()
+	private static final FeedLike FEED_LIKE = FeedLike.builder()
 			.feedId(FEED.getId())
 			.memberId(MEMBER.getId())
 			.build();
@@ -81,7 +84,7 @@ class StyleServiceTest {
 		// 주의 : FEED.getContent()의 값에 의존
 		assertThat(FEED_TAGS)
 				.extracting(FeedTag::getTag)
-				.containsExactlyInAnyOrder("#총", "#두개");
+				.containsExactlyInAnyOrder("총", "두개");
 	}
 
 	@Test
@@ -105,34 +108,40 @@ class StyleServiceTest {
 	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
 	void testLikeFeed() {
 		when(feedLikeRepository.existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId())).thenReturn(false);
+		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
+		when(feedRepository.save(FEED)).thenReturn(FEED);
 		when(feedLikeRepository.save(any())).thenReturn(FEED_LIKE);
 
 		styleService.registerFeedLike(getLikeFeedServiceRequest());
 
 		verify(feedLikeRepository).existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
 		verify(feedLikeRepository).save(any());
+		assertThat(FEED.getLikes()).isEqualTo(1L);
 	}
 
 	@Test
 	@DisplayName("피드에 사용자의 좋아요를 취소할 수 있다.")
 	void testUnlikeFeed() {
+		when(feedLikeRepository.existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId())).thenReturn(true);
+		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
+		when(feedRepository.save(FEED)).thenReturn(FEED);
 		doNothing().when(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
 
 		styleService.deleteFeedLike(getLikeFeedServiceRequest());
 
+		verify(feedLikeRepository).existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
 		verify(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
+		assertThat(FEED.getLikes()).isEqualTo(0L);
 	}
 
 	@Test
 	@DisplayName("태그 기준으로 피드 식별자를 조회할 수 있다.")
 	void testGetFeedsByTag() {
-		when(feedTagRepository.findAllByTag(any())).thenReturn(FEED_TAGS.stream().toList());
+		when(feedRepository.findAllByTag(FEED_TAGS.stream().findAny().get().getTag())).thenReturn(List.of(FEED));
 
-		// TODO : 테스트 보류
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByTag(FEED_TAGS.stream().toList().get(0).getTag());
 
-		// List<Long> feeds = styleService.getAllByTag(FEED_TAGS.stream().toList().get(0).getTag());
-
-		// assertThat(feeds).isNotEmpty();
+		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
