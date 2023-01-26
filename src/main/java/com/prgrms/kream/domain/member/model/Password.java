@@ -35,4 +35,8 @@ public class Password {
 			throw new IllegalArgumentException("비밀번호 형식을 만족하지 않습니다.");
 		}
 	}
+
+	public boolean isValidPassword(String inputPassword) {
+		return passwordEncoder.matches(inputPassword, password);
+	}
 }

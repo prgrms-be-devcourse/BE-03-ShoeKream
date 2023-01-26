@@ -58,4 +58,17 @@ public class Member extends BaseTimeEntity {
 		this.isMale = isMale;
 		this.authority = authority;
 	}
+
+	public String getPassword() {
+		return password.getPassword();
+	}
+
+	public String getPhone() {
+		return phone.getPhone();
+	}
+
+	public boolean isNotValidPassword(String inputPassword) {
+		return !password.isValidPassword(inputPassword);
+	}
+
 }
