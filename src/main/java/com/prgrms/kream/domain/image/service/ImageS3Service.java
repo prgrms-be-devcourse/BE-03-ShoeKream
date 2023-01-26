@@ -1,5 +1,7 @@
 package com.prgrms.kream.domain.image.service;
 
+import static com.prgrms.kream.common.mapper.ImageMapper.*;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -39,12 +41,12 @@ public class ImageS3Service implements ImageService {
 
 	@Override
 	public List<String> getAll(Long referenceId, DomainType domainType) {
-		return null;
+		List<Image> images = imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
+		return toImagePathDto(images);
 	}
 
 	@Override
 	public void deleteAllByProduct(Long productId) {
-
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
