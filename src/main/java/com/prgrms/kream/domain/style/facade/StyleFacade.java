@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
-import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
@@ -50,31 +49,19 @@ public class StyleFacade {
 		return registerFeedFacadeResponse;
 	}
 
-	@Transactional
-	public GetFeedFacadeResponses get(GetFeedFacadeRequest getFeedFacadeRequest) {
-		GetFeedServiceResponses getFeedServiceResponses;
-		if (getFeedFacadeRequest.tag() != null) {
-			getFeedServiceResponses = styleService.get(
-					toGetFeedServiceRequest(
-							styleService.getAllByTag(getFeedFacadeRequest.tag())
-					)
-			);
-		} else {
-			getFeedServiceResponses = styleService.get(
-					toGetFeedServiceRequest(getFeedFacadeRequest)
-			);
-		}
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getTrendingFeeds() {
+		return merge(styleService.getTrendingFeeds());
+	}
 
-		return toGetFeedFacadeResponses(
-				getFeedServiceResponses.getFeedServiceResponses().stream()
-						.map(getFeedServiceResponse ->
-								toGetFeedFacadeResponse(
-										getFeedServiceResponse,
-										styleService.getFeedLike(getFeedServiceResponse.id()),
-										imageService.getAll(getFeedServiceResponse.id(), DomainType.FEED)
-								))
-						.collect(Collectors.toList())
-		);
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getNewestFeeds() {
+		return merge(styleService.getNewestFeeds());
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getAllByTag(String tag) {
+		return merge(styleService.getAllByTag(tag));
 	}
 
 	@Transactional
@@ -104,6 +91,18 @@ public class StyleFacade {
 		styleService.deleteFeedLike(
 				toLikeFeedServiceRequest(likeFeedFacadeRequest)
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses merge(GetFeedServiceResponses getFeedServiceResponses) {
+		return toGetFeedFacadeResponses(
+				getFeedServiceResponses.getFeedServiceResponses().stream()
+						.map(getFeedServiceResponse ->
+								toGetFeedFacadeResponse(
+										getFeedServiceResponse,
+										imageService.getAll(getFeedServiceResponse.id(), DomainType.FEED)
+								))
+						.collect(Collectors.toList()));
 	}
 
 }
