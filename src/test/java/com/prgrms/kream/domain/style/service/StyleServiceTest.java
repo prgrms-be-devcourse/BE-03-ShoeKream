@@ -144,6 +144,16 @@ class StyleServiceTest {
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
+	@Test
+	@DisplayName("사용자 식별자를 기준으로 피드를 조회할 수 있다.")
+	void testGetFeedsByMember() {
+		when(feedRepository.findAllByMember(MEMBER.getId())).thenReturn(List.of(FEED));
+
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(MEMBER.getId());
+
+		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
+	}
+
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
 		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER.getId());
 	}
