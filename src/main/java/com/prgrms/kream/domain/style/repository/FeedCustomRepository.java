@@ -8,6 +8,8 @@ public interface FeedCustomRepository {
 
 	List<Feed> findAllByTag(String tag);
 
+	List<Feed> findAllByMember(Long id);
+
 	List<Feed> findAllOrderByCreatedAtDesc();
 
 	List<Feed> findAllOrderByLikesDesc();

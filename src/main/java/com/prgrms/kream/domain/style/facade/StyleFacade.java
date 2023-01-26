@@ -64,8 +64,13 @@ public class StyleFacade {
 		return merge(styleService.getAllByTag(tag));
 	}
 
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getAllByMember(Long id) {
+		return merge(styleService.getAllByMember(id));
+	}
+
 	@Transactional
-	public UpdateFeedFacadeResponse update(long id, UpdateFeedFacadeRequest updateFeedFacadeRequest) {
+	public UpdateFeedFacadeResponse update(Long id, UpdateFeedFacadeRequest updateFeedFacadeRequest) {
 		return toUpdateFeedFacadeResponse(
 				styleService.update(
 						id,

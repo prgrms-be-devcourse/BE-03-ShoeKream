@@ -36,6 +36,15 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	}
 
 	@Override
+	public List<Feed> findAllByMember(Long id) {
+		return jpaQueryFactory
+				.selectFrom(qFeed)
+				.where(qFeed.authorId.eq(id))
+				.orderBy(qFeed.id.desc())
+				.fetch();
+	}
+
+	@Override
 	public List<Feed> findAllOrderByCreatedAtDesc() {
 		return jpaQueryFactory
 				.selectFrom(qFeed)

@@ -80,6 +80,16 @@ public class StyleController {
 		);
 	}
 
+	@GetMapping("/members/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedResponses> getAllByMember(@PathVariable Long id) {
+		return ApiResponse.of(
+				toGetFeedResponses(
+						styleFacade.getAllByMember(id)
+				)
+		);
+	}
+
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<UpdateFeedResponse> update(
@@ -97,7 +107,7 @@ public class StyleController {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<String> delete(@PathVariable long id) {
+	public ApiResponse<String> delete(@PathVariable Long id) {
 		styleFacade.delete(id);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
@@ -105,7 +115,7 @@ public class StyleController {
 	@PostMapping("/{id}/like")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse<String> registerFeedLike(
-			@PathVariable long id,
+			@PathVariable Long id,
 			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
 		styleFacade.registerFeedLike(
 				toLikeFeedFacadeRequest(
@@ -119,7 +129,7 @@ public class StyleController {
 	@DeleteMapping("/{id}/like")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<String> deleteFeedLike(
-			@PathVariable long id,
+			@PathVariable Long id,
 			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
 		styleFacade.deleteFeedLike(
 				toLikeFeedFacadeRequest(

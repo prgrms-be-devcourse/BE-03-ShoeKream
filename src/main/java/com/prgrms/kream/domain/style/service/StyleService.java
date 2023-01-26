@@ -61,8 +61,13 @@ public class StyleService {
 		return toGetFeedServiceResponses(feedRepository.findAllByTag(tag));
 	}
 
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getAllByMember(Long id) {
+		return toGetFeedServiceResponses(feedRepository.findAllByMember(id));
+	}
+
 	@Transactional
-	public UpdateFeedServiceResponse update(long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
+	public UpdateFeedServiceResponse update(Long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
 		Feed updatedFeed = feedRepository.findById(id)
 				.map(feed -> {
 					feed.updateContent(updateFeedServiceRequest.content());
@@ -81,7 +86,7 @@ public class StyleService {
 	}
 
 	@Transactional
-	public void delete(long id) {
+	public void delete(Long id) {
 		feedRepository.findById(id)
 				.ifPresent(feed -> {
 					// 관련 테이블의 레코드 삭제 (Cascade)
