@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate.format_sql: true
   profiles:
-    include: db, security, file
+    include: db, security, file, aws
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
