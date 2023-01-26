@@ -12,6 +12,10 @@ public record OrderCreateServiceRequest(
 		Long buyerId,
 		@NotNull(message = "판매자의 ID는 필수 입력사항입니다")
 		Long sellerId,
+
+		@NotNull(message = "거래 품목의 ID는 필수 입력사항입니다")
+		Long productOptionId,
+
 		@NotNull(message = "가격은 필수 입력사항입니다")
 		@PositiveOrZero
 		int price,

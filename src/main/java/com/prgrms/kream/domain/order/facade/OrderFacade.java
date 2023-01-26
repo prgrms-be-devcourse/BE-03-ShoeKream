@@ -27,7 +27,8 @@ public class OrderFacade {
 		// TODO 자신의 ID를 가져오는 방법 생각하기
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), 0L, sellingBidFindResponse.memberId(),
-						sellingBidFindResponse.price(), orderCreateFacadeRequest.orderRequest());
+						sellingBidFindResponse.productOptionId(), sellingBidFindResponse.price(),
+						orderCreateFacadeRequest.orderRequest());
 
 		sellingBidService.deleteOneSellingBidById(sellingBidFindResponse.id());
 

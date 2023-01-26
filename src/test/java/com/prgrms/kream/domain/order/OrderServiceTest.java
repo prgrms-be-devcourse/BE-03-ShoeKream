@@ -37,11 +37,12 @@ public class OrderServiceTest {
 	void orderCreateBySellingBidTest() {
 		// Given
 		OrderCreateServiceRequest orderCreateServiceRequest =
-				new OrderCreateServiceRequest(orderId, buyerId, sellerId, 1500, "문 앞에 놔주세요.");
+				new OrderCreateServiceRequest(orderId, buyerId, sellerId, 4L, 1500, "문 앞에 놔주세요.");
 		Order order = Order.builder()
 				.id(orderId)
 				.buyerId(buyerId)
 				.sellerId(sellerId)
+				.productOptionId(4L)
 				.price(1500)
 				.orderStatus(OrderStatus.PAYED)
 				.orderRequest("문 앞에 놔주세요.")

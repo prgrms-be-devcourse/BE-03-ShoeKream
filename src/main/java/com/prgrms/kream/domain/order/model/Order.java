@@ -33,6 +33,9 @@ public class Order extends BaseTimeEntity {
 	@Column(name = "seller_id", nullable = false, unique = false)
 	private Long sellerId;
 
+	@Column(name = "product_option_id", nullable = false, unique = false)
+	private Long productOptionId;
+
 	@Column(name = "price", nullable = false, unique = false)
 	private int price;
 
@@ -45,10 +48,12 @@ public class Order extends BaseTimeEntity {
 	private String orderRequest;
 
 	@Builder
-	Order(Long id, Long buyerId, Long sellerId, int price, OrderStatus orderStatus, String orderRequest) {
+	Order(Long id, Long buyerId, Long sellerId, Long productOptionId, int price, OrderStatus orderStatus,
+			String orderRequest) {
 		this.id = id;
 		this.buyerId = buyerId;
 		this.sellerId = sellerId;
+		this.productOptionId = productOptionId;
 		this.price = price;
 		this.orderRequest = orderRequest;
 		this.orderStatus = Objects.requireNonNullElse(orderStatus, OrderStatus.PAYED);
