@@ -2,6 +2,7 @@ package com.prgrms.kream.common.exception;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(OutOfStockException.class)
 	public ErrorResponse handleOutOfStockException(OutOfStockException exception) {
 		log.warn("", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(DuplicateKeyException.class)
+	public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
+		log.warn("중복 참여", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }

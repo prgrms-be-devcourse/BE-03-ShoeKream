@@ -1,11 +1,14 @@
-package com.prgrms.kream.style.controller;
+package com.prgrms.kream.domain.style.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,14 +20,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("컨트롤러 계층을 통해")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StyleControllerTest extends MysqlTestContainer {
 
 	@Autowired
@@ -39,15 +45,16 @@ class StyleControllerTest extends MysqlTestContainer {
 	private static Long memberId;
 
 	@Test
+	@Order(1)
 	@DisplayName("피드를 등록할 수 있다.")
 	void testRegister() throws Exception {
 		Member member = Member.builder()
 				.name("김창규")
 				.email("kimc980106@naver.com")
-				.phone("010-8610-7463")
-				.password("1234")
+				.phone("01086107463")
+				.password("qwer1234!")
 				.isMale(true)
-				.authority("ADMIN")
+				.authority(Authority.ROLE_ADMIN)
 				.build();
 		memberId = memberRepository.save(member).getId();
 
@@ -61,19 +68,73 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/feed")
 						.file(mockImage)
 						.param("content", "이 피드의 태그는 #총 #두개 입니다.")
-						.param("author", String.valueOf(memberId)))
+						.param("authorId", String.valueOf(member.getId())))
 				.andExpect(status().isCreated())
 				.andDo(print());
 	}
 
 	@Test
+	@Order(2)
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() throws Exception {
-		mockMvc.perform(put("/api/v1/feed/" + memberId)
+		mockMvc.perform(put("/api/v1/feed/1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedFacadeRequest("이 피드의 태그는 총 #한개 입니다.")
+								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.")
 						)))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(3)
+	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
+	void testLikeFeed() throws Exception {
+		mockMvc.perform(post("/api/v1/feed/1/like")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(
+						new LikeFeedRequest(memberId)
+				)))
+				.andExpect(status().isCreated())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(4)
+	@DisplayName("피드에 사용자의 좋아요를 삭제할 수 있다.")
+	void testUnlikeFeed() throws Exception {
+		mockMvc.perform(delete("/api/v1/feed/1/like")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(
+								new LikeFeedRequest(memberId)
+						)))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(5)
+	@DisplayName("태그 기준으로 피드를 조회할 수 있다.")
+	void testGetFeedsByTag() throws Exception {
+		mockMvc.perform(get("/api/v1/feed/tags/한개"))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(6)
+	@DisplayName("최신 순으로 피드를 조회할 수 있다.")
+	void testGetNewestFeeds() throws Exception {
+		mockMvc.perform(get("/api/v1/feed/newest"))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(7)
+	@DisplayName("좋아요 순으로 피드를 조회할 수 있다.")
+	void testGetTrendingFeeds() throws Exception {
+		mockMvc.perform(get("/api/v1/feed/trending"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}

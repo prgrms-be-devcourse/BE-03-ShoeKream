@@ -13,7 +13,7 @@ public record RegisterFeedRequest(
 		String content,
 		@NotNull(message = "작성자 식별값은 비어있을 수 없습니다.")
 		@Positive(message = "작성자 식별값이 올바르지 않습니다.")
-		Long author,
+		Long authorId,
 		List<MultipartFile> images
 ) {
 }

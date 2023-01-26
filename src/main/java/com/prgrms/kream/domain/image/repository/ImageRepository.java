@@ -9,4 +9,6 @@ import com.prgrms.kream.domain.image.model.Image;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 	List<Image> findAllByReferenceIdAndDomainType(Long referenceId, DomainType domainType);
+
+	void deleteAllByReferenceId(Long referenceId);
 }

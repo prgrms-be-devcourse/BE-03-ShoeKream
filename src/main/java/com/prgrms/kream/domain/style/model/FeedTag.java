@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
@@ -26,17 +24,16 @@ public class FeedTag extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "feed_id", nullable = false, unique = false)
-	private Feed feed;
+	@Column(name = "feed_id", nullable = false, unique = false)
+	private Long feedId;
 
 	@Column(name = "tag", nullable = false, unique = false, length = 20)
 	private String tag;
 
 	@Builder
-	public FeedTag(Long id, Feed feed, String tag) {
+	public FeedTag(Long id, Long feedId, String tag) {
 		this.id = id;
-		this.feed = feed;
+		this.feedId = feedId;
 		this.tag = tag;
 	}
 

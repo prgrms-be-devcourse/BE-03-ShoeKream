@@ -22,13 +22,13 @@ public class TagExtractor {
 		Matcher matcher = pattern.matcher(feed.getContent());
 		Set<String> tags = new HashSet<>();
 		while (matcher.find()) {
-			tags.add(matcher.group());
+			tags.add(matcher.group().replace("#", ""));
 		}
 
 		// 태그 변환
 		return tags.stream()
 				.map(tag -> FeedTag.builder()
-						.feed(feed)
+						.feedId(feed.getId())
 						.tag(tag)
 						.build())
 				.collect(Collectors.toUnmodifiableSet());
