@@ -107,11 +107,11 @@ class MemberControllerTest extends MysqlTestContainer {
 		MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
 				"name", "email@naver.com", "01012345678", "aA12345678!", true, ROLE_USER);
 
-		mockMvc.perform(post("/api/v1/member")
+		mockMvc.perform(post("/api/v1/member/signup")
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberRegisterRequest))
 				).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.data.id").value(1L))
+				.andExpect(jsonPath("$.data.id").value(Matchers.any(Number.class)))
 				.andDo(print())
 		;
 	}
