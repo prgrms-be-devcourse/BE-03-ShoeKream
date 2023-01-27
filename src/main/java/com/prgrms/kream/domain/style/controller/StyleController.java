@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
@@ -62,30 +63,38 @@ public class StyleController {
 
 	@GetMapping("/newest")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getNewestFeeds() {
+	public ApiResponse<GetFeedResponses> getNewestFeeds(@Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getNewestFeeds()
+						styleFacade.getNewestFeeds(
+								toGetFeedFacadeRequest(getFeedRequest)
+						)
 				)
 		);
 	}
 
 	@GetMapping("/tags/{tag}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByTag(@PathVariable String tag) {
+	public ApiResponse<GetFeedResponses> getAllByTag(@PathVariable String tag, @Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getAllByTag(tag)
+						styleFacade.getAllByTag(
+								toGetFeedFacadeRequest(getFeedRequest),
+								tag
+						)
 				)
 		);
 	}
 
 	@GetMapping("/members/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByMember(@PathVariable Long id) {
+	public ApiResponse<GetFeedResponses> getAllByMember(@PathVariable Long id, @Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getAllByMember(id)
+						styleFacade.getAllByMember(
+								toGetFeedFacadeRequest(getFeedRequest),
+								id
+						)
 				)
 		);
 	}

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
+import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
@@ -55,18 +56,18 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getNewestFeeds() {
-		return merge(styleService.getNewestFeeds());
+	public GetFeedFacadeResponses getNewestFeeds(GetFeedFacadeRequest getFeedFacadeRequest) {
+		return merge(styleService.getNewestFeeds(toGetFeedServiceRequest(getFeedFacadeRequest)));
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByTag(String tag) {
-		return merge(styleService.getAllByTag(tag));
+	public GetFeedFacadeResponses getAllByTag(GetFeedFacadeRequest getFeedFacadeRequest, String tag) {
+		return merge(styleService.getAllByTag(toGetFeedServiceRequest(getFeedFacadeRequest), tag));
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByMember(Long id) {
-		return merge(styleService.getAllByMember(id));
+	public GetFeedFacadeResponses getAllByMember(GetFeedFacadeRequest getFeedFacadeRequest, Long id) {
+		return merge(styleService.getAllByMember(toGetFeedServiceRequest(getFeedFacadeRequest), id));
 	}
 
 	@Transactional
@@ -107,7 +108,9 @@ public class StyleFacade {
 										getFeedServiceResponse,
 										imageService.getAll(getFeedServiceResponse.id(), DomainType.FEED)
 								))
-						.collect(Collectors.toList()));
+						.collect(Collectors.toList()),
+				getFeedServiceResponses.lastId()
+		);
 	}
 
 }

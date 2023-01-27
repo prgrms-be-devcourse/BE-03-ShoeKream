@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
@@ -137,9 +138,15 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("태그 기준으로 피드 식별자를 조회할 수 있다.")
 	void testGetFeedsByTag() {
-		when(feedRepository.findAllByTag(FEED_TAGS.stream().findAny().get().getTag())).thenReturn(List.of(FEED));
+		when(feedRepository.findAllByTag(
+				FEED_TAGS.stream().findAny().get().getTag(),
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(List.of(FEED));
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByTag(FEED_TAGS.stream().toList().get(0).getTag());
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByTag(
+				getFeedServiceRequest(),
+				FEED_TAGS.stream().toList().get(0).getTag());
 
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
@@ -147,15 +154,25 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("사용자 식별자를 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByMember() {
-		when(feedRepository.findAllByMember(MEMBER.getId())).thenReturn(List.of(FEED));
+		when(feedRepository.findAllByMember(
+				MEMBER.getId(),
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(List.of(FEED));
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(MEMBER.getId());
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(
+				getFeedServiceRequest(),
+				MEMBER.getId());
 
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
 		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER.getId());
+	}
+
+	private GetFeedServiceRequest getFeedServiceRequest() {
+		return new GetFeedServiceRequest(FEED.getId(), 10);
 	}
 
 	private UpdateFeedServiceRequest getUpdateFeedServiceRequest(String content) {
