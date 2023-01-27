@@ -1,18 +1,18 @@
-package com.prgrms.kream.domain.bid;
+package com.prgrms.kream.domain.bid.service;
 
-import static com.prgrms.kream.common.mapper.BidMapper.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
+import com.prgrms.kream.domain.bid.dto.request.BuyingBidFindRequest;
+import com.prgrms.kream.domain.bid.dto.response.BuyingBidCreateResponse;
+import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
+import com.prgrms.kream.domain.bid.model.BuyingBid;
+import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-
 import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,14 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
-import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
-import com.prgrms.kream.domain.bid.dto.request.BuyingBidFindRequest;
-import com.prgrms.kream.domain.bid.dto.response.BuyingBidCreateResponse;
-import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
-import com.prgrms.kream.domain.bid.model.BuyingBid;
-import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
-import com.prgrms.kream.domain.bid.service.BuyingBidService;
 
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -119,11 +111,10 @@ public class BuyingBidServiceTest {
 		BuyingBid buyingBid3 = BuyingBid.builder().id(3L).productOptionId(1L).memberId(3L).price(1600)
 				.validUntil(LocalDateTime.now().plusDays(30)).build();
 
-
 		BuyingBidFindRequest buyingBidFindRequest = new BuyingBidFindRequest(Collections.singletonList(1L));
 
 		// When
-		when(repository.findHighestBuyingBidByProductOptionId(any(Long.class))).thenReturn(Collections.singletonList(buyingBid2));
+		when(repository.findHighestBuyingBidByProductOptionId(any(Long.class))).thenReturn(Optional.of(buyingBid2));
 		BuyingBidFindResponse buyingBidFindResponse = service.findHighestBuyingBidByPrice(buyingBidFindRequest);
 
 		// Then

@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.bid;
+package com.prgrms.kream.domain.bid.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,7 +9,6 @@ import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
 import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
 import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
-import com.prgrms.kream.domain.bid.service.SellingBidService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -61,7 +60,7 @@ public class SellingBidServiceTest {
 
 	@Test
 	@DisplayName("판매 입찰 찾기 테스트")
-	void findByIdTest(){
+	void findByIdTest() {
 		// Given
 		SellingBidFindRequest findRequest = new SellingBidFindRequest(Collections.singletonList(1L));
 		SellingBid entity = SellingBid.builder()
@@ -83,7 +82,7 @@ public class SellingBidServiceTest {
 
 	@Test
 	@DisplayName("삭제 테스트")
-	void deleteByIdTest(){
+	void deleteByIdTest() {
 		// Given
 		SellingBidCreateRequest createRequest =
 				new SellingBidCreateRequest(1L, 1L, 1L, 100, LocalDateTime.now());
@@ -122,7 +121,7 @@ public class SellingBidServiceTest {
 
 		// When
 		when(repository.findLowestSellingBidByProductOptionId(any(Long.class))).thenReturn(
-				Collections.singletonList(sellingBid2));
+				Optional.of(sellingBid2));
 		SellingBidFindResponse sellingBidFindResponse =
 				service.findLowestSellingBidByProductOptionId(sellingBidFindRequest);
 

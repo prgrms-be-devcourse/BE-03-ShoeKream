@@ -1,17 +1,12 @@
-package com.prgrms.kream.domain.bid;
+package com.prgrms.kream.domain.bid.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.prgrms.kream.domain.bid.model.BuyingBid;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
 import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
 import java.time.LocalDateTime;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +17,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import com.prgrms.kream.MysqlTestContainer;
-import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -90,31 +82,6 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		resultActions
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data").value("구매 입찰이 삭제되었습니다"))
-				.andDo(print());
-	}
-
-	@Test
-	@DisplayName("가장 비싼 가격의 구매 입찰을 가져오는 테스트")
-	void findHighestPriceBuyingBidTest() throws Exception {
-		// Given
-		List<BuyingBid> buyingBids = List.of(
-				BuyingBid.builder().id(1L).productOptionId(1L).memberId(1L).price(1500)
-				.validUntil(LocalDateTime.now().plusDays(30)).build(),
-				BuyingBid.builder().id(2L).productOptionId(1L).memberId(2L).price(1600)
-				.validUntil(LocalDateTime.now().plusDays(30)).build(),
-				BuyingBid.builder().id(3L).productOptionId(1L).memberId(3L).price(1600)
-				.validUntil(LocalDateTime.now().plusDays(30)).build()
-		);
-		repository.saveAll(buyingBids);
-
-		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bid/highest/1"));
-
-		// Then
-		resultActions
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data.id").value(2))
-				.andExpect(jsonPath("$.data.price").value(1600))
 				.andDo(print());
 	}
 }

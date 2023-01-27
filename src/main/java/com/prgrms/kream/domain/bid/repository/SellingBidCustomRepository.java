@@ -1,8 +1,8 @@
 package com.prgrms.kream.domain.bid.repository;
 
 import com.prgrms.kream.domain.bid.model.SellingBid;
-import java.util.List;
+import java.util.Optional;
 
 public interface SellingBidCustomRepository {
-	List<SellingBid> findLowestSellingBidByProductOptionId(Long productOptionId);
+	Optional<SellingBid> findLowestSellingBidByProductOptionId(Long productOptionId);
 }
