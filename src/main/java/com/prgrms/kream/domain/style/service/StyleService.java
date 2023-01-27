@@ -2,6 +2,7 @@ package com.prgrms.kream.domain.style.service;
 
 import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
@@ -9,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
@@ -48,21 +50,67 @@ public class StyleService {
 
 	@Transactional(readOnly = true)
 	public GetFeedServiceResponses getTrendingFeeds() {
-		return toGetFeedServiceResponses(feedRepository.findAllOrderByLikesDesc());
+		return toGetFeedServiceResponses(
+				feedRepository.findAllOrderByLikesDesc(),
+				-1L
+		);
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getNewestFeeds() {
-		return toGetFeedServiceResponses(feedRepository.findAllOrderByCreatedAtDesc());
+	public GetFeedServiceResponses getNewestFeeds(GetFeedServiceRequest getFeedServiceRequest) {
+		List<Feed> feeds = feedRepository.findAllOrderByCreatedAtDesc(
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
+
+		if (feeds.size() > getFeedServiceRequest.pageSize()) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size()-1),
+					feeds.get(feeds.size()-1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByTag(String tag) {
-		return toGetFeedServiceResponses(feedRepository.findAllByTag(tag));
+	public GetFeedServiceResponses getAllByTag(GetFeedServiceRequest getFeedServiceRequest, String tag) {
+		List<Feed> feeds = feedRepository.findAllByTag(
+				tag,
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
+
+		if (feeds.size() > getFeedServiceRequest.pageSize()) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size()-1),
+					feeds.get(feeds.size()-1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long id) {
+		List<Feed> feeds = feedRepository.findAllByMember(
+				id,
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
+
+		if (feeds.size() > getFeedServiceRequest.pageSize()) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size()-1),
+					feeds.get(feeds.size()-1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	@Transactional
-	public UpdateFeedServiceResponse update(long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
+	public UpdateFeedServiceResponse update(Long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
 		Feed updatedFeed = feedRepository.findById(id)
 				.map(feed -> {
 					feed.updateContent(updateFeedServiceRequest.content());
@@ -81,7 +129,7 @@ public class StyleService {
 	}
 
 	@Transactional
-	public void delete(long id) {
+	public void delete(Long id) {
 		feedRepository.findById(id)
 				.ifPresent(feed -> {
 					// 관련 테이블의 레코드 삭제 (Cascade)
