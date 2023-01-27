@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
@@ -62,20 +63,38 @@ public class StyleController {
 
 	@GetMapping("/newest")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getNewestFeeds() {
+	public ApiResponse<GetFeedResponses> getNewestFeeds(@Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getNewestFeeds()
+						styleFacade.getNewestFeeds(
+								toGetFeedFacadeRequest(getFeedRequest)
+						)
 				)
 		);
 	}
 
 	@GetMapping("/tags/{tag}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByTag(@PathVariable String tag) {
+	public ApiResponse<GetFeedResponses> getAllByTag(@PathVariable String tag, @Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getAllByTag(tag)
+						styleFacade.getAllByTag(
+								toGetFeedFacadeRequest(getFeedRequest),
+								tag
+						)
+				)
+		);
+	}
+
+	@GetMapping("/members/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedResponses> getAllByMember(@PathVariable Long id, @Valid GetFeedRequest getFeedRequest) {
+		return ApiResponse.of(
+				toGetFeedResponses(
+						styleFacade.getAllByMember(
+								toGetFeedFacadeRequest(getFeedRequest),
+								id
+						)
 				)
 		);
 	}
@@ -97,7 +116,7 @@ public class StyleController {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<String> delete(@PathVariable long id) {
+	public ApiResponse<String> delete(@PathVariable Long id) {
 		styleFacade.delete(id);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
@@ -105,7 +124,7 @@ public class StyleController {
 	@PostMapping("/{id}/like")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse<String> registerFeedLike(
-			@PathVariable long id,
+			@PathVariable Long id,
 			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
 		styleFacade.registerFeedLike(
 				toLikeFeedFacadeRequest(
@@ -119,7 +138,7 @@ public class StyleController {
 	@DeleteMapping("/{id}/like")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<String> deleteFeedLike(
-			@PathVariable long id,
+			@PathVariable Long id,
 			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
 		styleFacade.deleteFeedLike(
 				toLikeFeedFacadeRequest(

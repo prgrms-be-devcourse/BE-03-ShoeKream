@@ -75,15 +75,11 @@ public class StyleMapper {
 	}
 
 	public static GetFeedFacadeRequest toGetFeedFacadeRequest(GetFeedRequest getFeedRequest) {
-		return new GetFeedFacadeRequest(getFeedRequest.id(), getFeedRequest.tag());
+		return new GetFeedFacadeRequest(getFeedRequest.cursorId(), getFeedRequest.pageSize());
 	}
 
 	public static GetFeedServiceRequest toGetFeedServiceRequest(GetFeedFacadeRequest getFeedFacadeRequest) {
-		return new GetFeedServiceRequest(List.of(getFeedFacadeRequest.id()));
-	}
-
-	public static GetFeedServiceRequest toGetFeedServiceRequest(List<Long> ids) {
-		return new GetFeedServiceRequest(ids);
+		return new GetFeedServiceRequest(getFeedFacadeRequest.cursorId(), getFeedFacadeRequest.pageSize());
 	}
 
 	public static GetFeedServiceResponse toGetFeedServiceResponse(Feed feed) {
@@ -97,11 +93,12 @@ public class StyleMapper {
 		);
 	}
 
-	public static GetFeedServiceResponses toGetFeedServiceResponses(List<Feed> feeds) {
+	public static GetFeedServiceResponses toGetFeedServiceResponses(List<Feed> feeds, Long lastId) {
 		return new GetFeedServiceResponses(
 				feeds.stream()
 						.map(StyleMapper::toGetFeedServiceResponse)
-						.collect(Collectors.toList())
+						.toList(),
+				lastId
 		);
 	}
 
@@ -119,8 +116,10 @@ public class StyleMapper {
 		);
 	}
 
-	public static GetFeedFacadeResponses toGetFeedFacadeResponses(List<GetFeedFacadeResponse> getFeedFacadeResponses) {
-		return new GetFeedFacadeResponses(getFeedFacadeResponses);
+	public static GetFeedFacadeResponses toGetFeedFacadeResponses(
+			List<GetFeedFacadeResponse> getFeedFacadeResponses,
+			Long lastId) {
+		return new GetFeedFacadeResponses(getFeedFacadeResponses, lastId);
 	}
 
 	public static GetFeedResponse toGetFeedResponse(GetFeedFacadeResponse getFeedFacadeResponse) {
@@ -139,7 +138,9 @@ public class StyleMapper {
 		return new GetFeedResponses(
 				getFeedFacadeResponses.getFeedFacadeResponses().stream()
 						.map(StyleMapper::toGetFeedResponse)
-						.collect(Collectors.toList()));
+						.collect(Collectors.toList()),
+				getFeedFacadeResponses.lastId()
+		);
 	}
 
 	public static UpdateFeedFacadeRequest toUpdateFeedFacadeRequest(UpdateFeedRequest updateFeedRequest) {
