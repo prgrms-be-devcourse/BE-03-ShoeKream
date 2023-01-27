@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/coupon")
+@RequestMapping("/api/v1/admin/coupons")
 public class CouponController {
 	private final CouponService couponService;
 

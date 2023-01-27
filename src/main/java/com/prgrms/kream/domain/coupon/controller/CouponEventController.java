@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/coupon")
+@RequestMapping("/api/v1/coupons")
 public class CouponEventController {
 	private final CouponFacade couponFacade;
 
