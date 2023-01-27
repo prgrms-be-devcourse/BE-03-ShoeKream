@@ -6,5 +6,7 @@ public record ProductGetAllRequest(
 		Long cursorId,
 
 		@Positive(message = "page size는 0 또는 음수일 수 없습니다.")
-		int pageSize) {
+		int pageSize,
+
+		String searchWord) {
 }
