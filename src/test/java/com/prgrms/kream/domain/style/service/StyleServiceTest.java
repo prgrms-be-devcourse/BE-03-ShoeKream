@@ -25,8 +25,10 @@ import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedLike;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
+import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
 import com.prgrms.kream.domain.style.repository.FeedTagRepository;
 
@@ -42,6 +44,9 @@ class StyleServiceTest {
 
 	@Mock
 	private FeedLikeRepository feedLikeRepository;
+
+	@Mock
+	private FeedProductRepository feedProductRepository;
 
 	@InjectMocks
 	private StyleService styleService;
@@ -65,15 +70,31 @@ class StyleServiceTest {
 	private static final Set<FeedTag> FEED_TAGS = TagExtractor.extract(FEED);
 
 	private static final FeedLike FEED_LIKE = FeedLike.builder()
+			.id(1L)
 			.feedId(FEED.getId())
 			.memberId(MEMBER.getId())
 			.build();
+
+	private static final List<FeedProduct> FEED_PRODUCTS = List.of(
+			FeedProduct.builder()
+					.id(1L)
+					.feedId(FEED.getId())
+					.productId(1L)
+					.build(),
+			FeedProduct.builder()
+					.id(2L)
+					.feedId(FEED.getId())
+					.productId(2L)
+					.build()
+	);
 
 	@Test
 	@DisplayName("피드를 등록할 수 있다.")
 	void testRegister() {
 		when(feedRepository.save(any())).thenReturn(FEED);
 		when(feedTagRepository.saveAll(any())).thenReturn(FEED_TAGS.stream().toList());
+		when(feedProductRepository.saveAll(any())).thenReturn(FEED_PRODUCTS);
+
 		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
 
 		assertThat(feedResponse.id()).isEqualTo(1L);
@@ -168,7 +189,13 @@ class StyleServiceTest {
 	}
 
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
-		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER.getId());
+		return new RegisterFeedServiceRequest(
+				FEED.getContent(),
+				MEMBER.getId(),
+				FEED_PRODUCTS.stream()
+						.map(FeedProduct::getProductId)
+						.toList()
+		);
 	}
 
 	private GetFeedServiceRequest getFeedServiceRequest() {
