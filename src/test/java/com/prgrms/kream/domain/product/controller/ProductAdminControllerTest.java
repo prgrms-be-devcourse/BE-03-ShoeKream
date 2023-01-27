@@ -57,7 +57,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 	void register() throws Exception {
 		//given
 		MockMultipartFile mockMultipartFile
-				= new MockMultipartFile("images", "test.png", MediaType.IMAGE_PNG_VALUE, "test" .getBytes());
+				= new MockMultipartFile("images", "test.png", MediaType.IMAGE_PNG_VALUE, "test".getBytes());
 
 		//when
 		ResultActions resultActions = mockMvc.perform(multipart("/api/v1/admin/product")
@@ -80,7 +80,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 		//given
 		MockMultipartFile mockMultipartFile
 				= new MockMultipartFile(
-				"images", "updateTest.png", MediaType.IMAGE_PNG_VALUE, "updateTest" .getBytes());
+				"images", "updateTest.png", MediaType.IMAGE_PNG_VALUE, "updateTest".getBytes());
 
 		MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
 				MockMvcRequestBuilders.multipart("/api/v1/admin/product");
