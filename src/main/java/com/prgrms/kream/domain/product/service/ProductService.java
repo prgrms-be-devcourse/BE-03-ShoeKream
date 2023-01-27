@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateFacadeRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
@@ -40,9 +42,7 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public ProductGetFacadeResponse get(Long id) {
-		Product product = productRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
-		return toProductGetFacadeResponse(product);
+		return toProductGetFacadeResponse(getProductEntity(id));
 	}
 
 	@Transactional(readOnly = true)
@@ -55,10 +55,27 @@ public class ProductService {
 	}
 
 	@Transactional
+	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
+		Product product = getProductEntity(productFacadeUpdateRequest.id());
+		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
+
+		productOptionRepository.deleteAllByProduct(product);
+		productOptionRepository.saveAll(
+				toProductOptions(productFacadeUpdateRequest.sizes(), product)
+		);
+
+		return toProductUpdateResponse(product.getId());
+	}
+
+	@Transactional
 	public void delete(Long id) {
-		Product product = productRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
+		Product product = getProductEntity(id);
 		productOptionRepository.deleteAllByProduct(product);
 		productRepository.delete(product);
+	}
+
+	private Product getProductEntity(Long id) {
+		return productRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
 	}
 }

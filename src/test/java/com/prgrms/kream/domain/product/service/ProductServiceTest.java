@@ -17,9 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateFacadeRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
@@ -44,13 +46,13 @@ public class ProductServiceTest {
 		List<Integer> sizes = List.of(200, 210);
 
 		ProductRegisterFacadeRequest productRegisterFacadeRequest
-				= new ProductRegisterFacadeRequest("나이키 데이브레이크", 100000, "23년 출시", sizes);
+				= new ProductRegisterFacadeRequest("Nike Zoom Vomero 5 SP", 189000, "Anthracite 2023", sizes);
 
 		Product product = Product.builder()
 				.id(1L)
-				.name("나이키 데이브레이크")
-				.releasePrice(100000)
-				.description("23년 출시")
+				.name("Nike Zoom Vomero 5 SP")
+				.releasePrice(189000)
+				.description("Anthracite 2023")
 				.build();
 
 		//mocking
@@ -129,6 +131,33 @@ public class ProductServiceTest {
 		//then
 		assertThat(productGetAllResponses.productGetAllResponses()).hasSize(2);
 		assertThat(productGetAllResponses.productGetAllResponses()).usingRecursiveComparison().isEqualTo(products);
+	}
+
+	@Test
+	@DisplayName("상품을 수정한다")
+	void update() {
+		//given
+		Long productId = 1L;
+		List<Integer> sizes = List.of(200, 210);
+		ProductUpdateFacadeRequest productUpdateFacadeRequest
+				= new ProductUpdateFacadeRequest(1L, 189999, "Vast Grey 2023", sizes);
+
+		Product product = Product.builder()
+				.id(1L)
+				.name("Nike Zoom Vomero 5 SP")
+				.releasePrice(189000)
+				.description("Anthracite 2023")
+				.build();
+
+		//mocking
+		when(productRepository.findById(productId))
+				.thenReturn(Optional.of(product));
+
+		//when
+		ProductUpdateResponse productUpdateResponse = productService.update(productUpdateFacadeRequest);
+
+		//then
+		assertThat(productUpdateResponse.id()).isEqualTo(productId);
 	}
 
 	@Test
