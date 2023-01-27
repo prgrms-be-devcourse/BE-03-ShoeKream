@@ -35,4 +35,10 @@ public class BuyingBidFacade {
 	public void deleteOneBuyingBidById(Long id){
 		service.deleteOneBuyingBidById(id);
 	}
+
+	@Transactional(readOnly = true)
+	public BuyingBidFindResponse findHighestBuyingBid(Long productId){
+		BuyingBidFindRequest buyingBidFindRequest = new BuyingBidFindRequest(Collections.singletonList(productId));
+		return service.findHighestBuyingBidByPrice(buyingBidFindRequest);
+	}
 }

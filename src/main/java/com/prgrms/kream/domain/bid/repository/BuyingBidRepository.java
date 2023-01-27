@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.prgrms.kream.domain.bid.model.BuyingBid;
 
 @Repository
-public interface BuyingBidRepository extends JpaRepository<BuyingBid, Long> {
+public interface BuyingBidRepository extends JpaRepository<BuyingBid, Long>, BuyingBidCustomRepository{
 }

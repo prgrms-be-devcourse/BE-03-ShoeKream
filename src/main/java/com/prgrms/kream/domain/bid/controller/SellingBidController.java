@@ -45,4 +45,10 @@ public class SellingBidController {
 		facade.deleteOneSellingBidById(id);
 		return ApiResponse.of("판매 입찰이 삭제되었습니다");
 	}
+
+	@GetMapping("/lowest/{productOptionId}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<SellingBidFindResponse> findHighestBid(@PathVariable("productOptionId") Long productOptionId){
+		return ApiResponse.of(facade.findLowestSellingBid(productOptionId));
+	}
 }

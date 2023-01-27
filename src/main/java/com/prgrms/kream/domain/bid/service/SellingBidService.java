@@ -2,6 +2,9 @@ package com.prgrms.kream.domain.bid.service;
 
 import static com.prgrms.kream.common.mapper.BidMapper.*;
 
+import com.prgrms.kream.domain.bid.model.SellingBid;
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -36,5 +39,14 @@ public class SellingBidService {
 	@Transactional
 	public void deleteOneSellingBidById(Long id){
 		repository.deleteById(id);
+	}
+
+	@Transactional(readOnly = true)
+	public SellingBidFindResponse findLowestSellingBidByProductOptionId(SellingBidFindRequest sellingBidFindRequest){
+		List<SellingBid> sellingBids = repository.findLowestSellingBidByProductOptionId(sellingBidFindRequest.ids().get(0));
+		if (sellingBids.isEmpty()){
+			return new SellingBidFindResponse(-1L, -1L, -1L, 999999, LocalDateTime.now());
+		}
+		return toSellingBidFindResponse(sellingBids.get(0));
 	}
 }

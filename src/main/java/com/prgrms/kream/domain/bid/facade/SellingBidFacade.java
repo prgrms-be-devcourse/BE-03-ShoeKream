@@ -35,4 +35,10 @@ public class SellingBidFacade {
 	public void deleteOneSellingBidById(Long id){
 		service.deleteOneSellingBidById(id);
 	}
+
+	@Transactional(readOnly = true)
+	public SellingBidFindResponse findLowestSellingBid(Long productId){
+		SellingBidFindRequest sellingBidFindRequest = new SellingBidFindRequest(Collections.singletonList(productId));
+		return service.findLowestSellingBidByProductOptionId(sellingBidFindRequest);
+	}
 }

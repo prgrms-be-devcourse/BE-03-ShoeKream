@@ -45,4 +45,10 @@ public class BuyingBidController {
 		facade.deleteOneBuyingBidById(id);
 		return ApiResponse.of("구매 입찰이 삭제되었습니다");
 	}
+
+	@GetMapping("/highest/{productOptionId}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<BuyingBidFindResponse> findHighestBid(@PathVariable("productOptionId") Long productOptionId){
+		return ApiResponse.of(facade.findHighestBuyingBid(productOptionId));
+	}
 }

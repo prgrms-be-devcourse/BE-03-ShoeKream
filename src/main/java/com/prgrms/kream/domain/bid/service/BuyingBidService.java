@@ -1,8 +1,8 @@
 package com.prgrms.kream.domain.bid.service;
 
-import static com.prgrms.kream.common.mapper.BidMapper.toBuyingBid;
-import static com.prgrms.kream.common.mapper.BidMapper.toBuyingBidCreateResponse;
-
+import com.prgrms.kream.domain.bid.model.BuyingBid;
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
 import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
 
 import lombok.RequiredArgsConstructor;
+import static com.prgrms.kream.common.mapper.BidMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +38,14 @@ public class BuyingBidService {
 	@Transactional
 	public void deleteOneBuyingBidById(Long id){
 		repository.deleteById(id);
+	}
+
+	@Transactional(readOnly = true)
+	public BuyingBidFindResponse findHighestBuyingBidByPrice(BuyingBidFindRequest buyingBidFindRequest){
+		List<BuyingBid> buyingBids = repository.findHighestBuyingBidByProductOptionId(buyingBidFindRequest.ids().get(0));
+		if (buyingBids.isEmpty()){
+			return new BuyingBidFindResponse(-1L, -1L, -1L, -999999, LocalDateTime.now());
+		}
+		return toBuyingBidFindResponse(buyingBids.get(0));
 	}
 }
