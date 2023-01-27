@@ -62,10 +62,10 @@ public class StyleService {
 
 	@Transactional(readOnly = true)
 	public GetFeedServiceResponses getTrendingFeeds() {
-		return toGetFeedServiceResponses(
-				feedRepository.findAllOrderByLikesDesc(),
-				-1L
-		);
+		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc();
+		getFeedProductsOnFeeds(feeds);
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	@Transactional(readOnly = true)
@@ -74,11 +74,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -92,11 +93,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -110,11 +112,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -186,6 +189,14 @@ public class StyleService {
 					likeFeedServiceRequest.memberId()
 			);
 		}
+	}
+
+	private void getFeedProductsOnFeeds(List<Feed> feeds) {
+		feeds.forEach(feed ->
+				feed.setProductIds(
+						feedProductRepository.findAllByFeedId(feed.getId()).stream()
+								.map(FeedProduct::getProductId)
+								.toList()));
 	}
 
 }

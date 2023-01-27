@@ -8,6 +8,7 @@ public record GetFeedResponse(
 		Long authorId,
 		String content,
 		Long likes,
+		List<Long> products,
 		List<String> images,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt

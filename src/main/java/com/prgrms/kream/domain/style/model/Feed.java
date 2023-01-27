@@ -1,11 +1,15 @@
 package com.prgrms.kream.domain.style.model;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
 
@@ -33,6 +37,9 @@ public class Feed extends BaseTimeEntity {
 	@Column(name = "likes", nullable = false, unique = false)
 	private Long likes;
 
+	@Transient
+	private List<Long> productIds;
+
 	@Builder
 	public Feed(Long id, String content, Long authorId, Long likes) {
 		this.id = id;
@@ -51,6 +58,10 @@ public class Feed extends BaseTimeEntity {
 
 	public void decreaseLikes() {
 		this.likes = (likes > 0) ? likes - 1L: 0;
+	}
+
+	public void setProductIds(List<Long> productIds) {
+		this.productIds = Collections.unmodifiableList(productIds);
 	}
 
 }

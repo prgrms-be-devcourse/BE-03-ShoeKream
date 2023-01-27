@@ -100,6 +100,7 @@ public class StyleMapper {
 				feed.getAuthorId(),
 				feed.getContent(),
 				feed.getLikes(),
+				feed.getProductIds(),
 				feed.getCreatedAt(),
 				feed.getUpdatedAt()
 		);
@@ -122,6 +123,7 @@ public class StyleMapper {
 				getFeedServiceResponse.authorId(),
 				getFeedServiceResponse.content(),
 				getFeedServiceResponse.likes(),
+				getFeedServiceResponse.products(),
 				images,
 				getFeedServiceResponse.createdAt(),
 				getFeedServiceResponse.updatedAt()
@@ -140,6 +142,7 @@ public class StyleMapper {
 				getFeedFacadeResponse.authorId(),
 				getFeedFacadeResponse.content(),
 				getFeedFacadeResponse.likes(),
+				getFeedFacadeResponse.products(),
 				getFeedFacadeResponse.images(),
 				getFeedFacadeResponse.createdAt(),
 				getFeedFacadeResponse.updatedAt()
