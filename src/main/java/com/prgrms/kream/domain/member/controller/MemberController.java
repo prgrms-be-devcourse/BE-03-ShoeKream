@@ -36,7 +36,7 @@ public class MemberController {
 	@Value("${jwt.accessToken}")
 	private String accessToken;
 
-	@PostMapping
+	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
 	public ApiResponse<MemberRegisterResponse> register(
 			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
