@@ -3,8 +3,10 @@ package com.prgrms.kream.common.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.prgrms.kream.domain.product.dto.request.ProductFacadeUpdateRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
@@ -69,5 +71,10 @@ public class ProductMapper {
 
 	public static ProductUpdateResponse toProductUpdateResponse(Long id) {
 		return new ProductUpdateResponse(id);
+	}
+
+	public static ProductFacadeUpdateRequest toProductFacadeUpdateRequest(ProductUpdateRequest productUpdateRequest) {
+		return new ProductFacadeUpdateRequest(productUpdateRequest.id(), productUpdateRequest.releasePrice(),
+				productUpdateRequest.description(), productUpdateRequest.sizes());
 	}
 }

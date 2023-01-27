@@ -57,7 +57,7 @@ public class ProductFacade {
 	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
 		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
 		imageService.register(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
-		return productService.update(productUpdateRequest);
+		return productService.update(toProductFacadeUpdateRequest(productUpdateRequest));
 	}
 
 	@Transactional

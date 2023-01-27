@@ -9,9 +9,9 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.kream.domain.product.dto.request.ProductFacadeUpdateRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
-import com.prgrms.kream.domain.product.dto.request.ProductUpdateRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
@@ -55,13 +55,13 @@ public class ProductService {
 	}
 
 	@Transactional
-	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
-		Product product = getProductEntity(productUpdateRequest.id());
-		product.update(productUpdateRequest.releasePrice(), productUpdateRequest.description());
+	public ProductUpdateResponse update(ProductFacadeUpdateRequest productFacadeUpdateRequest) {
+		Product product = getProductEntity(productFacadeUpdateRequest.id());
+		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
 		productOptionRepository.deleteAllByProduct(product);
 		productOptionRepository.saveAll(
-				toProductOptions(productUpdateRequest.sizes(), product)
+				toProductOptions(productFacadeUpdateRequest.sizes(), product)
 		);
 
 		return toProductUpdateResponse(product.getId());
