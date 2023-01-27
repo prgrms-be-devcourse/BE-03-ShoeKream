@@ -2,7 +2,11 @@ package com.prgrms.kream.common.mapper;
 
 import static lombok.AccessLevel.*;
 
+import java.util.List;
+
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.NoArgsConstructor;
@@ -18,6 +22,44 @@ public class MemberMapper {
 				.password(memberRegisterRequest.password())
 				.authority(memberRegisterRequest.authority())
 				.isMale(memberRegisterRequest.isMale())
+				.build();
+	}
+
+	public static Member toMember(MemberGetFacadeResponse memberGetFacadeResponse) {
+		return Member.builder()
+				.id(memberGetFacadeResponse.id())
+				.name(memberGetFacadeResponse.name())
+				.email(memberGetFacadeResponse.email())
+				.phone(memberGetFacadeResponse.phone())
+				.password(memberGetFacadeResponse.password())
+				.authority(memberGetFacadeResponse.authority())
+				.build();
+	}
+
+	public static MemberGetFacadeResponse toMemberGetFacadeResponse(Member member) {
+		return MemberGetFacadeResponse.builder()
+				.id(member.getId())
+				.name(member.getName())
+				.email(member.getEmail())
+				.phone(member.getPhone())
+				.password(member.getPassword())
+				.isMale(member.getIsMale())
+				.authority(member.getAuthority())
+				.build();
+	}
+
+	public static MemberGetResponse toMemberGetResponse(
+			MemberGetFacadeResponse memberGetFacadeResponse,
+			List<String> imagePaths
+	) {
+		return MemberGetResponse.builder()
+				.id(memberGetFacadeResponse.id())
+				.name(memberGetFacadeResponse.name())
+				.email(memberGetFacadeResponse.email())
+				.phone(memberGetFacadeResponse.phone())
+				.isMale(memberGetFacadeResponse.isMale())
+				.authority(memberGetFacadeResponse.authority())
+				.imagePaths(imagePaths)
 				.build();
 	}
 }

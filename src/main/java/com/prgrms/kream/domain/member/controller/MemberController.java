@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
@@ -34,7 +36,7 @@ public class MemberController {
 	@Value("${jwt.accessToken}")
 	private String accessToken;
 
-	@PostMapping
+	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
 	public ApiResponse<MemberRegisterResponse> register(
 			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
@@ -66,5 +68,11 @@ public class MemberController {
 		}
 
 		return ApiResponse.of("로그아웃 성공하였습니다.");
+	}
+
+	@GetMapping("/{id}")
+	@ResponseStatus(OK)
+	public ApiResponse<MemberGetResponse> get(@PathVariable Long id) {
+		return ApiResponse.of(memberFacade.get(id));
 	}
 }
