@@ -12,5 +12,5 @@ public interface ImageService {
 
 	List<String> getAll(Long referenceId, DomainType domainType);
 
-	void deleteAllByProduct(Long productId);
+	void deleteAllByReference(Long referenceId, DomainType domainType);
 }
