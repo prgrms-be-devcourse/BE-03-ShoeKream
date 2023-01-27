@@ -10,6 +10,7 @@ import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.model.ProductOption;
 
@@ -64,5 +65,9 @@ public class ProductMapper {
 						product.getId(), product.getName(), product.getReleasePrice(), product.getDescription()))
 				.collect(Collectors.toList());
 		return new ProductGetAllResponses(productGetAllResponse, lastId);
+	}
+
+	public static ProductUpdateResponse toProductUpdateResponse(Long id) {
+		return new ProductUpdateResponse(id);
 	}
 }
