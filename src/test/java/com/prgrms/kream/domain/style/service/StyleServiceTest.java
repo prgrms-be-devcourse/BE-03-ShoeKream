@@ -188,6 +188,24 @@ class StyleServiceTest {
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
+	@Test
+	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")
+	void testGetFeedProductsOnFeeds() {
+		when(feedRepository.findAllByMember(
+				MEMBER.getId(),
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(List.of(FEED));
+		when(feedProductRepository.findAllByFeedId(FEED.getId())).thenReturn(FEED_PRODUCTS);
+
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(
+				getFeedServiceRequest(),
+				MEMBER.getId()
+		);
+
+		assertThat(getFeedServiceResponses.getFeedServiceResponses().get(0).products()).isNotEmpty();
+	}
+
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
 		return new RegisterFeedServiceRequest(
 				FEED.getContent(),
