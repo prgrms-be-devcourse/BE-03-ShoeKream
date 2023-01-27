@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.bid;
 
+import static com.prgrms.kream.common.mapper.BidMapper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -104,5 +106,27 @@ public class BuyingBidServiceTest {
 		// Then
 		assertThatThrownBy(() -> service.findOneBuyingBidById(buyingBidFindRequest))
 				.isInstanceOf(EntityNotFoundException.class);
+	}
+
+	@Test
+	@DisplayName("가장 가격이 높은 구매 입찰을 가져오는지 확인")
+	void highestPriceTest() {
+		// Given
+		BuyingBid buyingBid1 = BuyingBid.builder().id(1L).productOptionId(1L).memberId(1L).price(1500)
+				.validUntil(LocalDateTime.now().plusDays(30)).build();
+		BuyingBid buyingBid2 = BuyingBid.builder().id(2L).productOptionId(1L).memberId(2L).price(1600)
+				.validUntil(LocalDateTime.now().plusDays(30)).build();
+		BuyingBid buyingBid3 = BuyingBid.builder().id(3L).productOptionId(1L).memberId(3L).price(1600)
+				.validUntil(LocalDateTime.now().plusDays(30)).build();
+
+
+		BuyingBidFindRequest buyingBidFindRequest = new BuyingBidFindRequest(Collections.singletonList(1L));
+
+		// When
+		when(repository.findHighestBuyingBidByProductOptionId(any(Long.class))).thenReturn(Collections.singletonList(buyingBid2));
+		BuyingBidFindResponse buyingBidFindResponse = service.findHighestBuyingBidByPrice(buyingBidFindRequest);
+
+		// Then
+		assertThat(buyingBidFindResponse.id()).isEqualTo(2L);
 	}
 }
