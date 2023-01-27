@@ -13,10 +13,12 @@ import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.product.dto.request.ProductGetAllRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,13 @@ public class ProductFacade {
 	@Transactional(readOnly = true)
 	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
 		return productService.getAll(productGetAllRequest);
+	}
+
+	@Transactional
+	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
+		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
+		imageService.register(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
+		return productService.update(toProductUpdateFacadeRequest(productUpdateRequest));
 	}
 
 	@Transactional

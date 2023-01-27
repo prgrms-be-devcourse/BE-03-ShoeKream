@@ -42,4 +42,9 @@ public class Product extends BaseTimeEntity {
 		this.releasePrice = releasePrice;
 		this.description = description;
 	}
+
+	public void update(int releasePrice, String description) {
+		this.releasePrice = releasePrice;
+		this.description = description;
+	}
 }
