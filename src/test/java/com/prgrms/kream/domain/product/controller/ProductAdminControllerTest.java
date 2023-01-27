@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.prgrms.kream.MysqlTestContainer;
@@ -54,7 +55,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 	void register() throws Exception {
 		//given
 		MockMultipartFile mockMultipartFile
-				= new MockMultipartFile("images", "test.png", MediaType.IMAGE_PNG_VALUE, "images".getBytes());
+				= new MockMultipartFile("images", "test.png", MediaType.IMAGE_PNG_VALUE, "test".getBytes());
 
 		//when
 		ResultActions resultActions = mockMvc.perform(multipart("/api/v1/admin/product")
@@ -68,6 +69,35 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 		resultActions
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.data.id").value(2));
+	}
+
+	@Test
+	@DisplayName("수정 요청을 받아 상품을 수정한다")
+	void update() throws Exception {
+		//given
+		MockMultipartFile mockMultipartFile
+				= new MockMultipartFile("images", "updateTest.png", MediaType.IMAGE_PNG_VALUE, "updateTest".getBytes());
+
+		MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
+				MockMvcRequestBuilders.multipart("/api/v1/admin/product");
+		mockMultipartHttpServletRequestBuilder
+				.with(request -> {
+					request.setMethod("PATCH");
+					return request;
+				});
+
+		//when
+		ResultActions resultActions = mockMvc.perform(mockMultipartHttpServletRequestBuilder
+				.file(mockMultipartFile)
+				.param("id", "1")
+				.param("releasePrice", "189000")
+				.param("description", "Anthracite 2023")
+				.param("sizes", "200"));
+
+		//then
+		resultActions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.id").value(1));
 	}
 
 	@Test
