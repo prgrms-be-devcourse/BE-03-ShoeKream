@@ -53,7 +53,7 @@ public class ProductFacade {
 
 	@Transactional
 	public void delete(Long id) {
-		imageService.deleteAllByProduct(id);
+		imageService.deleteAllByReference(id, DomainType.PRODUCT);
 		productService.delete(id);
 	}
 }

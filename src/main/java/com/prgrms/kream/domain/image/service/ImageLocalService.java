@@ -46,8 +46,8 @@ public class ImageLocalService implements ImageService {
 	}
 
 	@Override
-	public void deleteAllByProduct(Long productId) {
-		imageRepository.deleteAllByReferenceId(productId);
+	public void deleteAllByReference(Long referenceId, DomainType domainType) {
+		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
