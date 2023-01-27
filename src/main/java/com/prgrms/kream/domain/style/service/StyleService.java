@@ -18,8 +18,10 @@ import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
+import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
 import com.prgrms.kream.domain.style.repository.FeedTagRepository;
 
@@ -35,6 +37,8 @@ public class StyleService {
 
 	private final FeedLikeRepository feedLikeRepository;
 
+	private final FeedProductRepository feedProductRepository;
+
 	@Transactional
 	public RegisterFeedServiceResponse register(RegisterFeedServiceRequest registerFeedServiceRequest) {
 		Feed savedFeed = feedRepository.save(
@@ -43,7 +47,15 @@ public class StyleService {
 
 		// 태그 추출 및 데이터 삽입
 		Set<FeedTag> feedTags = TagExtractor.extract(savedFeed);
-		feedTagRepository.saveAll(feedTags);
+		if (!feedTags.isEmpty()) {
+			feedTagRepository.saveAll(feedTags);
+		}
+
+		// 상품 태그 데이터 삽입
+		if (registerFeedServiceRequest.productsIds() != null) {
+			List<FeedProduct> feedProducts = toFeedProduct(savedFeed.getId(), registerFeedServiceRequest.productsIds());
+			feedProductRepository.saveAll(feedProducts);
+		}
 
 		return toRegisterFeedServiceResponse(savedFeed);
 	}

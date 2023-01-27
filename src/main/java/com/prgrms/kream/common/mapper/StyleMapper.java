@@ -29,6 +29,7 @@ import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedLike;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,8 @@ public class StyleMapper {
 		return new RegisterFeedFacadeRequest(
 				registerFeedRequest.content(),
 				registerFeedRequest.authorId(),
-				registerFeedRequest.images()
+				registerFeedRequest.images(),
+				registerFeedRequest.productIds()
 		);
 	}
 
@@ -49,7 +51,8 @@ public class StyleMapper {
 			RegisterFeedFacadeRequest registerFeedFacadeRequest) {
 		return new RegisterFeedServiceRequest(
 				registerFeedFacadeRequest.content(),
-				registerFeedFacadeRequest.authorId()
+				registerFeedFacadeRequest.authorId(),
+				registerFeedFacadeRequest.productIds()
 		);
 	}
 
@@ -59,6 +62,15 @@ public class StyleMapper {
 				.authorId(registerFeedServiceRequest.authorId())
 				.likes(0L)
 				.build();
+	}
+
+	public static List<FeedProduct> toFeedProduct(Long feedId, List<Long> productIds) {
+		return productIds.stream()
+				.map(productId -> FeedProduct.builder()
+						.feedId(feedId)
+						.productId(productId)
+						.build())
+				.toList();
 	}
 
 	public static RegisterFeedServiceResponse toRegisterFeedServiceResponse(Feed feed) {
