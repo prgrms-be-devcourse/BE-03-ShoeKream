@@ -139,4 +139,13 @@ class StyleControllerTest extends MysqlTestContainer {
 				.andDo(print());
 	}
 
+	@Test
+	@Order(8)
+	@DisplayName("사용자 기준으로 피드를 조회할 수 있다.")
+	void testGetFeedsByMember() throws Exception {
+		mockMvc.perform(get("/api/v1/feed/members/" + memberId))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
 }

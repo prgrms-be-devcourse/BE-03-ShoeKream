@@ -5,11 +5,14 @@ import java.util.stream.Collectors;
 
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterFacadeRequest;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateFacadeRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.model.ProductOption;
 
@@ -64,5 +67,14 @@ public class ProductMapper {
 						product.getId(), product.getName(), product.getReleasePrice(), product.getDescription()))
 				.collect(Collectors.toList());
 		return new ProductGetAllResponses(productGetAllResponse, lastId);
+	}
+
+	public static ProductUpdateResponse toProductUpdateResponse(Long id) {
+		return new ProductUpdateResponse(id);
+	}
+
+	public static ProductUpdateFacadeRequest toProductUpdateFacadeRequest(ProductUpdateRequest productUpdateRequest) {
+		return new ProductUpdateFacadeRequest(productUpdateRequest.id(), productUpdateRequest.releasePrice(),
+				productUpdateRequest.description(), productUpdateRequest.sizes());
 	}
 }

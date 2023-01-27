@@ -6,9 +6,11 @@ import com.prgrms.kream.domain.style.model.Feed;
 
 public interface FeedCustomRepository {
 
-	List<Feed> findAllByTag(String tag);
+	List<Feed> findAllByTag(String tag, Long cursorId, int pageSize);
 
-	List<Feed> findAllOrderByCreatedAtDesc();
+	List<Feed> findAllByMember(Long memberId, Long cursorId, int pageSize);
+
+	List<Feed> findAllOrderByCreatedAtDesc(Long cursorId, int pageSize);
 
 	List<Feed> findAllOrderByLikesDesc();
 

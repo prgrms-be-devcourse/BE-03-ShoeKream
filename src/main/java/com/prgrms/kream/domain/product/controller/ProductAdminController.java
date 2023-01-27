@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.product.dto.request.ProductRegisterRequest;
+import com.prgrms.kream.domain.product.dto.request.ProductUpdateRequest;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.facade.ProductFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -33,10 +36,19 @@ public class ProductAdminController {
 		return ApiResponse.of(productFacade.register(productRegisterRequest));
 	}
 
+	@PatchMapping
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<ProductUpdateResponse> update(
+			@ModelAttribute @Valid ProductUpdateRequest productUpdateRequest) {
+
+		return ApiResponse.of(productFacade.update(productUpdateRequest));
+	}
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<String> delete(@PathVariable Long id) {
 		productFacade.delete(id);
+
 		return ApiResponse.of("삭제되었습니다.");
 	}
 }
