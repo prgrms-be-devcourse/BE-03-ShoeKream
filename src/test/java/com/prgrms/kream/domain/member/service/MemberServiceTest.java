@@ -56,7 +56,7 @@ class MemberServiceTest {
 	}
 
 	@Test
-	@DisplayName("회원가입 - 성공")
+	@DisplayName("회원가입 성공")
 	void register_success() {
 		Member member = Member.builder()
 				.id(1L)
@@ -86,8 +86,8 @@ class MemberServiceTest {
 	}
 
 	@Test
-	@DisplayName("로그인 실패 - 비밀번호 불일치")
-	void login_success() {
+	@DisplayName("로그인 실패 - 비밀번호 불일치함")
+	void login_fail_password() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -107,6 +107,17 @@ class MemberServiceTest {
 				.isInstanceOf(BadCredentialsException.class);
 
 		verify(memberRepository, times(1)).findByEmail(member.getEmail());
+		verify(jwt, times(0)).sign(any(Jwt.Claims.class));
+	}
+
+	@Test
+	@DisplayName("로그인 실패 - 존재하지 않는 이메일")
+	void login_fail_notExistEmail() {
+		MemberLoginRequest memberLoginRequest = new MemberLoginRequest("wrongEmail", "Pa!12345678");
+		Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+				.isInstanceOf(EntityNotFoundException.class);
+
+		verify(memberRepository, times(1)).findByEmail("wrongEmail");
 		verify(jwt, times(0)).sign(any(Jwt.Claims.class));
 	}
 
