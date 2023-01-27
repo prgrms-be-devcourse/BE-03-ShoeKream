@@ -8,7 +8,7 @@ import javax.validation.constraints.Positive;
 
 import com.prgrms.kream.domain.product.validator.ShoeSize;
 
-public record ProductFacadeUpdateRequest(
+public record ProductUpdateFacadeRequest(
 		@NotNull
 		Long id,
 
