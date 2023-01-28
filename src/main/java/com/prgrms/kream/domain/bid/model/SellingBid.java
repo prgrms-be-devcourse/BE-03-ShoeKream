@@ -44,6 +44,8 @@ public class SellingBid extends BaseTimeEntity {
 		this.memberId = memberId;
 		this.productOptionId = productOptionId;
 		this.price = price;
+		// TODO Objects.requireNonNullElse(validUntil, LocalDateTime.now().plusDays(30));
+		// 으로 수정하기(기본값 설정)
 		this.validUntil = validUntil;
 	}
 }
