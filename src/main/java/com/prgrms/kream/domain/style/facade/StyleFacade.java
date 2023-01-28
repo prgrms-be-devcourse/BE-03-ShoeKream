@@ -51,8 +51,8 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getTrendingFeeds() {
-		return merge(styleService.getTrendingFeeds());
+	public GetFeedFacadeResponses getTrendingFeeds(GetFeedFacadeRequest getFeedFacadeRequest) {
+		return merge(styleService.getTrendingFeeds(toGetFeedServiceRequest(getFeedFacadeRequest)));
 	}
 
 	@Transactional(readOnly = true)

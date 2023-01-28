@@ -61,9 +61,19 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getTrendingFeeds() {
-		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc();
+	public GetFeedServiceResponses getTrendingFeeds(GetFeedServiceRequest getFeedServiceRequest) {
+		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc(
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
 		getFeedProductsOnFeeds(feeds);
+
+		if (feeds.size() > getFeedServiceRequest.pageSize()) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
+			);
+		}
 
 		return toGetFeedServiceResponses(feeds, -1L);
 	}

@@ -53,10 +53,12 @@ public class StyleController {
 
 	@GetMapping("/trending")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getTrendingFeeds() {
+	public ApiResponse<GetFeedResponses> getTrendingFeeds(@Valid GetFeedRequest getFeedRequest) {
 		return ApiResponse.of(
 				toGetFeedResponses(
-						styleFacade.getTrendingFeeds()
+						styleFacade.getTrendingFeeds(
+								toGetFeedFacadeRequest(getFeedRequest)
+						)
 				)
 		);
 	}
