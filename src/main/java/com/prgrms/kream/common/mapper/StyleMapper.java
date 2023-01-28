@@ -64,7 +64,7 @@ public class StyleMapper {
 				.build();
 	}
 
-	public static List<FeedProduct> toFeedProduct(Long feedId, List<Long> productIds) {
+	public static List<FeedProduct> toFeedProducts(Long feedId, List<Long> productIds) {
 		return productIds.stream()
 				.map(productId -> FeedProduct.builder()
 						.feedId(feedId)

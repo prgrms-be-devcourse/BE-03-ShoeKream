@@ -53,7 +53,7 @@ public class StyleService {
 
 		// 상품 태그 데이터 삽입
 		if (registerFeedServiceRequest.productsIds() != null) {
-			List<FeedProduct> feedProducts = toFeedProduct(savedFeed.getId(), registerFeedServiceRequest.productsIds());
+			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), registerFeedServiceRequest.productsIds());
 			feedProductRepository.saveAll(feedProducts);
 		}
 
