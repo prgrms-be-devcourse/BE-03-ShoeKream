@@ -12,6 +12,6 @@ public interface FeedCustomRepository {
 
 	List<Feed> findAllOrderByCreatedAtDesc(Long cursorId, int pageSize);
 
-	List<Feed> findAllOrderByLikesDesc();
+	List<Feed> findAllOrderByLikesDesc(Long cursorId, int pageSize);
 
 }

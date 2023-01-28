@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.member.model.Authority;
@@ -25,8 +26,10 @@ import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedLike;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
+import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
 import com.prgrms.kream.domain.style.repository.FeedTagRepository;
 
@@ -42,6 +45,9 @@ class StyleServiceTest {
 
 	@Mock
 	private FeedLikeRepository feedLikeRepository;
+
+	@Mock
+	private FeedProductRepository feedProductRepository;
 
 	@InjectMocks
 	private StyleService styleService;
@@ -65,17 +71,36 @@ class StyleServiceTest {
 	private static final Set<FeedTag> FEED_TAGS = TagExtractor.extract(FEED);
 
 	private static final FeedLike FEED_LIKE = FeedLike.builder()
+			.id(1L)
 			.feedId(FEED.getId())
 			.memberId(MEMBER.getId())
 			.build();
 
+	private static final List<FeedProduct> FEED_PRODUCTS = List.of(
+			FeedProduct.builder()
+					.id(1L)
+					.feedId(FEED.getId())
+					.productId(1L)
+					.build(),
+			FeedProduct.builder()
+					.id(2L)
+					.feedId(FEED.getId())
+					.productId(2L)
+					.build()
+	);
+
 	@Test
 	@DisplayName("피드를 등록할 수 있다.")
 	void testRegister() {
-		when(feedRepository.save(any())).thenReturn(FEED);
-		when(feedTagRepository.saveAll(any())).thenReturn(FEED_TAGS.stream().toList());
+		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
+		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(FEED_TAGS.stream().toList());
+		when(feedProductRepository.saveAll(Mockito.<FeedProduct>anyIterable())).thenReturn(FEED_PRODUCTS);
+
 		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
 
+		verify(feedRepository).save(any(Feed.class));
+		verify(feedTagRepository).saveAll(Mockito.<FeedTag>anyIterable());
+		verify(feedProductRepository).saveAll(Mockito.<FeedProduct>anyIterable());
 		assertThat(feedResponse.id()).isEqualTo(1L);
 	}
 
@@ -91,9 +116,8 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() {
-		when(feedRepository.save(any())).thenReturn(FEED);
-		when(feedTagRepository.saveAll(any())).thenReturn(FEED_TAGS.stream().toList());
-		styleService.register(getRegisterFeedServiceRequest());
+		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
+		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(FEED_TAGS.stream().toList());
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
 		UpdateFeedServiceResponse updateFeedServiceResponse =
@@ -102,6 +126,10 @@ class StyleServiceTest {
 						getUpdateFeedServiceRequest("이 피드의 태그는 총 #한개 입니다.")
 				);
 
+		verify(feedRepository).findById(FEED.getId());
+		verify(feedRepository).save(any(Feed.class));
+		verify(feedTagRepository).deleteAllByFeedId(FEED.getId());
+		verify(feedTagRepository).saveAll(Mockito.<FeedTag>anyIterable());
 		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
@@ -138,16 +166,22 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("태그 기준으로 피드 식별자를 조회할 수 있다.")
 	void testGetFeedsByTag() {
+		String tag = FEED_TAGS.stream().findAny().get().getTag();
+
 		when(feedRepository.findAllByTag(
-				FEED_TAGS.stream().findAny().get().getTag(),
+				tag,
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize()
 		)).thenReturn(List.of(FEED));
 
 		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByTag(
 				getFeedServiceRequest(),
-				FEED_TAGS.stream().toList().get(0).getTag());
+				tag);
 
+		verify(feedRepository).findAllByTag(
+				tag,
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize());
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
@@ -164,11 +198,40 @@ class StyleServiceTest {
 				getFeedServiceRequest(),
 				MEMBER.getId());
 
+		verify(feedRepository).findAllByMember(
+				MEMBER.getId(),
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize());
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
 
+	@Test
+	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")
+	void testGetFeedProductsOnFeeds() {
+		when(feedRepository.findAllByMember(
+				MEMBER.getId(),
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(List.of(FEED));
+		when(feedProductRepository.findAllByFeedId(FEED.getId())).thenReturn(FEED_PRODUCTS);
+
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(
+				getFeedServiceRequest(),
+				MEMBER.getId()
+		);
+
+		verify(feedProductRepository).findAllByFeedId(any(Long.class));
+		assertThat(getFeedServiceResponses.getFeedServiceResponses().get(0).products()).isNotEmpty();
+	}
+
 	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
-		return new RegisterFeedServiceRequest(FEED.getContent(), MEMBER.getId());
+		return new RegisterFeedServiceRequest(
+				FEED.getContent(),
+				MEMBER.getId(),
+				FEED_PRODUCTS.stream()
+						.map(FeedProduct::getProductId)
+						.toList()
+		);
 	}
 
 	private GetFeedServiceRequest getFeedServiceRequest() {
