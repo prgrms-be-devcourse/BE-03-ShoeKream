@@ -29,6 +29,7 @@ import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedLike;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,8 @@ public class StyleMapper {
 		return new RegisterFeedFacadeRequest(
 				registerFeedRequest.content(),
 				registerFeedRequest.authorId(),
-				registerFeedRequest.images()
+				registerFeedRequest.images(),
+				registerFeedRequest.productIds()
 		);
 	}
 
@@ -49,7 +51,8 @@ public class StyleMapper {
 			RegisterFeedFacadeRequest registerFeedFacadeRequest) {
 		return new RegisterFeedServiceRequest(
 				registerFeedFacadeRequest.content(),
-				registerFeedFacadeRequest.authorId()
+				registerFeedFacadeRequest.authorId(),
+				registerFeedFacadeRequest.productIds()
 		);
 	}
 
@@ -59,6 +62,15 @@ public class StyleMapper {
 				.authorId(registerFeedServiceRequest.authorId())
 				.likes(0L)
 				.build();
+	}
+
+	public static List<FeedProduct> toFeedProducts(Long feedId, List<Long> productIds) {
+		return productIds.stream()
+				.map(productId -> FeedProduct.builder()
+						.feedId(feedId)
+						.productId(productId)
+						.build())
+				.toList();
 	}
 
 	public static RegisterFeedServiceResponse toRegisterFeedServiceResponse(Feed feed) {
@@ -88,6 +100,7 @@ public class StyleMapper {
 				feed.getAuthorId(),
 				feed.getContent(),
 				feed.getLikes(),
+				feed.getProductIds(),
 				feed.getCreatedAt(),
 				feed.getUpdatedAt()
 		);
@@ -110,6 +123,7 @@ public class StyleMapper {
 				getFeedServiceResponse.authorId(),
 				getFeedServiceResponse.content(),
 				getFeedServiceResponse.likes(),
+				getFeedServiceResponse.products(),
 				images,
 				getFeedServiceResponse.createdAt(),
 				getFeedServiceResponse.updatedAt()
@@ -128,6 +142,7 @@ public class StyleMapper {
 				getFeedFacadeResponse.authorId(),
 				getFeedFacadeResponse.content(),
 				getFeedFacadeResponse.likes(),
+				getFeedFacadeResponse.products(),
 				getFeedFacadeResponse.images(),
 				getFeedFacadeResponse.createdAt(),
 				getFeedFacadeResponse.updatedAt()
