@@ -48,8 +48,12 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
 		List<Product> products = productRepository.findAllByCursor(
-				productGetAllRequest.cursorId(), productGetAllRequest.pageSize());
-		Long lastId = products.get(products.size() - 1).getId();
+				productGetAllRequest.cursorId(), productGetAllRequest.pageSize(), productGetAllRequest.searchWord());
+
+		Long lastId = -1L;
+		if (products.size() != 0) {
+			lastId = products.get(products.size() - 1).getId();
+		}
 
 		return toProductGetAllResponses(products, lastId);
 	}

@@ -104,7 +104,8 @@ public class ProductServiceTest {
 		//given
 		Long cursorId = 5L;
 		int pageSize = 2;
-		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize);
+		String searchWord = "";
+		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize, searchWord);
 
 		List<Product> products = List.of(
 				Product.builder()
@@ -122,7 +123,7 @@ public class ProductServiceTest {
 		);
 
 		//mocking
-		when(productRepository.findAllByCursor(cursorId, pageSize))
+		when(productRepository.findAllByCursor(cursorId, pageSize, searchWord))
 				.thenReturn(products);
 
 		//when

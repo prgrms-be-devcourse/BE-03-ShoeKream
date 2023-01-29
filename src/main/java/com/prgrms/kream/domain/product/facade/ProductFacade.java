@@ -47,7 +47,8 @@ public class ProductFacade {
 		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
 
-	@Cacheable(cacheNames = "products", key = "#productGetAllRequest")
+	@Cacheable(cacheNames = "products", key = "#productGetAllRequest",
+			condition = "#productGetAllRequest.searchWord().length() == 0")
 	@Transactional(readOnly = true)
 	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
 		return productService.getAll(productGetAllRequest);
