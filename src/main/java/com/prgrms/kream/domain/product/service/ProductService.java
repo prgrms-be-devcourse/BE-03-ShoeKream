@@ -17,6 +17,7 @@ import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
+import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 
@@ -42,7 +43,9 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public ProductGetFacadeResponse get(Long id) {
-		return toProductGetFacadeResponse(getProductEntity(id));
+		Product product = getProductEntity(id);
+		List<ProductOption> productOptions = productOptionRepository.findAllByProduct(product);
+		return toProductGetFacadeResponse(product, productOptions);
 	}
 
 	@Transactional(readOnly = true)

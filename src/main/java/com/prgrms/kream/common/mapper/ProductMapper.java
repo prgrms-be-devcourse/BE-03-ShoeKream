@@ -11,6 +11,7 @@ import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetAllResponses;
 import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductGetResponse;
+import com.prgrms.kream.domain.product.dto.response.ProductOptionResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
@@ -40,15 +41,25 @@ public class ProductMapper {
 		return new ProductRegisterResponse(id);
 	}
 
-	public static ProductGetFacadeResponse toProductGetFacadeResponse(Product product) {
-		return new ProductGetFacadeResponse(product.getId(), product.getName(), product.getReleasePrice(),
-				product.getDescription());
+	public static ProductGetFacadeResponse toProductGetFacadeResponse(
+			Product product, List<ProductOption> productOptions) {
+
+		return new ProductGetFacadeResponse(
+				product.getId(), product.getName(), product.getReleasePrice(), product.getDescription(),
+				productOptions.stream()
+						.map(productOption
+								-> new ProductOptionResponse(productOption.getId(), productOption.getSize(),
+								productOption.getHighestPrice(), productOption.getLowestPrice()))
+						.collect(Collectors.toList()));
 	}
 
 	public static ProductGetResponse toProductGetResponse(
 			ProductGetFacadeResponse productGetFacadeResponse, List<String> imagePaths) {
-		return new ProductGetResponse(productGetFacadeResponse.id(), productGetFacadeResponse.name(),
-				productGetFacadeResponse.releasePrice(), productGetFacadeResponse.description(), imagePaths);
+
+		return new ProductGetResponse(
+				productGetFacadeResponse.id(), productGetFacadeResponse.name(),
+				productGetFacadeResponse.releasePrice(), productGetFacadeResponse.description(),
+				productGetFacadeResponse.productOptions(), imagePaths);
 	}
 
 	public static List<ProductOption> toProductOptions(List<Integer> sizes, Product product) {
