@@ -90,6 +90,15 @@ public class ProductService {
 		}
 	}
 
+	@Transactional
+	public void compareLowestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		int lowestPrice = productOption.getLowestPrice();
+		if (lowestPrice == 0 || lowestPrice > newPrice) {
+			productOption.updateLowestPrice(newPrice);
+		}
+	}
+
 	private Product findProductEntity(Long productId) {
 		return productRepository.findById(productId)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
