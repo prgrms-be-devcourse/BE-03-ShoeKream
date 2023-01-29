@@ -42,8 +42,8 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetFacadeResponse get(Long id) {
-		Product product = getProductEntity(id);
+	public ProductGetFacadeResponse get(Long productId) {
+		Product product = findProductEntity(productId);
 		List<ProductOption> productOptions = productOptionRepository.findAllByProduct(product);
 		return toProductGetFacadeResponse(product, productOptions);
 	}
@@ -63,7 +63,7 @@ public class ProductService {
 
 	@Transactional
 	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
-		Product product = getProductEntity(productFacadeUpdateRequest.id());
+		Product product = findProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
 		productOptionRepository.deleteAllByProduct(product);
@@ -75,14 +75,28 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void delete(Long id) {
-		Product product = getProductEntity(id);
+	public void delete(Long productId) {
+		Product product = findProductEntity(productId);
 		productOptionRepository.deleteAllByProduct(product);
 		productRepository.delete(product);
 	}
 
-	private Product getProductEntity(Long id) {
-		return productRepository.findById(id)
+	@Transactional
+	public void compareHighestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		int highestPrice = productOption.getHighestPrice();
+		if (highestPrice < newPrice) {
+			productOption.updateHighestPrice(newPrice);
+		}
+	}
+
+	private Product findProductEntity(Long productId) {
+		return productRepository.findById(productId)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
+	}
+
+	private ProductOption findProductOptionEntity(Long productOptionId) {
+		return productOptionRepository.findById(productOptionId)
+				.orElseThrow(() -> new EntityNotFoundException("productOptionId does not exist"));
 	}
 }
