@@ -7,5 +7,5 @@ public record ProductGetFacadeResponse(
 		String name,
 		int releasePrice,
 		String description,
-		List<ProductOptionResponse> productOptions) {
+		List<ProductOptionResponse> productOptionResponses) {
 }
