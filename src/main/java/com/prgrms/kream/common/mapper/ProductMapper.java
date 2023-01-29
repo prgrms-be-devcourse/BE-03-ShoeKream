@@ -59,7 +59,7 @@ public class ProductMapper {
 		return new ProductGetResponse(
 				productGetFacadeResponse.id(), productGetFacadeResponse.name(),
 				productGetFacadeResponse.releasePrice(), productGetFacadeResponse.description(),
-				productGetFacadeResponse.productOptions(), imagePaths);
+				productGetFacadeResponse.productOptionResponses(), imagePaths);
 	}
 
 	public static List<ProductOption> toProductOptions(List<Integer> sizes, Product product) {
