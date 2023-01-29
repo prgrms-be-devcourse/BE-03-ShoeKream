@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -50,6 +51,11 @@ class ProductControllerTest extends MysqlTestContainer {
 						.name("Nike Air Force 1 '07")
 						.releasePrice(169000)
 						.description("WB Flax")
+						.build(),
+				Product.builder()
+						.name("Salomon XT-6 Recut Phantom")
+						.releasePrice(260000)
+						.description("Vanilla Ice")
 						.build()
 		);
 
@@ -62,7 +68,8 @@ class ProductControllerTest extends MysqlTestContainer {
 	}
 
 	@Test
-	@DisplayName("조회 요청을 받아 상품 상세 정보를 조회한다")
+	@Sql("classpath:db/schema.sql")
+	@DisplayName("상세 조회 요청을 받아 상품 상세 정보를 조회한다")
 	void get() throws Exception {
 		//given
 		Long productId = 1L;
@@ -81,12 +88,40 @@ class ProductControllerTest extends MysqlTestContainer {
 	}
 
 	@Test
+	@Sql("classpath:db/schema.sql")
 	@DisplayName("목록 조회 요청을 받아 상품 목록을 조회한다")
 	void getAll() throws Exception {
 		//given
-		Long cursorId = 3L;
+		Long cursorId = 4L;
 		int pageSize = 2;
-		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize);
+		String searchWord = "";
+		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize, searchWord);
+
+		//when
+		ResultActions resultActions
+				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(productGetAllRequest)));
+
+		//then
+		resultActions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.productGetAllResponses[0].id").value(3))
+				.andExpect(jsonPath("$.data.productGetAllResponses[0].name").value("Salomon XT-6 Recut Phantom"))
+				.andExpect(jsonPath("$.data.productGetAllResponses[0].releasePrice").value(260000))
+				.andExpect(jsonPath("$.data.productGetAllResponses[0].description").value("Vanilla Ice"))
+				.andExpect(jsonPath("$.data.lastId").value(2));
+	}
+
+	@Test
+	@Sql("classpath:db/schema.sql")
+	@DisplayName("검색 목록 조회 요청을 받아 상품 목록을 조회한다")
+	void getAll_with_search() throws Exception {
+		//given
+		Long cursorId = 4L;
+		int pageSize = 2;
+		String searchWord = "Ni";
+		ProductGetAllRequest productGetAllRequest = new ProductGetAllRequest(cursorId, pageSize, searchWord);
 
 		//when
 		ResultActions resultActions

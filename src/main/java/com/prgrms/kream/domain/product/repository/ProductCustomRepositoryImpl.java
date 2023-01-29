@@ -20,11 +20,14 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	QProduct qProduct = QProduct.product;
 
 	@Override
-	public List<Product> findAllByCursor(Long cursorId, int pageSize) {
+	public List<Product> findAllByCursor(Long cursorId, int pageSize, String searchWord) {
 
 		return jpaQueryFactory
 				.selectFrom(qProduct)
-				.where(ltBProductId(cursorId))
+				.where(
+						ltBProductId(cursorId),
+						qProduct.name.like(searchWord + "%")
+				)
 				.orderBy(qProduct.id.desc())
 				.limit(pageSize)
 				.fetch();
