@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.member.service;
 
+import static com.prgrms.kream.common.jwt.JwtUtil.*;
 import static com.prgrms.kream.common.mapper.MemberMapper.*;
 
 import java.util.Objects;
@@ -13,13 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.common.exception.DuplicatedEmailException;
 import com.prgrms.kream.common.jwt.Jwt;
-import com.prgrms.kream.common.jwt.JwtUtil;
 import com.prgrms.kream.common.mapper.MemberMapper;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
@@ -63,12 +65,30 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public MemberGetFacadeResponse get(Long id) {
-		if (!Objects.equals(JwtUtil.getMemberId(), id)) {
+		if (!Objects.equals(getMemberId(), id)) {
 			throw new AccessDeniedException("잘못된 접근입니다");
 		}
 
 		Member member = memberRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
 		return toMemberGetFacadeResponse(member);
+	}
+
+	@Transactional
+	public MemberUpdateServiceResponse updateMember(MemberUpdateServiceRequest memberUpdateServiceRequest) {
+		if (!isValidAccess(memberUpdateServiceRequest.id())) {
+			throw new AccessDeniedException("잘못된 접근입니다");
+		}
+
+		Member member = memberRepository.findById(memberUpdateServiceRequest.id())
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+
+		member.updateMember(
+				memberUpdateServiceRequest.name(),
+				memberUpdateServiceRequest.phone(),
+				memberUpdateServiceRequest.password()
+		);
+
+		return toMemberUpdateServiceResponse(member);
 	}
 }

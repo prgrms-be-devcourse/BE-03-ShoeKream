@@ -1,20 +1,25 @@
 package com.prgrms.kream.domain.member.facade;
 
 import static com.prgrms.kream.common.mapper.MemberMapper.*;
+import static com.prgrms.kream.domain.image.model.DomainType.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
 import com.prgrms.kream.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +41,21 @@ public class MemberFacade {
 	@Transactional(readOnly = true)
 	public MemberGetResponse get(Long memberId) {
 		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(memberId);
-		List<String> imagePaths = imageService.getAll(memberId, DomainType.MEMBER);
+		List<String> imagePaths = imageService.getAll(memberId, MEMBER);
 		return toMemberGetResponse(memberGetFacadeResponse, imagePaths);
+	}
+
+	@Transactional
+	public MemberUpdateResponse updateMember(MemberUpdateFacadeRequest memberUpdateFacadeRequest) {
+		MemberUpdateServiceResponse memberUpdateServiceResponse =
+				memberService.updateMember(toMemberUpdateServiceRequest(memberUpdateFacadeRequest));
+
+		List<String> imagePaths = Collections.emptyList();
+		imageService.deleteAllByReference(memberUpdateFacadeRequest.id(), MEMBER);
+		if (!Objects.isNull(memberUpdateFacadeRequest.imageFile())) {
+			imageService.register(List.of(memberUpdateFacadeRequest.imageFile()), memberUpdateFacadeRequest.id(), MEMBER);
+			imagePaths = imageService.getAll(memberUpdateFacadeRequest.id(), MEMBER);
+		}
+		return toMemberUpdateResponse(memberUpdateServiceResponse, imagePaths);
 	}
 }
