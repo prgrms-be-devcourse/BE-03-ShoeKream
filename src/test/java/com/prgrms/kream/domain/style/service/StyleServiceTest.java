@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -212,6 +213,28 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize());
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
+
+	@Test
+	@DisplayName("상품 식별자를 기준으로 피드를 조회할 수 있다.")
+	void testGetFeedsByProduct() {
+		FEED.setProductIds(Collections.emptyList());
+		when(feedRepository.findAllByProduct(
+				1L,
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(Collections.emptyList());
+
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByProduct(
+				getFeedServiceRequest(),
+				1L);
+
+		verify(feedRepository).findAllByProduct(
+				1L,
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize());
+		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isEmpty();
+	}
+
 
 	@Test
 	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")
