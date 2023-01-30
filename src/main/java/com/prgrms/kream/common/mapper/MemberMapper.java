@@ -5,8 +5,13 @@ import static lombok.AccessLevel.*;
 import java.util.List;
 
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
 import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.NoArgsConstructor;
@@ -57,9 +62,47 @@ public class MemberMapper {
 				.name(memberGetFacadeResponse.name())
 				.email(memberGetFacadeResponse.email())
 				.phone(memberGetFacadeResponse.phone())
-				.isMale(memberGetFacadeResponse.isMale())
-				.authority(memberGetFacadeResponse.authority())
 				.imagePaths(imagePaths)
 				.build();
+	}
+
+	public static MemberUpdateFacadeRequest toMemberUpdateFacadeRequest(
+			Long memberId,
+			MemberUpdateRequest memberUpdateRequest
+	) {
+		return new MemberUpdateFacadeRequest(
+				memberId,
+				memberUpdateRequest.name(),
+				memberUpdateRequest.phone(),
+				memberUpdateRequest.password(),
+				memberUpdateRequest.imageFile()
+		);
+	}
+
+	public static MemberUpdateServiceResponse toMemberUpdateServiceResponse(Member member) {
+		return new MemberUpdateServiceResponse(member.getId(), member.getName(), member.getPhone());
+	}
+
+	public static MemberUpdateServiceRequest toMemberUpdateServiceRequest(
+			MemberUpdateFacadeRequest memberUpdateFacadeRequest
+	) {
+		return new MemberUpdateServiceRequest(
+				memberUpdateFacadeRequest.id(),
+				memberUpdateFacadeRequest.name(),
+				memberUpdateFacadeRequest.phone(),
+				memberUpdateFacadeRequest.password()
+		);
+	}
+
+	public static MemberUpdateResponse toMemberUpdateResponse(
+			MemberUpdateServiceResponse memberUpdateServiceResponse,
+			List<String> imagePaths
+	) {
+		return new MemberUpdateResponse(
+				memberUpdateServiceResponse.id(),
+				memberUpdateServiceResponse.name(),
+				memberUpdateServiceResponse.phone(),
+				imagePaths
+		);
 	}
 }
