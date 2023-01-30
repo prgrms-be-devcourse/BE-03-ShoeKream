@@ -1,5 +1,7 @@
 package com.prgrms.kream.common.jwt;
 
+import java.util.Objects;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,5 +16,9 @@ public class JwtUtil {
 			throw new AccessDeniedException("잘못된 접근입니다.");
 		}
 		return (Long)authentication.getPrincipal();
+	}
+
+	public static boolean isValidAccess(Long memberId) {
+		return Objects.equals(JwtUtil.getMemberId(), memberId);
 	}
 }
