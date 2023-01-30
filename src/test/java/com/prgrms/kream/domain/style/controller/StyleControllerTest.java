@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -68,7 +70,8 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/feed")
 						.file(mockImage)
 						.param("content", "이 피드의 태그는 #총 #두개 입니다.")
-						.param("authorId", String.valueOf(member.getId())))
+						.param("authorId", String.valueOf(member.getId()))
+						.param("productIds", "1, 2, 3"))
 				.andExpect(status().isCreated())
 				.andDo(print());
 	}
@@ -80,7 +83,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(put("/api/v1/feed/1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.")
+								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.", List.of(4L, 5L, 6L))
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());

@@ -3,6 +3,7 @@ package com.prgrms.kream.domain.style.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -117,7 +118,8 @@ class StyleServiceTest {
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() {
 		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
-		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(FEED_TAGS.stream().toList());
+		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(List.copyOf(FEED_TAGS));
+		when(feedProductRepository.saveAll(Mockito.<FeedProduct>anyIterable())).thenReturn(List.copyOf(FEED_PRODUCTS));
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
 		UpdateFeedServiceResponse updateFeedServiceResponse =
@@ -130,6 +132,8 @@ class StyleServiceTest {
 		verify(feedRepository).save(any(Feed.class));
 		verify(feedTagRepository).deleteAllByFeedId(FEED.getId());
 		verify(feedTagRepository).saveAll(Mockito.<FeedTag>anyIterable());
+		verify(feedProductRepository).deleteAllByFeedId(FEED.getId());
+		verify(feedProductRepository).saveAll(Mockito.<FeedProduct>anyIterable());
 		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
@@ -239,7 +243,20 @@ class StyleServiceTest {
 	}
 
 	private UpdateFeedServiceRequest getUpdateFeedServiceRequest(String content) {
-		return new UpdateFeedServiceRequest(content);
+		List<FeedProduct> updatedFeedProducts = new ArrayList<>(FEED_PRODUCTS);
+		updatedFeedProducts.add(
+				FeedProduct.builder()
+						.id(3L)
+						.feedId(FEED.getId())
+						.productId(3L)
+						.build()
+		);
+
+		return new UpdateFeedServiceRequest(
+				content,
+				updatedFeedProducts.stream()
+						.map(FeedProduct::getProductId)
+						.toList());
 	}
 
 	private LikeFeedServiceRequest getLikeFeedServiceRequest() {
