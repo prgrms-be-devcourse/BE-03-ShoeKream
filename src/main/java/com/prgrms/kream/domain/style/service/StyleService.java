@@ -141,10 +141,15 @@ public class StyleService {
 					feed.updateContent(updateFeedServiceRequest.content());
 					Feed entity = feedRepository.save(feed);
 
+					// 피드 태그 삭제 후 재등록
 					feedTagRepository.deleteAllByFeedId(entity.getId());
-
 					Set<FeedTag> feedTags = TagExtractor.extract(entity);
 					feedTagRepository.saveAll(feedTags);
+
+					// 피드 상품태그 삭제 후 재등록
+					feedProductRepository.deleteAllByFeedId(entity.getId());
+					List<FeedProduct> feedProducts = toFeedProducts(entity.getId(), updateFeedServiceRequest.productIds());
+					feedProductRepository.saveAll(feedProducts);
 
 					return entity;
 				})
@@ -160,6 +165,7 @@ public class StyleService {
 					// 관련 테이블의 레코드 삭제 (Cascade)
 					feedTagRepository.deleteAllByFeedId(feed.getId());
 					feedLikeRepository.deleteAllByFeedId(feed.getId());
+					feedProductRepository.deleteAllByFeedId(feed.getId());
 					feedRepository.delete(feed);
 				});
 	}
