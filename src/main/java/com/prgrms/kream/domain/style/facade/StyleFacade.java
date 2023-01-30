@@ -66,8 +66,13 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByMember(GetFeedFacadeRequest getFeedFacadeRequest, Long id) {
-		return merge(styleService.getAllByMember(toGetFeedServiceRequest(getFeedFacadeRequest), id));
+	public GetFeedFacadeResponses getAllByMember(GetFeedFacadeRequest getFeedFacadeRequest, Long memberId) {
+		return merge(styleService.getAllByMember(toGetFeedServiceRequest(getFeedFacadeRequest), memberId));
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedFacadeResponses getAllByProduct(GetFeedFacadeRequest getFeedFacadeRequest, Long productId) {
+		return merge(styleService.getAllByProduct(toGetFeedServiceRequest(getFeedFacadeRequest), productId));
 	}
 
 	@Transactional

@@ -65,16 +65,8 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
@@ -83,16 +75,8 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
@@ -102,35 +86,30 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long id) {
+	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long memberId) {
 		List<Feed> feeds = feedRepository.findAllByMember(
-				id,
+				memberId,
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+	}
 
-		return toGetFeedServiceResponses(feeds, -1L);
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getAllByProduct(GetFeedServiceRequest getFeedServiceRequest, Long productId) {
+		List<Feed> feeds = feedRepository.findAllByProduct(
+				productId,
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
+
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional
@@ -204,6 +183,19 @@ public class StyleService {
 					likeFeedServiceRequest.memberId()
 			);
 		}
+	}
+
+	private GetFeedServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
+		getFeedProductsOnFeeds(feeds);
+
+		if (feeds.size() > pageSize) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	private void getFeedProductsOnFeeds(List<Feed> feeds) {
