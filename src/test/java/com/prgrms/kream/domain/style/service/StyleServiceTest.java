@@ -95,16 +95,16 @@ class StyleServiceTest {
 	@DisplayName("피드를 등록할 수 있다.")
 	void testRegister() {
 		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
-		when(feedTagRepository.batchUpdate(Mockito.<FeedTag>anyList()))
+		when(feedTagRepository.saveAllBulk(Mockito.<FeedTag>anyList()))
 				.thenReturn(FEED_TAGS.stream().map(FeedTag::getId).toList());
-		when(feedProductRepository.batchUpdate(Mockito.<FeedProduct>anyList()))
+		when(feedProductRepository.saveAllBulk(Mockito.<FeedProduct>anyList()))
 				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 
 		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
 
 		verify(feedRepository).save(any(Feed.class));
-		verify(feedTagRepository).batchUpdate(Mockito.<FeedTag>anyList());
-		verify(feedProductRepository).batchUpdate(Mockito.<FeedProduct>anyList());
+		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
+		verify(feedProductRepository).saveAllBulk(Mockito.<FeedProduct>anyList());
 		assertThat(feedResponse.id()).isEqualTo(1L);
 	}
 
@@ -121,9 +121,9 @@ class StyleServiceTest {
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() {
 		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
-		when(feedTagRepository.batchUpdate(Mockito.<FeedTag>anyList()))
+		when(feedTagRepository.saveAllBulk(Mockito.<FeedTag>anyList()))
 				.thenReturn(FEED_TAGS.stream().map(FeedTag::getId).toList());
-		when(feedProductRepository.batchUpdate(Mockito.<FeedProduct>anyList()))
+		when(feedProductRepository.saveAllBulk(Mockito.<FeedProduct>anyList()))
 				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
@@ -136,9 +136,9 @@ class StyleServiceTest {
 		verify(feedRepository).findById(FEED.getId());
 		verify(feedRepository).save(any(Feed.class));
 		verify(feedTagRepository).deleteAllByFeedId(FEED.getId());
-		verify(feedTagRepository).batchUpdate(Mockito.<FeedTag>anyList());
+		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
 		verify(feedProductRepository).deleteAllByFeedId(FEED.getId());
-		verify(feedProductRepository).batchUpdate(Mockito.<FeedProduct>anyList());
+		verify(feedProductRepository).saveAllBulk(Mockito.<FeedProduct>anyList());
 		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 

@@ -22,26 +22,19 @@ public class FeedProductCustomRepositoryImpl implements FeedProductCustomReposit
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Long> batchUpdate(List<FeedProduct> feedProducts) {
+	public List<Long> saveAllBulk(List<FeedProduct> feedProducts) {
+		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
 		return Arrays.stream(
 						jdbcTemplate.batchUpdate(
 								"INSERT INTO feed_product (feed_id, product_id, created_at, updated_at) VALUES (?, ?, ?, ?)",
 								new BatchPreparedStatementSetter() {
 									@Override
 									public void setValues(PreparedStatement ps, int i) throws SQLException {
-										Timestamp createdAt =
-												(feedProducts.get(i).getCreatedAt() == null) ?
-														Timestamp.valueOf(LocalDateTime.now()) :
-														Timestamp.valueOf(feedProducts.get(i).getCreatedAt());
-										Timestamp updatedAt =
-												(feedProducts.get(i).getUpdatedAt() == null) ?
-														Timestamp.valueOf(LocalDateTime.now()) :
-														Timestamp.valueOf(feedProducts.get(i).getUpdatedAt());
-
 										ps.setLong(1, feedProducts.get(i).getFeedId());
 										ps.setLong(2, feedProducts.get(i).getProductId());
-										ps.setTimestamp(3, createdAt);
-										ps.setTimestamp(4, updatedAt);
+										ps.setTimestamp(3, NOW);
+										ps.setTimestamp(4, NOW);
 									}
 
 									@Override

@@ -22,26 +22,20 @@ public class FeedTagCustomRepositoryImpl implements FeedTagCustomRepository {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Long> batchUpdate(List<FeedTag> feedTags) {
+	public List<Long> saveAllBulk(List<FeedTag> feedTags) {
+		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
 		return Arrays.stream(
 						jdbcTemplate.batchUpdate(
 								"INSERT INTO feed_tag (feed_id, tag, created_at, updated_at) VALUES (?, ?, ?, ?)",
 								new BatchPreparedStatementSetter() {
 									@Override
 									public void setValues(PreparedStatement ps, int i) throws SQLException {
-										Timestamp createdAt =
-												(feedTags.get(i).getCreatedAt() == null) ?
-														Timestamp.valueOf(LocalDateTime.now()) :
-														Timestamp.valueOf(feedTags.get(i).getCreatedAt());
-										Timestamp updatedAt =
-												(feedTags.get(i).getUpdatedAt() == null) ?
-														Timestamp.valueOf(LocalDateTime.now()) :
-														Timestamp.valueOf(feedTags.get(i).getUpdatedAt());
 
-										ps.setLong(1, feedTags.get(i).getFeedId());
-										ps.setString(2, feedTags.get(i).getTag());
-										ps.setTimestamp(3, createdAt);
-										ps.setTimestamp(4, updatedAt);
+										ps.setLong(1,  feedTags.get(i).getFeedId());
+										ps.setString(2,  feedTags.get(i).getTag());
+										ps.setTimestamp(3, NOW);
+										ps.setTimestamp(4, NOW);
 									}
 
 									@Override

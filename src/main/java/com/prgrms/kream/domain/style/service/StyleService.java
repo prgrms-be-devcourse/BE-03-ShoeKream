@@ -47,13 +47,13 @@ public class StyleService {
 		// 태그 추출 및 데이터 삽입
 		List<FeedTag> feedTags = TagExtractor.extract(savedFeed).stream().toList();
 		if (!feedTags.isEmpty()) {
-			feedTagRepository.batchUpdate(feedTags);
+			feedTagRepository.saveAllBulk(feedTags);
 		}
 
 		// 상품 태그 데이터 삽입
 		if (registerFeedServiceRequest.productsIds() != null) {
 			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), registerFeedServiceRequest.productsIds());
-			feedProductRepository.batchUpdate(feedProducts);
+			feedProductRepository.saveAllBulk(feedProducts);
 		}
 
 		return toRegisterFeedServiceResponse(savedFeed);
@@ -122,12 +122,12 @@ public class StyleService {
 					// 피드 태그 삭제 후 재등록
 					feedTagRepository.deleteAllByFeedId(entity.getId());
 					List<FeedTag> feedTags = TagExtractor.extract(entity).stream().toList();
-					feedTagRepository.batchUpdate(feedTags);
+					feedTagRepository.saveAllBulk(feedTags);
 
 					// 피드 상품태그 삭제 후 재등록
 					feedProductRepository.deleteAllByFeedId(entity.getId());
 					List<FeedProduct> feedProducts = toFeedProducts(entity.getId(), updateFeedServiceRequest.productIds());
-					feedProductRepository.batchUpdate(feedProducts);
+					feedProductRepository.saveAllBulk(feedProducts);
 
 					return entity;
 				})

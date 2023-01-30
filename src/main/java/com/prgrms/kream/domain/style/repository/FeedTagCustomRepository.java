@@ -6,6 +6,6 @@ import com.prgrms.kream.domain.style.model.FeedTag;
 
 public interface FeedTagCustomRepository {
 
-	List<Long> batchUpdate(List<FeedTag> feedTags);
+	List<Long> saveAllBulk(List<FeedTag> feedTags);
 
 }
