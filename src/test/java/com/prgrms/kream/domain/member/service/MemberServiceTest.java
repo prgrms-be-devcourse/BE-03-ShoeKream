@@ -16,6 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,11 +30,14 @@ import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +51,9 @@ class MemberServiceTest {
 
 	@Mock
 	private MemberRepository memberRepository;
+
+	@Mock
+	private DeliveryInfoRepository deliveryInfoRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -252,5 +261,103 @@ class MemberServiceTest {
 		).isInstanceOf(AccessDeniedException.class);
 
 		verify(memberRepository, times(0)).findById(anyLong());
+	}
+
+	@Test
+	@DisplayName("배송 정보 조회 성공")
+	void getDeliveryInfoPage_success() {
+		DeliveryInfo deliveryInfo1 = DeliveryInfo.builder()
+				.id(1L)
+				.name("name1")
+				.address("대한민국 서울 강남구~")
+				.detail("101호")
+				.phone("01012345678")
+				.postCode("12345")
+				.memberId(1L)
+				.build();
+
+		DeliveryInfo deliveryInfo2 = DeliveryInfo.builder()
+				.id(2L)
+				.name("name2")
+				.address("대한민국 서울 도봉구~")
+				.detail("102호")
+				.phone("01023456789")
+				.postCode("23456")
+				.memberId(1L)
+				.build();
+
+		DeliveryInfo deliveryInfo3 = DeliveryInfo.builder()
+				.id(3L)
+				.name("name3")
+				.address("대한민국 서울 노원구~")
+				.detail("103호")
+				.phone("01034567890")
+				.postCode("34567")
+				.memberId(1L)
+				.build();
+
+		DeliveryInfo deliveryInfo4 = DeliveryInfo.builder()
+				.id(4L)
+				.name("name4")
+				.address("대한민국 서울 중랑구~")
+				.detail("104")
+				.phone("01045678901")
+				.postCode("45678")
+				.memberId(1L)
+				.build();
+
+		DeliveryInfo deliveryInfo5 = DeliveryInfo.builder()
+				.id(5L)
+				.name("name5")
+				.address("대한민국 서울 종로구~")
+				.detail("105")
+				.phone("01056789012")
+				.postCode("56789")
+				.memberId(1L)
+				.build();
+
+		DeliveryInfo deliveryInfo6 = DeliveryInfo.builder()
+				.id(6L)
+				.name("name6")
+				.address("대한민국 서울 영등포구~")
+				.detail("서울")
+				.phone("01067890123")
+				.postCode("67890")
+				.memberId(1L)
+				.build();
+
+		List<DeliveryInfo> deliveryInfoList = List.of(
+				deliveryInfo1, deliveryInfo2, deliveryInfo3, deliveryInfo4, deliveryInfo5, deliveryInfo6
+		);
+
+		PageImpl<DeliveryInfo> result = new PageImpl<>(
+				deliveryInfoList, PageRequest.of(0, 5), 6);
+
+		when(deliveryInfoRepository.findAllByMemberId(
+				eq(1L),
+				eq(PageRequest.of(0, 5)))
+		).thenReturn(result);
+
+		Page<DeliveryInfoGetResponse> deliveryInfoPage =
+				memberService.getDeliveryInfoPage(1L, PageRequest.of(0, 5));
+
+		Assertions.assertThat(result)
+				.usingRecursiveComparison()
+				.isEqualTo(deliveryInfoPage);
+
+		verify(deliveryInfoRepository, times(1))
+				.findAllByMemberId(eq(1L), eq(PageRequest.of(0, 5)));
+	}
+
+	@Test
+	@DisplayName("배송 정보 조회 실패 - 다른 사용자 정보 조회")
+	void getDeliveryInfoPage_fail_notValidMember() {
+		Assertions.assertThatThrownBy(() ->
+						memberService.getDeliveryInfoPage(2L, PageRequest.of(0, 5))
+				)
+				.isInstanceOf(AccessDeniedException.class);
+
+		verify(deliveryInfoRepository, times(0))
+				.findAllByMemberId(eq(2L), eq(PageRequest.of(0, 5)));
 	}
 }
