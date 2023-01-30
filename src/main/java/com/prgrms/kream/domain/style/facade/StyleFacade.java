@@ -83,6 +83,7 @@ public class StyleFacade {
 	@Transactional
 	public void delete(long id) {
 		styleService.delete(id);
+		imageService.deleteAllByReference(id, DomainType.FEED);
 	}
 
 	@Transactional

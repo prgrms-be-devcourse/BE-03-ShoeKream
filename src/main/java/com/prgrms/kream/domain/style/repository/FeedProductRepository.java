@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.prgrms.kream.domain.style.model.FeedProduct;
 
-public interface FeedProductRepository extends JpaRepository<FeedProduct, Long> {
+public interface FeedProductRepository extends JpaRepository<FeedProduct, Long>, FeedProductCustomRepository {
 
 	List<FeedProduct> findAllByFeedId(Long feedId);
 
