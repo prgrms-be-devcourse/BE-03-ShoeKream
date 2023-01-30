@@ -25,7 +25,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		return jpaQueryFactory
 				.selectFrom(qProduct)
 				.where(
-						ltBProductId(cursorId),
+						ltProductId(cursorId),
 						qProduct.name.like(searchWord + "%")
 				)
 				.orderBy(qProduct.id.desc())
@@ -33,7 +33,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 				.fetch();
 	}
 
-	private BooleanExpression ltBProductId(Long cursorId) {
+	private BooleanExpression ltProductId(Long cursorId) {
 		if (cursorId == null) {
 			return null;
 		}
