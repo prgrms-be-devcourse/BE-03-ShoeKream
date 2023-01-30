@@ -7,7 +7,10 @@ import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
 import com.prgrms.kream.domain.bid.model.BuyingBid;
 import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
+import com.prgrms.kream.domain.product.model.Product;
+import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
+import com.prgrms.kream.domain.product.repository.ProductRepository;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,20 +32,55 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private Jackson2ObjectMapperBuilder objectMapper;
+	private Jackson2ObjectMapperBuilder objectMapperBuilder;
 
 	@Autowired
-	BuyingBidRepository repository;
+	BuyingBidRepository buyingBidRepository;
 
 	@Autowired
 	ProductOptionRepository productOptionRepository;
 
+	@Autowired
+	ProductRepository productRepository;
+
 	@BeforeEach
 	void wipeOut() {
-		repository.deleteAll();
+		buyingBidRepository.deleteAll();
 	}
 
 	void addFiveBuyingBids() {
+		Product product1 = Product.builder()
+										.id(1L)
+										.name("")
+										.description("")
+										.releasePrice(100)
+										.build();
+		Product product2 = Product.builder()
+										.id(1L)
+										.name("")
+										.description("")
+										.releasePrice(100)
+										.build();
+
+		ProductOption productOption1 =
+				ProductOption.builder()
+						.id(1L)
+						.size(100)
+						.product(product1)
+						.build();
+		ProductOption productOption2 =
+				ProductOption.builder()
+						.id(2L)
+						.size(100)
+						.product(product2)
+						.build();
+
+		productRepository.save(product1);
+		productRepository.save(product2);
+
+		productOptionRepository.save(productOption1);
+		productOptionRepository.save(productOption2);
+
 		BuyingBid buyingBid1 = BuyingBid.builder().id(1L).price(1560).productOptionId(1L).memberId(1L).build();
 		BuyingBid buyingBid2 = BuyingBid.builder().id(2L).price(1500).productOptionId(1L).memberId(2L).build();
 		BuyingBid buyingBid3 =
@@ -50,19 +88,21 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		BuyingBid buyingBid4 = BuyingBid.builder().id(4L).price(1500).productOptionId(2L).memberId(4L).build();
 		BuyingBid buyingBid5 = BuyingBid.builder().id(5L).price(1500).productOptionId(2L).memberId(5L).build();
 
-		repository.save(buyingBid1);
-		repository.save(buyingBid2);
-		repository.save(buyingBid3);
-		repository.save(buyingBid4);
-		repository.save(buyingBid5);
+		buyingBidRepository.save(buyingBid1);
+		buyingBidRepository.save(buyingBid2);
+		buyingBidRepository.save(buyingBid3);
+		buyingBidRepository.save(buyingBid4);
+		buyingBidRepository.save(buyingBid5);
 	}
 
 	@Test
 	@DisplayName("판매 입찰 등록 테스트")
 	void insertTest() throws Exception {
 		// Given
+		addFiveBuyingBids();
+
 		BuyingBidCreateRequest buyingBidCreateRequest =
-				new BuyingBidCreateRequest(1L, 2L, 3L, 45600, LocalDateTime.now());
+				new BuyingBidCreateRequest(6L, 6L, 1L, 1560, LocalDateTime.now());
 
 		// When
 		ResultActions resultActions =
@@ -71,14 +111,14 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
-										objectMapper.build().writeValueAsString(buyingBidCreateRequest)
+										objectMapperBuilder.build().writeValueAsString(buyingBidCreateRequest)
 								)
 				);
 
 		// Then
 		resultActions
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.data.id").value(1));
+				.andExpect(jsonPath("$.data.id").value(6));
 	}
 
 	@Test
