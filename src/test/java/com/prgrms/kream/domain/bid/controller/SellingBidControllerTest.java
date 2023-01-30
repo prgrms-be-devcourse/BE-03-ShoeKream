@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.bid.controller;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -7,17 +8,25 @@ import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
 import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
+import com.prgrms.kream.domain.bid.service.SellingBidService;
 import com.prgrms.kream.domain.product.model.Product;
 import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import javax.persistence.OptimisticLockException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,6 +52,9 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 	@Autowired
 	ProductRepository productRepository;
 
+	@Autowired
+	SellingBidService sellingBidService;
+
 	@BeforeEach
 	void wipeOut() {
 		sellingBidRepository.deleteAll();
@@ -50,17 +62,17 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 
 	void addFiveSellingBids() {
 		Product product1 = Product.builder()
-										.id(1L)
-										.name("")
-										.description("")
-										.releasePrice(100)
-										.build();
+				.id(1L)
+				.name("")
+				.description("")
+				.releasePrice(100)
+				.build();
 		Product product2 = Product.builder()
-										.id(1L)
-										.name("")
-										.description("")
-										.releasePrice(100)
-										.build();
+				.id(1L)
+				.name("")
+				.description("")
+				.releasePrice(100)
+				.build();
 
 		ProductOption productOption1 =
 				ProductOption.builder()
@@ -170,5 +182,33 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data").value("판매 입찰이 복구되었습니다"))
 				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("낙관적 락 테스트")
+	void optimisticLockTest() {
+		// Given
+		addFiveSellingBids();
+
+		int threadNum = 3;
+		ExecutorService executorService = Executors.newFixedThreadPool(threadNum);
+		List<Future<?>> futures = new ArrayList<>();
+		Exception result = new Exception();
+
+		// When
+		for (int i = 0; i < threadNum; i++) {
+			futures.add(executorService.submit(() -> sellingBidService.deleteById(1L)));
+		}
+
+		try {
+			for (Future<?> future : futures) {
+				future.get();
+			}
+		} catch (Exception e) {
+			result = (Exception)e.getCause();
+		}
+
+		// Then
+		assertThat(result).isInstanceOf(OptimisticLockingFailureException.class);
 	}
 }
