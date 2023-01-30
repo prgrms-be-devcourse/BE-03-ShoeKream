@@ -16,11 +16,13 @@ public class BuyingBidCustomRepositoryImpl implements BuyingBidCustomRepository 
 
 	QBuyingBid qBuyingBid = QBuyingBid.buyingBid;
 
+	// todo 현재 fetch() -> fetchFirst() 로 수정하기 . NPE 대처 방법 팔요
 	@Override
 	public Optional<BuyingBid> findHighestBuyingBidByProductOptionId(Long productOptionId) {
 		List<BuyingBid> buyingBids = jpaQueryFactory
 				.selectFrom(qBuyingBid)
 				.where(qBuyingBid.productOptionId.eq(productOptionId))
+				.where(qBuyingBid.isDeleted.isFalse())
 				.orderBy(qBuyingBid.price.desc())
 				.orderBy(qBuyingBid.createdAt.asc())
 				.limit(1)

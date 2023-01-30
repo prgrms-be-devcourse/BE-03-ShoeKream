@@ -17,19 +17,24 @@ public class SellingBidFacade {
 	private final SellingBidService service;
 
 	@Transactional
-	public SellingBidCreateResponse createSellingBid(SellingBidCreateRequest request) {
-		return service.createSellingBid(request);
+	public SellingBidCreateResponse register(SellingBidCreateRequest request) {
+		return service.register(request);
 	}
 
 	@Transactional(readOnly = true)
-	public SellingBidFindResponse findOneSellingBidById(Long id) {
+	public SellingBidFindResponse findById(Long id) {
 		List<Long> ids = Collections.singletonList(id);
 		SellingBidFindRequest request = new SellingBidFindRequest(ids);
-		return service.findOneSellingBidById(request);
+		return service.findById(request);
 	}
 
 	@Transactional
-	public void deleteOneSellingBidById(Long id) {
-		service.deleteOneSellingBidById(id);
+	public void deleteById(Long id) {
+		service.deleteById(id);
+	}
+
+	@Transactional
+	public void restoreById(Long id) {
+		service.restoreById(id);
 	}
 }
