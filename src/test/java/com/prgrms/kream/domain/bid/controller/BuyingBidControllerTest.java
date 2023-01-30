@@ -5,8 +5,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
+import com.prgrms.kream.domain.bid.model.BuyingBid;
 import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
+import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,29 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 	@Autowired
 	BuyingBidRepository repository;
 
+	@Autowired
+	ProductOptionRepository productOptionRepository;
+
+	@BeforeEach
+	void wipeOut() {
+		repository.deleteAll();
+	}
+
+	void addFiveBuyingBids() {
+		BuyingBid buyingBid1 = BuyingBid.builder().id(1L).price(1560).productOptionId(1L).memberId(1L).build();
+		BuyingBid buyingBid2 = BuyingBid.builder().id(2L).price(1500).productOptionId(1L).memberId(2L).build();
+		BuyingBid buyingBid3 =
+				BuyingBid.builder().id(3L).price(1440).productOptionId(1L).memberId(3L).isDeleted(true).build();
+		BuyingBid buyingBid4 = BuyingBid.builder().id(4L).price(1500).productOptionId(2L).memberId(4L).build();
+		BuyingBid buyingBid5 = BuyingBid.builder().id(5L).price(1500).productOptionId(2L).memberId(5L).build();
+
+		repository.save(buyingBid1);
+		repository.save(buyingBid2);
+		repository.save(buyingBid3);
+		repository.save(buyingBid4);
+		repository.save(buyingBid5);
+	}
+
 	@Test
 	@DisplayName("판매 입찰 등록 테스트")
 	void insertTest() throws Exception {
@@ -50,23 +76,26 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 				);
 
 		// Then
-		resultActions.andExpect(status().isCreated());
+		resultActions
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.data.id").value(1));
 	}
 
 	@Test
 	@DisplayName("컨트롤러에서 조회 테스트")
 	void findTest() throws Exception {
 		// Given
+		addFiveBuyingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bid/{id}", 2));
 
 		// Then
 		resultActions
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.memberId").value(2))
-				.andExpect(jsonPath("$.data.productOptionId").value(3))
-				.andExpect(jsonPath("$.data.price").value(45600))
+				.andExpect(jsonPath("$.data.productOptionId").value(1))
+				.andExpect(jsonPath("$.data.price").value(1500))
 				.andDo(print());
 	}
 
@@ -74,14 +103,32 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 	@DisplayName("컨트롤러에서 지우기 테스트")
 	void deleteTest() throws Exception {
 		// Given
+		addFiveBuyingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(delete("/api/v1/buying-bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bid/delete/{id}", 1));
 
 		// Then
 		resultActions
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data").value("구매 입찰이 삭제되었습니다"))
 				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("복구 테스트")
+	void restoreTest() throws Exception {
+		// Given
+		addFiveBuyingBids();
+
+		// When
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bid/restore/{id}", 3));
+
+		// Then
+		resultActions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").value("구매 입찰이 복구되었습니다"))
+				.andDo(print());
+
 	}
 }
