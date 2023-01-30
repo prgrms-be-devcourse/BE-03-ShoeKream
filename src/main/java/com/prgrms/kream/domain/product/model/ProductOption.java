@@ -47,4 +47,12 @@ public class ProductOption extends BaseTimeEntity {
 		this.size = size;
 		this.product = product;
 	}
+
+	public void updateHighestPrice(int price) {
+		this.highestPrice = price;
+	}
+
+	public void updateLowestPrice(int price) {
+		this.lowestPrice = price;
+	}
 }
