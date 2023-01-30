@@ -3,6 +3,7 @@ package com.prgrms.kream.common.exception;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -59,6 +60,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DuplicateKeyException.class)
 	public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
 		log.warn("중복 참여", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.CONFLICT)
+	@ExceptionHandler(OptimisticLockingFailureException.class)
+	public ErrorResponse optimisticLockingFailureException(OptimisticLockingFailureException exception){
+		log.warn("이미 주문이 완료된 입찰입니다", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }
