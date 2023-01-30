@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,9 @@ public class BuyingBid extends BaseTimeEntity {
 
 	@Column(name = "is_deleted", nullable = false, unique = false, columnDefinition = "BIT")
 	private boolean isDeleted;
+
+	@Version
+	private Long version;
 
 	@Builder
 	public BuyingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil,
