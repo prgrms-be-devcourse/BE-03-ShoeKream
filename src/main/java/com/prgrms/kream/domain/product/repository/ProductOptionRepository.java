@@ -11,7 +11,7 @@ import com.prgrms.kream.domain.product.model.ProductOption;
 
 public interface ProductOptionRepository extends JpaRepository<ProductOption, Long>, ProductOptionCustomRepository {
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("DELETE FROM ProductOption productOption WHERE productOption.product.id = :productId")
 	void deleteAllByProductId(Long productId);
 

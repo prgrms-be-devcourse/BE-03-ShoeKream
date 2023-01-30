@@ -13,7 +13,7 @@ public interface ImageRepository extends JpaRepository<Image, Long>, ImageCustom
 
 	List<Image> findAllByReferenceIdAndDomainType(Long referenceId, DomainType domainType);
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("DELETE FROM Image image WHERE image.referenceId = :referenceId AND image.domainType = :domainType")
 	void deleteAllByReferenceIdAndDomainType(Long referenceId, DomainType domainType);
 }
