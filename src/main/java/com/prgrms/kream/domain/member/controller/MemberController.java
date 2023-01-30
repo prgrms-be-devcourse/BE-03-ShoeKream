@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
@@ -102,6 +104,14 @@ public class MemberController {
 		return ApiResponse.of(
 				memberFacade.getDeliveryInfoPage(memberId, pageable)
 		);
+	}
+
+	@PostMapping("/{id}/delivery-infos")
+	@ResponseStatus(OK)
+	public ApiResponse<DeliveryInfoRegisterResponse> registerDeliveryInfo(
+			@RequestBody @Valid DeliveryInfoRegisterRequest deliveryInfoRegisterRequest
+	) {
+		return ApiResponse.of(memberFacade.registerDeliveryInfo(deliveryInfoRegisterRequest));
 	}
 
 }

@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
@@ -106,6 +107,19 @@ public class MemberMapper {
 				memberUpdateServiceResponse.phone(),
 				imagePaths
 		);
+	}
+
+	public static DeliveryInfo toDeliveryInfo(
+			DeliveryInfoRegisterRequest deliveryInfoRegisterRequest
+	) {
+		return DeliveryInfo.builder()
+				.name(deliveryInfoRegisterRequest.name())
+				.phone(deliveryInfoRegisterRequest.phone())
+				.address(deliveryInfoRegisterRequest.address())
+				.postCode(deliveryInfoRegisterRequest.postCode())
+				.detail(deliveryInfoRegisterRequest.detail())
+				.memberId(deliveryInfoRegisterRequest.memberId())
+				.build();
 	}
 
 	public static DeliveryInfoGetResponse toDeliveryInfoGetResponse(

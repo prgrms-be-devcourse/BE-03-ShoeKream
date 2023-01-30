@@ -17,14 +17,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.common.exception.DuplicatedEmailException;
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.common.mapper.MemberMapper;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
@@ -106,5 +109,14 @@ public class MemberService {
 
 		return deliveryInfoRepository.findAllByMemberId(memberId, pageable)
 				.map(MemberMapper::toDeliveryInfoGetResponse);
+	}
+
+	@Transactional
+	public DeliveryInfoRegisterResponse registerDeliveryInfo(DeliveryInfoRegisterRequest deliveryInfoRegisterRequest) {
+		if (!isValidAccess(deliveryInfoRegisterRequest.memberId())) {
+			throw new AccessDeniedException("잘못된 접근입니다.");
+		}
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(toDeliveryInfo(deliveryInfoRegisterRequest));
+		return new DeliveryInfoRegisterResponse(deliveryInfo.getId());
 	}
 }
