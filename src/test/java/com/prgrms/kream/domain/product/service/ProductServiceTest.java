@@ -186,7 +186,7 @@ public class ProductServiceTest {
 
 		//then
 		verify(productRepository, times(1)).delete(product);
-		verify(productOptionRepository, times(1)).deleteAllByProduct(product);
+		verify(productOptionRepository, times(1)).deleteAllByProductId(product.getId());
 	}
 
 	@Test
