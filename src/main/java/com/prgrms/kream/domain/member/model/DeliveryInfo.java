@@ -45,14 +45,18 @@ public class DeliveryInfo extends BaseTimeEntity {
 
 	@Builder
 	public DeliveryInfo(
-			Long id, String name, Phone phone, String postCode, String address, String detail, Long memberId
+			Long id, String name, String phone, String postCode, String address, String detail, Long memberId
 	) {
 		this.id = id;
 		this.name = name;
-		this.phone = phone;
+		this.phone = new Phone(phone);
 		this.postCode = postCode;
 		this.address = address;
 		this.detail = detail;
 		this.memberId = memberId;
+	}
+
+	public String getPhone() {
+		return this.phone.getPhone();
 	}
 }

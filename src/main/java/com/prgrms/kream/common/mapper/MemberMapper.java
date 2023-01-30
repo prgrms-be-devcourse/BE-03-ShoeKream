@@ -8,10 +8,12 @@ import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Member;
 
 import lombok.NoArgsConstructor;
@@ -104,5 +106,18 @@ public class MemberMapper {
 				memberUpdateServiceResponse.phone(),
 				imagePaths
 		);
+	}
+
+	public static DeliveryInfoGetResponse toDeliveryInfoGetResponse(
+			DeliveryInfo deliveryInfo
+	) {
+		return DeliveryInfoGetResponse.builder()
+				.id(deliveryInfo.getId())
+				.name(deliveryInfo.getName())
+				.phone(deliveryInfo.getPhone())
+				.postCode(deliveryInfo.getPostCode())
+				.address(deliveryInfo.getAddress())
+				.detail(deliveryInfo.getDetail())
+				.build();
 	}
 }

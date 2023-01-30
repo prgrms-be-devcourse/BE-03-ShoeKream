@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,13 @@ import com.prgrms.kream.common.mapper.MemberMapper;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,8 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+
+	private final DeliveryInfoRepository deliveryInfoRepository;
 
 	private final Jwt jwt;
 
@@ -90,5 +96,15 @@ public class MemberService {
 		);
 
 		return toMemberUpdateServiceResponse(member);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<DeliveryInfoGetResponse> getDeliveryInfoPage(Long memberId, Pageable pageable) {
+		if (!isValidAccess(memberId)) {
+			throw new AccessDeniedException("잘못된 접근입니다.");
+		}
+
+		return deliveryInfoRepository.findAllByMemberId(memberId, pageable)
+				.map(MemberMapper::toDeliveryInfoGetResponse);
 	}
 }

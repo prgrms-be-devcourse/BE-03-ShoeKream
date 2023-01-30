@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
@@ -90,4 +93,15 @@ public class MemberController {
 				memberFacade.updateMember(toMemberUpdateFacadeRequest(id, memberUpdateRequest))
 		);
 	}
+
+	@GetMapping("/{id}/delivery-infos")
+	@ResponseStatus(OK)
+	public ApiResponse<Page<DeliveryInfoGetResponse>> getDeliveryInfoPage(
+			@PathVariable("id") Long memberId, Pageable pageable
+	) {
+		return ApiResponse.of(
+				memberFacade.getDeliveryInfoPage(memberId, pageable)
+		);
+	}
+
 }
