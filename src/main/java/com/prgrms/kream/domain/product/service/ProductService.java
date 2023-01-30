@@ -34,7 +34,7 @@ public class ProductService {
 	public ProductRegisterResponse register(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		Product product = productRepository.save(toProduct(productRegisterFacadeRequest));
 
-		productOptionRepository.saveAll(
+		productOptionRepository.saveAllBulk(
 				toProductOptions(productRegisterFacadeRequest.sizes(), product)
 		);
 
@@ -67,7 +67,7 @@ public class ProductService {
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
 		productOptionRepository.deleteAllByProduct(product);
-		productOptionRepository.saveAll(
+		productOptionRepository.saveAllBulk(
 				toProductOptions(productFacadeUpdateRequest.sizes(), product)
 		);
 
