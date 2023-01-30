@@ -66,7 +66,7 @@ public class ProductService {
 		Product product = findProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
-		productOptionRepository.deleteAllByProduct(product);
+		productOptionRepository.deleteAllByProductId(product.getId());
 		productOptionRepository.saveAllBulk(
 				toProductOptions(productFacadeUpdateRequest.sizes(), product)
 		);
@@ -77,7 +77,7 @@ public class ProductService {
 	@Transactional
 	public void delete(Long productId) {
 		Product product = findProductEntity(productId);
-		productOptionRepository.deleteAllByProduct(product);
+		productOptionRepository.deleteAllByProductId(product.getId());
 		productRepository.delete(product);
 	}
 
