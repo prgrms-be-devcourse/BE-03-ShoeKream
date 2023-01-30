@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
@@ -281,6 +282,28 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.content[3].id").value(deliveryInfo4.getId()))
 				.andExpect(jsonPath("$.data.content[4].id").value(deliveryInfo5.getId()))
 				.andExpect(jsonPath("$.data.content[5].id").doesNotExist())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 저장 - 성공")
+	void registerDeliveryInfo_success() throws Exception {
+
+		DeliveryInfoRegisterRequest deliveryInfoRegisterRequest =
+				new DeliveryInfoRegisterRequest(
+						"name1",
+						"01012345678",
+						"12345",
+						"서울시 성동구~",
+						"101호",
+						memberId
+				);
+
+		mockMvc.perform(post("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoRegisterRequest))
+				)
+				.andExpect(status().isOk())
 				.andDo(print());
 	}
 }

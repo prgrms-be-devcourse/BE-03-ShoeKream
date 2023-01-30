@@ -27,10 +27,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.prgrms.kream.common.jwt.Jwt;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
@@ -359,5 +361,77 @@ class MemberServiceTest {
 
 		verify(deliveryInfoRepository, times(0))
 				.findAllByMemberId(eq(2L), eq(PageRequest.of(0, 5)));
+	}
+
+	@Test
+	@DisplayName("배송 정보 저장 성공")
+	void registerDeliveryInfo_success() {
+
+		String name = "name1";
+		String phone = "01012345678";
+		String postCode = "12345";
+		String address = "서울시 성동구~";
+		String detail = "101호";
+		Long memberId = 1L;
+
+		DeliveryInfoRegisterRequest deliveryInfoRegisterRequest =
+				new DeliveryInfoRegisterRequest(
+						name,
+						phone,
+						postCode,
+						address,
+						detail,
+						memberId
+				);
+
+		DeliveryInfo deliveryInfo = DeliveryInfo.builder()
+				.id(1L)
+				.name(name)
+				.phone(phone)
+				.address(address)
+				.postCode(postCode)
+				.detail(detail)
+				.memberId(memberId)
+				.build();
+
+		when(deliveryInfoRepository.save(any(DeliveryInfo.class)))
+				.thenReturn(deliveryInfo);
+
+		DeliveryInfoRegisterResponse deliveryInfoRegisterResponse
+				= memberService.registerDeliveryInfo(deliveryInfoRegisterRequest);
+
+		Assertions.assertThat(deliveryInfoRegisterResponse.deliveryInfoId())
+				.isEqualTo(1L);
+
+		verify(deliveryInfoRepository, times(1)).save(any(DeliveryInfo.class));
+
+	}
+
+	@Test
+	@DisplayName("배송 정보 저장 실패 - 로그인한 사용자와 다른 사용자에 대한 정보 추가")
+	void registerDeliveryInfo_fail_NotValidMember() {
+		String name = "name1";
+		String phone = "01012345678";
+		String postCode = "12345";
+		String address = "서울시 성동구~";
+		String detail = "101호";
+		Long memberId = 2L;
+
+		DeliveryInfoRegisterRequest deliveryInfoRegisterRequest =
+				new DeliveryInfoRegisterRequest(
+						name,
+						phone,
+						postCode,
+						address,
+						detail,
+						memberId
+				);
+
+		Assertions.assertThatThrownBy(() ->
+						memberService.registerDeliveryInfo(deliveryInfoRegisterRequest)
+				)
+				.isInstanceOf(AccessDeniedException.class);
+
+		verify(deliveryInfoRepository, times(0)).save(any(DeliveryInfo.class));
 	}
 }
