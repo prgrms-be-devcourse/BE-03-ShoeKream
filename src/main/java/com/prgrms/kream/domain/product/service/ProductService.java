@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +87,7 @@ public class ProductService {
 		ProductOption productOption = findProductOptionEntity(productOptionId);
 		int highestPrice = productOption.getHighestPrice();
 		if (highestPrice < newPrice) {
-			productOption.updateHighestPrice(newPrice);
+			updateHighestPrice(productOption, newPrice);
 		}
 	}
 
@@ -95,8 +96,28 @@ public class ProductService {
 		ProductOption productOption = findProductOptionEntity(productOptionId);
 		int lowestPrice = productOption.getLowestPrice();
 		if (lowestPrice == 0 || lowestPrice > newPrice) {
-			productOption.updateLowestPrice(newPrice);
+			updateLowestPrice(productOption, newPrice);
 		}
+	}
+
+	public void changeHighestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		updateHighestPrice(productOption, newPrice);
+	}
+
+	public void changLowestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		updateLowestPrice(productOption, newPrice);
+	}
+
+	@CacheEvict(value = "product", key = "#productOption.product.id")
+	public void updateHighestPrice(ProductOption productOption, int newPrice) {
+		productOption.updateHighestPrice(newPrice);
+	}
+
+	@CacheEvict(value = "product", key = "#productOption.product.id")
+	public void updateLowestPrice(ProductOption productOption, int newPrice) {
+		productOption.updateLowestPrice(newPrice);
 	}
 
 	private Product findProductEntity(Long productId) {
