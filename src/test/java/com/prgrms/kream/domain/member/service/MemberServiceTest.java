@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.prgrms.kream.common.jwt.Jwt;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
@@ -499,5 +500,12 @@ class MemberServiceTest {
 		).isInstanceOf(AccessDeniedException.class);
 
 		verify(deliveryInfoRepository, times(0)).findById(deliveryId);
+	}
+
+	@Test
+	@DisplayName("배송 정보 삭제 성공")
+	void deleteDeliveryInfo_success() {
+		memberService.deleteDeliveryInfo(new DeliveryInfoDeleteRequest(1L));
+		verify(deliveryInfoRepository, times(1)).deleteById(1L);
 	}
 }

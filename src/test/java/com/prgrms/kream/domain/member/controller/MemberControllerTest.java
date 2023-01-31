@@ -11,9 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
@@ -351,5 +354,33 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.address").value(address))
 				.andExpect(jsonPath("$.data.detail").value(detail))
 				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 삭제 성공")
+	void deleteDeliveryInfo_success() throws Exception {
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(
+				DeliveryInfo.builder()
+						.name("name")
+						.phone("01012345678")
+						.address("서울시 중랑구~")
+						.detail("101호")
+						.memberId(memberId)
+						.postCode("12345")
+						.build()
+		);
+
+		DeliveryInfoDeleteRequest deliveryInfoDeleteRequest = new DeliveryInfoDeleteRequest(deliveryInfo.getId());
+
+		mockMvc.perform(delete("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoDeleteRequest))
+				)
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		Assertions.assertThat(deliveryInfoRepository.findById(deliveryInfo.getId()))
+				.isEqualTo(Optional.empty());
+
 	}
 }
