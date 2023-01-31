@@ -15,11 +15,13 @@ public class SellingBidCustomRepositoryImpl implements SellingBidCustomRepositor
 
 	QSellingBid qSellingBid = QSellingBid.sellingBid;
 
+	// todo 현재 fetch() -> fetchFirst() 로 수정하기 . NPE 대처 방법 팔요
 	@Override
 	public Optional<SellingBid> findLowestSellingBidByProductOptionId(Long productOptionId) {
 		List<SellingBid> sellingBids = jpaQueryFactory
 				.selectFrom(qSellingBid)
 				.where(qSellingBid.productOptionId.eq(productOptionId))
+				.where(qSellingBid.isDeleted.isFalse())
 				.orderBy(qSellingBid.price.asc())
 				.orderBy(qSellingBid.createdAt.asc())
 				.limit(1)

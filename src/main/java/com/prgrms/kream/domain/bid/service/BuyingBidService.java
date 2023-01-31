@@ -8,6 +8,7 @@ import com.prgrms.kream.domain.bid.dto.response.BuyingBidCreateResponse;
 import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
 import com.prgrms.kream.domain.bid.model.BuyingBid;
 import com.prgrms.kream.domain.bid.repository.BuyingBidRepository;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,24 +21,33 @@ public class BuyingBidService {
 	private final BuyingBidRepository repository;
 
 	@Transactional
-	public BuyingBidCreateResponse createBuyingBid(BuyingBidCreateRequest buyingBidCreateRequest) {
+	public BuyingBidCreateResponse register(BuyingBidCreateRequest buyingBidCreateRequest) {
 		return toBuyingBidCreateResponse(repository.save(toBuyingBid(buyingBidCreateRequest)));
 	}
 
 	@Transactional(readOnly = true)
-	public BuyingBidFindResponse findOneBuyingBidById(BuyingBidFindRequest buyingBidFindRequest) {
+	public BuyingBidFindResponse findById(BuyingBidFindRequest buyingBidFindRequest) {
 		return repository.findById(buyingBidFindRequest.ids().get(0))
 				.map(BidMapper::toBuyingBidFindResponse)
 				.orElseThrow(EntityNotFoundException::new);
 	}
 
 	@Transactional
-	public void deleteOneBuyingBidById(Long id) {
-		repository.deleteById(id);
+	public void deleteById(Long id) {
+		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+		buyingBid.delete();
+	}
+
+	@Transactional
+	public void restoreById(Long id) {
+		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+		if (buyingBid.getValidUntil().isAfter(LocalDateTime.now())) {
+			buyingBid.restore();
+		}
 	}
 
 	@Transactional(readOnly = true)
-	public BuyingBidFindResponse findHighestBuyingBidByPrice(BuyingBidFindRequest buyingBidFindRequest) {
+	public BuyingBidFindResponse findHighestBuyingBidByProductOptionId(BuyingBidFindRequest buyingBidFindRequest) {
 		Optional<BuyingBid> buyingBid = repository.findHighestBuyingBidByProductOptionId(buyingBidFindRequest.ids().get(0));
 		return buyingBid.map(BidMapper::toBuyingBidFindResponse)
 				.orElseThrow(EntityNotFoundException::new);

@@ -20,13 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderFacade {
 	private final OrderService orderService;
 	private final SellingBidService sellingBidService;
-
 	private final BuyingBidService buyingBidService;
 
 	@Transactional
 	public OrderCreateResponse createOrderBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
 		SellingBidFindResponse sellingBidFindResponse =
-				sellingBidService.findOneSellingBidById(new SellingBidFindRequest(
+				sellingBidService.findById(new SellingBidFindRequest(
 						Collections.singletonList(orderCreateFacadeRequest.bidId())));
 
 		// TODO 자신의 ID를 가져오는 방법 생각하기
@@ -35,7 +34,7 @@ public class OrderFacade {
 						sellingBidFindResponse.productOptionId(), sellingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
-		sellingBidService.deleteOneSellingBidById(sellingBidFindResponse.id());
+		sellingBidService.deleteById(sellingBidFindResponse.id());
 
 		return orderService.createOrder(orderCreateServiceRequest);
 	}
@@ -43,7 +42,7 @@ public class OrderFacade {
 	@Transactional
 	public OrderCreateResponse createOrderByBuyingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
 		BuyingBidFindResponse buyingBidFindResponse =
-				buyingBidService.findOneBuyingBidById(new BuyingBidFindRequest(
+				buyingBidService.findById(new BuyingBidFindRequest(
 						Collections.singletonList(orderCreateFacadeRequest.bidId())));
 
 		OrderCreateServiceRequest orderCreateServiceRequest =
@@ -51,7 +50,7 @@ public class OrderFacade {
 						buyingBidFindResponse.productOptionId(), buyingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
-		buyingBidService.deleteOneBuyingBidById(buyingBidFindResponse.id());
+		buyingBidService.deleteById(buyingBidFindResponse.id());
 
 		return orderService.createOrder(orderCreateServiceRequest);
 	}

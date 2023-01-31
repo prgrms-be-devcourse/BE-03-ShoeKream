@@ -1,18 +1,16 @@
 package com.prgrms.kream.domain.bid.model;
 
-import static lombok.AccessLevel.PROTECTED;
-
+import static lombok.AccessLevel.*;
+import com.prgrms.kream.common.model.BaseTimeEntity;
 import java.time.LocalDateTime;
-
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.prgrms.kream.common.model.BaseTimeEntity;
-
+import javax.persistence.Version;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,14 +36,28 @@ public class BuyingBid extends BaseTimeEntity {
 	@Column(name = "valid_until", nullable = false, unique = false)
 	private LocalDateTime validUntil;
 
+	@Column(name = "is_deleted", nullable = false, unique = false, columnDefinition = "BIT")
+	private boolean isDeleted;
+
+	@Version
+	private Long version;
+
 	@Builder
-	public BuyingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil) {
+	public BuyingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil,
+			boolean isDeleted) {
 		this.id = id;
 		this.memberId = memberId;
 		this.productOptionId = productOptionId;
 		this.price = price;
-		// TODO Objects.requireNonNullElse(validUntil, LocalDateTime.now().plusDays(30));
-		// 으로 수정하기(기본값 설정)
-		this.validUntil = validUntil;
+		this.validUntil = Objects.requireNonNullElse(validUntil, LocalDateTime.now().plusDays(30));
+		this.isDeleted = Objects.requireNonNullElse(isDeleted, false);
+	}
+
+	public void delete() {
+		this.isDeleted = true;
+	}
+
+	public void restore() {
+		this.isDeleted = false;
 	}
 }
