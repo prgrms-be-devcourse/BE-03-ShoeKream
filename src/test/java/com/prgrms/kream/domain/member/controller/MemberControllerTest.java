@@ -11,9 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +42,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 @SpringBootTest
@@ -69,6 +76,9 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Autowired
 	private ImageRepository imageRepository;
+
+	@Autowired
+	private DeliveryInfoRepository deliveryInfoRepository;
 
 	static Long memberId;
 
@@ -199,7 +209,179 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.imagePaths[0]").value("http://testURL"))
 				.andDo(print());
 
-		verify(amazonS3, times(1)).putObject(eq(bucket), anyString(), any(InputStream.class), any(ObjectMetadata.class));
+		verify(amazonS3, times(1))
+				.putObject(eq(bucket), anyString(), any(InputStream.class), any(ObjectMetadata.class));
 		verify(amazonS3, times(1)).getUrl(eq(bucket), anyString());
+	}
+
+	@Test
+	@DisplayName("배송 정보 조회 성공")
+	void getDeliveryInfoPage_success() throws Exception {
+		DeliveryInfo deliveryInfo1 = DeliveryInfo.builder()
+				.name("name1")
+				.address("대한민국 서울 강남구~")
+				.detail("101호")
+				.phone("01012345678")
+				.postCode("12345")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfo deliveryInfo2 = DeliveryInfo.builder()
+				.name("name2")
+				.address("대한민국 서울 도봉구~")
+				.detail("102호")
+				.phone("01023456789")
+				.postCode("23456")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfo deliveryInfo3 = DeliveryInfo.builder()
+				.name("name3")
+				.address("대한민국 서울 노원구~")
+				.detail("103호")
+				.phone("01034567890")
+				.postCode("34567")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfo deliveryInfo4 = DeliveryInfo.builder()
+				.name("name4")
+				.address("대한민국 서울 중랑구~")
+				.detail("104")
+				.phone("01045678901")
+				.postCode("45678")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfo deliveryInfo5 = DeliveryInfo.builder()
+				.name("name5")
+				.address("대한민국 서울 종로구~")
+				.detail("105")
+				.phone("01056789012")
+				.postCode("56789")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfo deliveryInfo6 = DeliveryInfo.builder()
+				.name("name6")
+				.address("대한민국 서울 영등포구~")
+				.detail("서울")
+				.phone("01067890123")
+				.postCode("67890")
+				.memberId(memberId)
+				.build();
+
+		List<DeliveryInfo> deliveryInfoList =
+				List.of(deliveryInfo1, deliveryInfo2, deliveryInfo3, deliveryInfo4, deliveryInfo5, deliveryInfo6);
+
+		deliveryInfoRepository.saveAll(deliveryInfoList);
+
+		mockMvc.perform(get("/api/v1/member/{id}/delivery-infos", memberId)
+						.param("page", "0")
+						.param("size", "5")
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.content[0].id").value(deliveryInfo1.getId()))
+				.andExpect(jsonPath("$.data.content[1].id").value(deliveryInfo2.getId()))
+				.andExpect(jsonPath("$.data.content[2].id").value(deliveryInfo3.getId()))
+				.andExpect(jsonPath("$.data.content[3].id").value(deliveryInfo4.getId()))
+				.andExpect(jsonPath("$.data.content[4].id").value(deliveryInfo5.getId()))
+				.andExpect(jsonPath("$.data.content[5].id").doesNotExist())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 저장 - 성공")
+	void registerDeliveryInfo_success() throws Exception {
+
+		DeliveryInfoRegisterRequest deliveryInfoRegisterRequest =
+				new DeliveryInfoRegisterRequest(
+						"name1",
+						"01012345678",
+						"12345",
+						"서울시 성동구~",
+						"101호",
+						memberId
+				);
+
+		mockMvc.perform(post("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoRegisterRequest))
+				)
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 수정 성공")
+	void updateDeliveryInfoPage_success() throws Exception {
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(
+				DeliveryInfo.builder()
+						.name("name")
+						.phone("01012345678")
+						.address("서울시 중랑구~")
+						.detail("101호")
+						.memberId(memberId)
+						.postCode("12345")
+						.build()
+		);
+
+		Long deliveryId = deliveryInfo.getId();
+		String name = "changedName";
+		String phone = "01023456789";
+		String postCode = "12345";
+		String address = "서울시 성동구~";
+		String detail = "201호";
+
+		DeliveryInfoUpdateRequest deliveryInfoUpdateRequest =
+				new DeliveryInfoUpdateRequest(
+						deliveryId,
+						name,
+						phone,
+						postCode,
+						address,
+						detail,
+						memberId
+				);
+
+		mockMvc.perform(put("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoUpdateRequest))
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.name").value(name))
+				.andExpect(jsonPath("$.data.phone").value(phone))
+				.andExpect(jsonPath("$.data.postCode").value(postCode))
+				.andExpect(jsonPath("$.data.address").value(address))
+				.andExpect(jsonPath("$.data.detail").value(detail))
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 삭제 성공")
+	void deleteDeliveryInfo_success() throws Exception {
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(
+				DeliveryInfo.builder()
+						.name("name")
+						.phone("01012345678")
+						.address("서울시 중랑구~")
+						.detail("101호")
+						.memberId(memberId)
+						.postCode("12345")
+						.build()
+		);
+
+		DeliveryInfoDeleteRequest deliveryInfoDeleteRequest = new DeliveryInfoDeleteRequest(deliveryInfo.getId());
+
+		mockMvc.perform(delete("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoDeleteRequest))
+				)
+				.andExpect(status().isOk())
+				.andDo(print());
+
+		Assertions.assertThat(deliveryInfoRepository.findById(deliveryInfo.getId()))
+				.isEqualTo(Optional.empty());
+
 	}
 }
