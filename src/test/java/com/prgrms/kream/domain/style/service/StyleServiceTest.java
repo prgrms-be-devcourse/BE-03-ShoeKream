@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -94,14 +95,16 @@ class StyleServiceTest {
 	@DisplayName("피드를 등록할 수 있다.")
 	void testRegister() {
 		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
-		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(FEED_TAGS.stream().toList());
-		when(feedProductRepository.saveAll(Mockito.<FeedProduct>anyIterable())).thenReturn(FEED_PRODUCTS);
+		when(feedTagRepository.saveAllBulk(Mockito.<FeedTag>anyList()))
+				.thenReturn(FEED_TAGS.stream().map(FeedTag::getId).toList());
+		when(feedProductRepository.saveAllBulk(Mockito.<FeedProduct>anyList()))
+				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 
 		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
 
 		verify(feedRepository).save(any(Feed.class));
-		verify(feedTagRepository).saveAll(Mockito.<FeedTag>anyIterable());
-		verify(feedProductRepository).saveAll(Mockito.<FeedProduct>anyIterable());
+		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
+		verify(feedProductRepository).saveAllBulk(Mockito.<FeedProduct>anyList());
 		assertThat(feedResponse.id()).isEqualTo(1L);
 	}
 
@@ -118,8 +121,10 @@ class StyleServiceTest {
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() {
 		when(feedRepository.save(any(Feed.class))).thenReturn(FEED);
-		when(feedTagRepository.saveAll(Mockito.<FeedTag>anyIterable())).thenReturn(List.copyOf(FEED_TAGS));
-		when(feedProductRepository.saveAll(Mockito.<FeedProduct>anyIterable())).thenReturn(List.copyOf(FEED_PRODUCTS));
+		when(feedTagRepository.saveAllBulk(Mockito.<FeedTag>anyList()))
+				.thenReturn(FEED_TAGS.stream().map(FeedTag::getId).toList());
+		when(feedProductRepository.saveAllBulk(Mockito.<FeedProduct>anyList()))
+				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
 		UpdateFeedServiceResponse updateFeedServiceResponse =
@@ -131,9 +136,9 @@ class StyleServiceTest {
 		verify(feedRepository).findById(FEED.getId());
 		verify(feedRepository).save(any(Feed.class));
 		verify(feedTagRepository).deleteAllByFeedId(FEED.getId());
-		verify(feedTagRepository).saveAll(Mockito.<FeedTag>anyIterable());
+		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
 		verify(feedProductRepository).deleteAllByFeedId(FEED.getId());
-		verify(feedProductRepository).saveAll(Mockito.<FeedProduct>anyIterable());
+		verify(feedProductRepository).saveAllBulk(Mockito.<FeedProduct>anyList());
 		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
@@ -208,6 +213,28 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize());
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
 	}
+
+	@Test
+	@DisplayName("상품 식별자를 기준으로 피드를 조회할 수 있다.")
+	void testGetFeedsByProduct() {
+		FEED.setProductIds(Collections.emptyList());
+		when(feedRepository.findAllByProduct(
+				1L,
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize()
+		)).thenReturn(Collections.emptyList());
+
+		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByProduct(
+				getFeedServiceRequest(),
+				1L);
+
+		verify(feedRepository).findAllByProduct(
+				1L,
+				getFeedServiceRequest().cursorId(),
+				getFeedServiceRequest().pageSize());
+		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isEmpty();
+	}
+
 
 	@Test
 	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")

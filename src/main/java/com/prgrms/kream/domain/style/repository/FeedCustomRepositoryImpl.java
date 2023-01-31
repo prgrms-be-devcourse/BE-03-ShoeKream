@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.QFeed;
+import com.prgrms.kream.domain.style.model.QFeedProduct;
 import com.prgrms.kream.domain.style.model.QFeedTag;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -25,6 +26,8 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	QFeed qFeed = QFeed.feed;
 
 	QFeedTag qFeedTag = QFeedTag.feedTag;
+
+	QFeedProduct qFeedProduct = QFeedProduct.feedProduct;
 
 	@Override
 	public List<Feed> findAllByTag(String tag, Long cursorId, int pageSize) {
@@ -48,6 +51,22 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 				.selectFrom(qFeed)
 				.where(
 						qFeed.authorId.eq(memberId),
+						loeFeedId(cursorId)
+				)
+				.orderBy(qFeed.id.desc())
+				.limit(pageSize+1)
+				.fetch();
+	}
+
+	@Override
+	public List<Feed> findAllByProduct(Long productId, Long cursorId, int pageSize) {
+		return jpaQueryFactory
+				.selectFrom(qFeed)
+				.where(qFeed.id.in(
+						JPAExpressions
+								.select(qFeedProduct.feedId)
+								.from(qFeedProduct)
+								.where(qFeedProduct.productId.eq(productId))),
 						loeFeedId(cursorId)
 				)
 				.orderBy(qFeed.id.desc())

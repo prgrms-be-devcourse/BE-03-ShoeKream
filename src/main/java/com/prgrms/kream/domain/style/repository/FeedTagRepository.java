@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.prgrms.kream.domain.style.model.FeedTag;
 
-public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
+public interface FeedTagRepository extends JpaRepository<FeedTag, Long>, FeedTagCustomRepository {
 
 	@Modifying
 	@Query("delete from FeedTag feedTag where feedTag.feedId = :feedId")
