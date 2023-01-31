@@ -1,6 +1,7 @@
 package com.prgrms.kream.domain.order.controller;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.order.dto.request.OrderCancelRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
@@ -46,5 +47,13 @@ public class OrderController {
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<OrderFindResponse> findById(@Valid @RequestBody OrderFindRequest orderFindRequest) {
 		return ApiResponse.of(orderFacade.findById(orderFindRequest));
+	}
+
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<String> deleteById(@PathVariable("id") Long id) {
+		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
+		orderFacade.deleteById(orderCancelRequest);
+		return ApiResponse.of("주문이 삭제되었습니다");
 	}
 }

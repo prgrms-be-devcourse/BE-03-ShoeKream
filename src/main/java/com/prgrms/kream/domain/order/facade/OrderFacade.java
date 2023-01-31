@@ -6,10 +6,10 @@ import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
 import com.prgrms.kream.domain.bid.dto.response.SellingBidFindResponse;
 import com.prgrms.kream.domain.bid.service.BuyingBidService;
 import com.prgrms.kream.domain.bid.service.SellingBidService;
+import com.prgrms.kream.domain.order.dto.request.OrderCancelRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
-import com.prgrms.kream.domain.order.dto.response.OrderCancelResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
 import com.prgrms.kream.domain.order.service.OrderService;
@@ -65,5 +65,10 @@ public class OrderFacade {
 	@Transactional(readOnly = true)
 	public OrderFindResponse findById(OrderFindRequest orderFindRequest){
 		return orderService.findById(orderFindRequest);
+	}
+
+	@Transactional
+	public void deleteById(OrderCancelRequest orderCancelRequest){
+		orderService.deleteById(orderCancelRequest);
 	}
 }
