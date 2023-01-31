@@ -5,7 +5,7 @@ import javax.validation.constraints.Positive;
 
 public record DeliveryInfoDeleteRequest(
 		@NotNull
-		@Positive(message = "deliveryInfoId는 자연수여야 합니다.")
+		@Positive(message = "deliveryInfoId는 자연수여야 합니다")
 		Long deliveryInfoId
 ) {
 }
