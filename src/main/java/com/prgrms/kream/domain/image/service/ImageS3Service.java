@@ -4,16 +4,18 @@ import static com.prgrms.kream.common.mapper.ImageMapper.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.prgrms.kream.common.exception.UploadFailedException;
+import com.prgrms.kream.common.exception.FileDeleteFailedException;
+import com.prgrms.kream.common.exception.FileUploadFailedException;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
@@ -42,13 +44,28 @@ public class ImageS3Service implements ImageService {
 
 	@Override
 	public List<String> getAll(Long referenceId, DomainType domainType) {
-		List<Image> images = imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
-		return toImagePathDto(images);
+		return toImagePathDto(getImageEntities(referenceId, domainType));
 	}
 
 	@Override
 	public void deleteAllByReference(Long referenceId, DomainType domainType) {
+		List<Image> images = getImageEntities(referenceId, domainType);
+		images.stream()
+				.map(image -> image.getFullPath().substring(56))
+				.forEach(this::deleteImage);
 		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
+	}
+
+	private List<Image> getImageEntities(Long referenceId, DomainType domainType) {
+		return imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
+	}
+
+	private void deleteImage(String fileName) {
+		try {
+			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+		} catch (AmazonServiceException e) {
+			throw new FileDeleteFailedException("Failed to delete (S3)");
+		}
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
@@ -78,15 +95,9 @@ public class ImageS3Service implements ImageService {
 			objectMetadata.setContentLength(multipartFile.getInputStream().available());
 			amazonS3.putObject(bucket, uniqueName, multipartFile.getInputStream(), objectMetadata);
 		} catch (IOException e) {
-			throw new UploadFailedException("save to s3 failed");
+			throw new FileUploadFailedException("Failed to save (S3)");
 		}
 
 		return amazonS3.getUrl(bucket, uniqueName).toString();
-	}
-
-	private String createUniqueName(String originalName) {
-		String uuid = UUID.randomUUID().toString();
-
-		return uuid + "-" + originalName;
 	}
 }
