@@ -86,7 +86,7 @@ public class ProductService {
 		ProductOption productOption = findProductOptionEntity(productOptionId);
 		int highestPrice = productOption.getHighestPrice();
 		if (highestPrice < newPrice) {
-			productOption.updateHighestPrice(newPrice);
+			updateHighestPrice(productOption, newPrice);
 		}
 	}
 
@@ -95,8 +95,26 @@ public class ProductService {
 		ProductOption productOption = findProductOptionEntity(productOptionId);
 		int lowestPrice = productOption.getLowestPrice();
 		if (lowestPrice == 0 || lowestPrice > newPrice) {
-			productOption.updateLowestPrice(newPrice);
+			updateLowestPrice(productOption, newPrice);
 		}
+	}
+
+	public void changeHighestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		updateHighestPrice(productOption, newPrice);
+	}
+
+	public void changLowestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		updateLowestPrice(productOption, newPrice);
+	}
+
+	public void updateHighestPrice(ProductOption productOption, int newPrice) {
+		productOption.updateHighestPrice(newPrice);
+	}
+
+	public void updateLowestPrice(ProductOption productOption, int newPrice) {
+		productOption.updateLowestPrice(newPrice);
 	}
 
 	private Product findProductEntity(Long productId) {
