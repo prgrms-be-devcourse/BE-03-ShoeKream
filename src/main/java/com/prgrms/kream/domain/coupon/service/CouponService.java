@@ -15,19 +15,25 @@ import com.prgrms.kream.domain.coupon.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CouponService {
 
 	private final CouponRepository couponRepository;
 
-	@Transactional(readOnly = true)
-	public CouponResponse getCouponById(Long couponId) {
+	@Transactional
+	public CouponResponse getCouponById(long couponId) {
 		return toCouponResponse(getCoupon(couponId));
 	}
 
+	public boolean validCouponId(long couponId) {
+		return couponRepository.existsById(couponId);
+	}
+
 	@Transactional
-	public void decreaseCouponAmount(Long couponId) {
-		getCoupon(couponId).decreaseAmount();
+	public void decreaseCouponAmount(long couponId) {
+		Coupon coupon = getCoupon(couponId);
+		coupon.decreaseAmount();
 	}
 
 	@Transactional
@@ -39,7 +45,11 @@ public class CouponService {
 		return toCouponResponse(savedCoupon);
 	}
 
-	private Coupon getCoupon(Long couponId) {
+	public boolean checkCouponAmount(long couponId) {
+		return getCoupon(couponId).isSoldOut();
+	}
+
+	private Coupon getCoupon(long couponId) {
 		return couponRepository.findById(couponId)
 				.orElseThrow(
 						() -> new EntityNotFoundException("존재하지 않는 Coupon couponId: " + couponId)

@@ -1,73 +1,78 @@
 package com.prgrms.kream.domain.coupon.service;
 
-import java.util.Objects;
-
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.model.CouponEventLocalQueue;
+import com.prgrms.kream.domain.coupon.repository.CouponEventRedisRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class CouponEventRedisService {
-	private final RedisTemplate<Long, CouponEventRegisterRequest> couponEventRedisTemplate;
-	private long throughput = 100;
+	private final CouponEventRedisRepository couponEventRedisRepository;
+	private long throughput = DEFAULT_THROUGHPUT;
+	private static final long DEFAULT_THROUGHPUT = 100L;
 
-	public void addRedisQueue(CouponEventRegisterRequest couponEventRegisterRequest) {
-		couponEventRedisTemplate.opsForZSet().add(
-				couponEventRegisterRequest.couponId(),
-				//TODO memberId만 넣을지 고민
-				couponEventRegisterRequest,
-				System.currentTimeMillis()
-		);
+	public long addRedisQueue(CouponEventRegisterRequest couponEventRegisterRequest) {
+		couponEventRedisRepository.add(couponEventRegisterRequest);
+		return getSize(couponEventRegisterRequest.couponId());
 	}
 
-	public Long getRedisQueueSize(Long couponId) {
-		return couponEventRedisTemplate.opsForZSet()
-				.zCard(couponId);
+	public Long getSize(long couponId) {
+		return couponEventRedisRepository.size(couponId);
 	}
 
-	public void toLocalQueue(Long couponId) {
+	public void toQueue(long couponId) {
 		tuningThroughput();
-		long size = getRedisQueueSize(couponId);
+		long size = getSize(couponId);
 
 		if (size > throughput) {
-			addLocalQueue(couponId, throughput);
+			addToQueue(couponId, throughput);
 			return;
 		}
 		if (size <= throughput) {
-			addLocalQueue(couponId, size);
+			addToQueue(couponId, size);
 			return;
 		}
 	}
 
-	private void addLocalQueue(Long couponId, Long size) {
+	//Option 1 Redis -> LocalQueue pop
+	private void addToQueue(long couponId, long size) {
 		for (int i = 0; i < size; i++) {
 			CouponEventLocalQueue.addQueue(
-					Objects.requireNonNull(
-							couponEventRedisTemplate.opsForZSet()
-									.popMin(couponId)
-							).getValue()
+					couponEventRedisRepository.pop(couponId)
 			);
 		}
 	}
 
+	//Option 2 Local Queue 없이 순차적으로 Redis 에서 pop해서서 사용
+	// public CouponEventRegisterRequest pop(long couponId) {
+	// 	return Objects.requireNonNull(
+	// 			couponEventRedisTemplate.opsForZSet()
+	// 					.popMin(couponId)
+	// 	).getValue();
+	// }
+
+	private Long getRank(CouponEventRegisterRequest couponEventRegisterRequest) {
+		return couponEventRedisRepository.rank(couponEventRegisterRequest);
+	}
+
 	private void tuningThroughput() {
+		//TODO 처리량을 보기 위함, 나중에 삭제
 		System.out.println(throughput + "#########");
-		long size = CouponEventLocalQueue.size();
-		if (size == 0) {
-			throughput += 10;
+		long queueSize = CouponEventLocalQueue.size();
+		if (queueSize == 0) {
+			throughput += 15;
 			return;
 		}
-		if (size > throughput) {
+		if (queueSize > throughput) {
 			throughput = 0;
 			return;
 		}
-		if (size > 0) {
-			throughput -= size;
+		if (queueSize > 0) {
+			throughput -= queueSize;
 			return;
 		}
 	}

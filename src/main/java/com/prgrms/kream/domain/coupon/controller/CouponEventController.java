@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
-import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.facade.CouponFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -33,13 +32,11 @@ public class CouponEventController {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<CouponEventResponse> applyCouponEvent(
+	public ApiResponse<String> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		CouponEventResponse couponEventResponse =
-				couponFacade.applyCouponEvent(couponEventRegisterRequest);
-
-		return ApiResponse.of(couponEventResponse);
+		long queueSize = couponFacade.applyCountEvent(couponEventRegisterRequest);
+		return ApiResponse.of("이벤트 응모 완료 현재 대기번호 : " + queueSize);
 	}
 
 	/**
