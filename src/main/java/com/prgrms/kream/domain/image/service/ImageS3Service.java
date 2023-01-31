@@ -4,7 +4,6 @@ import static com.prgrms.kream.common.mapper.ImageMapper.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -82,11 +81,5 @@ public class ImageS3Service implements ImageService {
 		}
 
 		return amazonS3.getUrl(bucket, uniqueName).toString();
-	}
-
-	private String createUniqueName(String originalName) {
-		String uuid = UUID.randomUUID().toString();
-
-		return uuid + "-" + originalName;
 	}
 }

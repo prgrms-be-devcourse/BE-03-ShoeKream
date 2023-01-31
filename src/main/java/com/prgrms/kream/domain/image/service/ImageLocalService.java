@@ -5,7 +5,6 @@ import static com.prgrms.kream.common.mapper.ImageMapper.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -84,18 +83,5 @@ public class ImageLocalService implements ImageService {
 
 	private String getFullPath(String uniqueName) {
 		return uploadPath + uniqueName;
-	}
-
-	private String createUniqueName(String originalName) {
-		String ext = extractExtension(originalName);
-		String uuid = UUID.randomUUID().toString();
-
-		return uuid + "-" + originalName + "." + ext;
-	}
-
-	private String extractExtension(String originalName) {
-		int pos = originalName.lastIndexOf(".");
-
-		return originalName.substring(pos + 1);
 	}
 }
