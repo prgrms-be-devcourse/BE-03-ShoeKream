@@ -28,11 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
@@ -433,5 +435,69 @@ class MemberServiceTest {
 				.isInstanceOf(AccessDeniedException.class);
 
 		verify(deliveryInfoRepository, times(0)).save(any(DeliveryInfo.class));
+	}
+
+	@Test
+	@DisplayName("배송 정보 수정 성공")
+	void updateDeliveryInfo_success() {
+		Long deliveryId = 1L;
+		Long memberId = 1L;
+
+		DeliveryInfo deliveryInfo = DeliveryInfo.builder()
+				.id(deliveryId)
+				.name("name1")
+				.phone("01012345678")
+				.detail("101호")
+				.address("서울시 성동구~")
+				.postCode("12345")
+				.memberId(memberId)
+				.build();
+
+		DeliveryInfoUpdateRequest deliveryInfoUpdateRequest =
+				new DeliveryInfoUpdateRequest(
+						deliveryId,
+						"changedName",
+						"01023456789",
+						"23456",
+						"서울시 강동구~",
+						"201호",
+						memberId
+				);
+
+		when(deliveryInfoRepository.findById(deliveryId))
+				.thenReturn(Optional.of(deliveryInfo));
+
+		DeliveryInfoUpdateResponse deliveryInfoUpdateResponse
+				= memberService.updateDeliveryInfo(deliveryInfoUpdateRequest);
+
+		Assertions.assertThat(deliveryInfoUpdateResponse)
+				.usingRecursiveComparison()
+				.isEqualTo(deliveryInfoUpdateRequest);
+
+		verify(deliveryInfoRepository, times(1)).findById(deliveryId);
+	}
+
+	@Test
+	@DisplayName("배송 정보 수정 실패 - 로그인한 사용자와 다른 사용자에 대한 정보 수정")
+	void updateDeliveryInfo_fail_NotValidMember() {
+		Long deliveryId = 1L;
+		Long memberId = 2L;
+
+		DeliveryInfoUpdateRequest deliveryInfoUpdateRequest =
+				new DeliveryInfoUpdateRequest(
+						deliveryId,
+						"changedName",
+						"01023456789",
+						"23456",
+						"서울시 강동구~",
+						"201호",
+						memberId
+				);
+
+		Assertions.assertThatThrownBy(
+				() -> memberService.updateDeliveryInfo(deliveryInfoUpdateRequest)
+		).isInstanceOf(AccessDeniedException.class);
+
+		verify(deliveryInfoRepository, times(0)).findById(deliveryId);
 	}
 }

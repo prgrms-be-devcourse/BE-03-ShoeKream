@@ -41,6 +41,7 @@ import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
@@ -304,6 +305,51 @@ class MemberControllerTest extends MysqlTestContainer {
 						.content(objectMapper.writeValueAsString(deliveryInfoRegisterRequest))
 				)
 				.andExpect(status().isOk())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("배송 정보 수정 성공")
+	void updateDeliveryInfoPage_success() throws Exception {
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(
+				DeliveryInfo.builder()
+						.name("name")
+						.phone("01012345678")
+						.address("서울시 중랑구~")
+						.detail("101호")
+						.memberId(memberId)
+						.postCode("12345")
+						.build()
+		);
+
+		Long deliveryId = deliveryInfo.getId();
+		String name = "changedName";
+		String phone = "01023456789";
+		String postCode = "12345";
+		String address = "서울시 성동구~";
+		String detail = "201호";
+
+		DeliveryInfoUpdateRequest deliveryInfoUpdateRequest =
+				new DeliveryInfoUpdateRequest(
+						deliveryId,
+						name,
+						phone,
+						postCode,
+						address,
+						detail,
+						memberId
+				);
+
+		mockMvc.perform(put("/api/v1/member/{id}/delivery-infos", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(deliveryInfoUpdateRequest))
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.name").value(name))
+				.andExpect(jsonPath("$.data.phone").value(phone))
+				.andExpect(jsonPath("$.data.postCode").value(postCode))
+				.andExpect(jsonPath("$.data.address").value(address))
+				.andExpect(jsonPath("$.data.detail").value(detail))
 				.andDo(print());
 	}
 }
