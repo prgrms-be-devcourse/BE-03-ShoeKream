@@ -2,11 +2,16 @@ package com.prgrms.kream.domain.order.controller;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
+import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
+import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
 import com.prgrms.kream.domain.order.facade.OrderFacade;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +29,7 @@ public class OrderController {
 	public ApiResponse<OrderCreateResponse> registerBySellingBid(
 			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
-		OrderCreateResponse orderCreateResponse = orderFacade.createOrderBySellingBid(orderCreateFacadeRequest);
+		OrderCreateResponse orderCreateResponse = orderFacade.registerBySellingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
 	}
 
@@ -33,7 +38,13 @@ public class OrderController {
 	public ApiResponse<OrderCreateResponse> registerByBuyingBid(
 			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
-		OrderCreateResponse orderCreateResponse = orderFacade.createOrderByBuyingBid(orderCreateFacadeRequest);
+		OrderCreateResponse orderCreateResponse = orderFacade.registerByBuyingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
+	}
+
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<OrderFindResponse> findById(@Valid @RequestBody OrderFindRequest orderFindRequest) {
+		return ApiResponse.of(orderFacade.findById(orderFindRequest));
 	}
 }
