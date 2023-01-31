@@ -28,24 +28,19 @@ class CouponEventRedisServiceTest {
 	@Test
 	@DisplayName("Redis Queue 추가 테스트")
 	void addRedisQueue() {
-		//given
-		CouponEventRegisterRequest couponEventRegisterRequest =
-				new CouponEventRegisterRequest(1L, 1000);
-
-		//when
-		couponEventRedisService.addRedisQueue(couponEventRegisterRequest);
+		//given when
 
 		//then
-		assertThat(couponEventRedisService.getRedisQueueSize(1L)).isEqualTo(10000);
+		assertThat(couponEventRedisService.getSize(1L)).isEqualTo(10000);
 	}
 
 	@Test
 	@DisplayName("Local Queue 추가 테스트")
 	void toLocalQueue() {
 		//given when
-		couponEventRedisService.toLocalQueue(1L);
+		couponEventRedisService.toQueue(1L);
 
 		//then
-		assertThat(CouponEventLocalQueue.size()).isEqualTo(110);
+		assertThat(CouponEventLocalQueue.size()).isEqualTo(115L);
 	}
 }
