@@ -13,7 +13,7 @@ drop table if exists follow cascade;
 drop table if exists image cascade;
 drop table if exists product_option cascade;
 drop table if exists selling_bid cascade;
-drop table if exists `transaction` cascade;
+drop table if exists `transaction_history` cascade;
 drop table if exists `member` cascade;
 drop table if exists feed_comment cascade;
 
@@ -85,11 +85,11 @@ CREATE TABLE `account`
     `updated_at` TIMESTAMP NOT NULL
 );
 
-CREATE TABLE `transaction`
+CREATE TABLE `transaction_history`
 (
     `id`               BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id`       BIGINT      NOT NULL,
-    `account`          INT         NOT NULL,
+    `amount`           INT         NOT NULL,
     `transaction_type` VARCHAR(10) NOT NULL,
     `created_at`       TIMESTAMP   NOT NULL,
     `updated_at`       TIMESTAMP   NOT NULL
