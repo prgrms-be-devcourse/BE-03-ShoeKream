@@ -52,8 +52,7 @@ public class OrderController {
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<String> deleteById(@PathVariable("id") Long id) {
-		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
-		orderFacade.deleteById(orderCancelRequest);
+		orderFacade.deleteById(id);
 		return ApiResponse.of("주문이 삭제되었습니다");
 	}
 }

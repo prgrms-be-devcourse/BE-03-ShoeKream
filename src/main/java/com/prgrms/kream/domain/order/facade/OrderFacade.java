@@ -12,11 +12,13 @@ import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
+import com.prgrms.kream.domain.order.model.Order;
 import com.prgrms.kream.domain.order.service.OrderService;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.prgrms.kream.common.mapper.OrderMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,7 +70,18 @@ public class OrderFacade {
 	}
 
 	@Transactional
-	public void deleteById(OrderCancelRequest orderCancelRequest){
+	public void deleteById(Long id){
+		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
+		OrderFindRequest orderFindRequest = new OrderFindRequest(id);
+		Order order = toOrder(orderService.findById(orderFindRequest));
+
+		// todo 주문 취소시 패널티를 준다(거래 금지 일시 or 수수료)
+		if (order.getIsBasedOnSellingBid()){
+			sellingBidService.restoreById(order.getBidId());
+		}else{
+			buyingBidService.restoreById(order.getBidId());
+		}
+
 		orderService.deleteById(orderCancelRequest);
 	}
 }

@@ -36,4 +36,18 @@ public class OrderMapper {
 				order.getOrderRequest()
 		);
 	}
+
+	public static Order toOrder(OrderFindResponse orderFindResponse) {
+		return Order.builder()
+				.id(orderFindResponse.id())
+				.bidId(orderFindResponse.bidId())
+				.isBasedOnSellingBid(orderFindResponse.isBasedOnSellingBid())
+				.buyerId(orderFindResponse.buyerId())
+				.sellerId(orderFindResponse.sellerId())
+				.productOptionId(orderFindResponse.productOptionId())
+				.price(orderFindResponse.price())
+				.orderStatus(orderFindResponse.orderStatus())
+				.orderRequest(orderFindResponse.orderRequest())
+				.build();
+	}
 }
