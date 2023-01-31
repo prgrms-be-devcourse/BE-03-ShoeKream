@@ -15,6 +15,7 @@ drop table if exists product_option cascade;
 drop table if exists selling_bid cascade;
 drop table if exists `transaction` cascade;
 drop table if exists `member` cascade;
+drop table if exists feed_comment cascade;
 
 
 CREATE TABLE `member`
@@ -199,3 +200,13 @@ CREATE TABLE `follow`
 );
 
 CREATE INDEX index_product ON product (id DESC);
+
+CREATE TABLE `feed_comment`
+(
+    `id`         BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `member_id`  BIGINT       NOT NULL,
+    `feed_id`    BIGINT       NOT NULL,
+    `content`    VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP    NOT NULL,
+    `updated_at` TIMESTAMP    NOT NULL
+);
