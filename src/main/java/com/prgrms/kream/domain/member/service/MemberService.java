@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.common.exception.DuplicatedEmailException;
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.common.mapper.MemberMapper;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
@@ -140,5 +141,9 @@ public class MemberService {
 		);
 
 		return MemberMapper.toDeliveryInfoUpdateResponse(deliveryInfo);
+	}
+
+	public void deleteDeliveryInfo(DeliveryInfoDeleteRequest deliveryInfoDeleteRequest) {
+		deliveryInfoRepository.deleteById(deliveryInfoDeleteRequest.deliveryInfoId());
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.image.service.ImageService;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
@@ -76,5 +77,11 @@ public class MemberFacade {
 
 	public DeliveryInfoUpdateResponse updateDeliveryInfo(DeliveryInfoUpdateRequest deliveryInfoRegisterRequest) {
 		return memberService.updateDeliveryInfo(deliveryInfoRegisterRequest);
+	}
+
+	public void deleteDeliveryInfo(DeliveryInfoDeleteRequest deliveryInfoDeleteRequest) {
+
+		memberService.deleteDeliveryInfo(deliveryInfoDeleteRequest);
+
 	}
 }

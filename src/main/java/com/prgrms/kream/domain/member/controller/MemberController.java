@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
@@ -125,4 +127,12 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.updateDeliveryInfo(deliveryInfoUpdateRequest));
 	}
 
+	@DeleteMapping("/{id}/delivery-infos")
+	@ResponseStatus(OK)
+	public ApiResponse<String> deleteDeliveryInfo(
+			@RequestBody @Valid DeliveryInfoDeleteRequest deliveryInfoDeleteRequest
+	) {
+		memberFacade.deleteDeliveryInfo(deliveryInfoDeleteRequest);
+		return ApiResponse.of("삭제 성공하였습니다.");
+	}
 }
