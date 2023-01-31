@@ -170,6 +170,8 @@ CREATE TABLE `selling_bid`
     `product_option_id` BIGINT    NOT NULL,
     `price`             INT       NOT NULL,
     `valid_until`       TIMESTAMP NOT NULL,
+    `is_deleted`        BIT       NOT NULL,
+    `version`           BIGINT    NOT NULL,
     `created_at`        TIMESTAMP NOT NULL,
     `updated_at`        TIMESTAMP NOT NULL
 );
@@ -181,6 +183,8 @@ CREATE TABLE `buying_bid`
     `product_option_id` BIGINT    NOT NULL,
     `price`             INT       NOT NULL,
     `valid_until`       TIMESTAMP NOT NULL,
+    `is_deleted`        BIT       NOT NULL,
+    `version`           BIGINT    NOT NULL,
     `created_at`        TIMESTAMP NOT NULL,
     `updated_at`        TIMESTAMP NOT NULL
 );
