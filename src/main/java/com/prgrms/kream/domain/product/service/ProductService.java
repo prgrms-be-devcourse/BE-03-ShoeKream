@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,10 +110,12 @@ public class ProductService {
 		updateLowestPrice(productOption, newPrice);
 	}
 
+	@CacheEvict(value = "product", key = "#productOption.product.id")
 	public void updateHighestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateHighestPrice(newPrice);
 	}
 
+	@CacheEvict(value = "product", key = "#productOption.product.id")
 	public void updateLowestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateLowestPrice(newPrice);
 	}

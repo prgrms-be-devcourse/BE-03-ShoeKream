@@ -54,6 +54,7 @@ public class ProductFacade {
 		return productService.getAll(productGetAllRequest);
 	}
 
+	@CacheEvict(value = "product", key = "#productUpdateRequest.id()")
 	@Transactional
 	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
 		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
@@ -61,9 +62,10 @@ public class ProductFacade {
 		return productService.update(toProductUpdateFacadeRequest(productUpdateRequest));
 	}
 
+	@CacheEvict(value = "product", key = "#productId")
 	@Transactional
-	public void delete(Long id) {
-		imageService.deleteAllByReference(id, DomainType.PRODUCT);
-		productService.delete(id);
+	public void delete(Long productId) {
+		imageService.deleteAllByReference(productId, DomainType.PRODUCT);
+		productService.delete(productId);
 	}
 }
