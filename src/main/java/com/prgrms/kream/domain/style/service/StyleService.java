@@ -18,8 +18,10 @@ import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
+import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
 import com.prgrms.kream.domain.style.repository.FeedTagRepository;
 
@@ -35,6 +37,8 @@ public class StyleService {
 
 	private final FeedLikeRepository feedLikeRepository;
 
+	private final FeedProductRepository feedProductRepository;
+
 	@Transactional
 	public RegisterFeedServiceResponse register(RegisterFeedServiceRequest registerFeedServiceRequest) {
 		Feed savedFeed = feedRepository.save(
@@ -43,17 +47,35 @@ public class StyleService {
 
 		// 태그 추출 및 데이터 삽입
 		Set<FeedTag> feedTags = TagExtractor.extract(savedFeed);
-		feedTagRepository.saveAll(feedTags);
+		if (!feedTags.isEmpty()) {
+			feedTagRepository.saveAll(feedTags);
+		}
+
+		// 상품 태그 데이터 삽입
+		if (registerFeedServiceRequest.productsIds() != null) {
+			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), registerFeedServiceRequest.productsIds());
+			feedProductRepository.saveAll(feedProducts);
+		}
 
 		return toRegisterFeedServiceResponse(savedFeed);
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getTrendingFeeds() {
-		return toGetFeedServiceResponses(
-				feedRepository.findAllOrderByLikesDesc(),
-				-1L
+	public GetFeedServiceResponses getTrendingFeeds(GetFeedServiceRequest getFeedServiceRequest) {
+		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc(
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
+
+		if (feeds.size() > getFeedServiceRequest.pageSize()) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	@Transactional(readOnly = true)
@@ -62,11 +84,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -80,11 +103,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -98,11 +122,12 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
+		getFeedProductsOnFeeds(feeds);
 
 		if (feeds.size() > getFeedServiceRequest.pageSize()) {
 			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size()-1),
-					feeds.get(feeds.size()-1).getId()
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
@@ -174,6 +199,14 @@ public class StyleService {
 					likeFeedServiceRequest.memberId()
 			);
 		}
+	}
+
+	private void getFeedProductsOnFeeds(List<Feed> feeds) {
+		feeds.forEach(feed ->
+				feed.setProductIds(
+						feedProductRepository.findAllByFeedId(feed.getId()).stream()
+								.map(FeedProduct::getProductId)
+								.toList()));
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public record RegisterFeedFacadeRequest(
 		String content,
 		Long authorId,
-		List<MultipartFile> images
+		List<MultipartFile> images,
+		List<Long> productIds
 ) {
 }

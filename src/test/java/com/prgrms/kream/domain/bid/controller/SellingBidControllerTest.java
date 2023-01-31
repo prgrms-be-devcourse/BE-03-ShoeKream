@@ -1,14 +1,12 @@
-package com.prgrms.kream.domain.bid;
+package com.prgrms.kream.domain.bid.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.domain.bid.dto.request.SellingBidCreateRequest;
+import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
 import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,36 +14,38 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.prgrms.kream.MysqlTestContainer;
-import com.prgrms.kream.domain.bid.dto.request.BuyingBidCreateRequest;
-
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class BuyingBidControllerTest extends MysqlTestContainer {
+public class SellingBidControllerTest extends MysqlTestContainer {
 	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
 	private Jackson2ObjectMapperBuilder objectMapper;
 
+	@Autowired
+	SellingBidRepository repository;
+
 	@Test
 	@DisplayName("판매 입찰 등록 테스트")
 	void insertTest() throws Exception {
 		// Given
-		BuyingBidCreateRequest buyingBidCreateRequest =
-				new BuyingBidCreateRequest(1L, 2L, 3L, 45600, LocalDateTime.now());
+		SellingBidCreateRequest createRequest =
+				new SellingBidCreateRequest(1L, 2L, 3L, 45600, LocalDateTime.now());
 
 		// When
 		ResultActions resultActions =
 				mockMvc.perform(
-						post("/api/v1/buying-bid")
+						post("/api/v1/selling-bid")
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
-										objectMapper.build().writeValueAsString(buyingBidCreateRequest)
+										objectMapper.build().writeValueAsString(createRequest)
 								)
 				);
 
@@ -59,7 +59,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		// Given
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/selling-bid/{id}", 1));
 
 		// Then
 		resultActions
@@ -76,12 +76,13 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		// Given
 
 		// When
-		ResultActions resultActions = mockMvc.perform(delete("/api/v1/buying-bid/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(delete("/api/v1/selling-bid/{id}", 1));
 
 		// Then
 		resultActions
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data").value("구매 입찰이 삭제되었습니다"))
+				.andExpect(jsonPath("$.data").value("판매 입찰이 삭제되었습니다"))
 				.andDo(print());
+
 	}
 }

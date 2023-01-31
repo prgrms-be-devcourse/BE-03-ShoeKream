@@ -9,6 +9,6 @@ public record GetFeedRequest(
 		Integer pageSize
 ) {
 	public GetFeedRequest {
-		if (pageSize == null) pageSize = 10;
+		if (pageSize == null || pageSize < 0) pageSize = 10;
 	}
 }
