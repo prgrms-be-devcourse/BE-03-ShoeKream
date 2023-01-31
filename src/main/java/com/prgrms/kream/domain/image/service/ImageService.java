@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.prgrms.kream.common.exception.UploadFailedException;
+import com.prgrms.kream.common.exception.FileUploadFailedException;
 import com.prgrms.kream.domain.image.model.DomainType;
 
 public interface ImageService {
@@ -28,7 +28,7 @@ public interface ImageService {
 		try {
 			return originalName.substring(originalName.lastIndexOf("."));
 		} catch (StringIndexOutOfBoundsException e) {
-			throw new UploadFailedException("invalid file format");
+			throw new FileUploadFailedException("invalid file format");
 		}
 	}
 }

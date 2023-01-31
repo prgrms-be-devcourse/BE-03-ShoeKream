@@ -4,6 +4,9 @@ import static com.prgrms.kream.common.mapper.ImageMapper.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.prgrms.kream.common.exception.UploadFailedException;
+import com.prgrms.kream.common.exception.FileDeleteFailedException;
+import com.prgrms.kream.common.exception.FileUploadFailedException;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.model.Image;
 import com.prgrms.kream.domain.image.repository.ImageRepository;
@@ -46,7 +50,25 @@ public class ImageLocalService implements ImageService {
 
 	@Override
 	public void deleteAllByReference(Long referenceId, DomainType domainType) {
+		List<Image> images = getImageEntities(referenceId, domainType);
+		images.stream()
+				.map(Image::getFullPath)
+				.forEach(this::deleteImage);
 		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
+	}
+
+	private List<Image> getImageEntities(Long referenceId, DomainType domainType) {
+		return imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
+	}
+
+	private void deleteImage(String fullPath) {
+		Path path = Paths.get(fullPath);
+
+		try {
+			Files.delete(path);
+		} catch (IOException e) {
+			throw new FileDeleteFailedException("Failed to delete (local)");
+		}
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
@@ -77,7 +99,7 @@ public class ImageLocalService implements ImageService {
 			}
 			multipartFile.transferTo(new File(getFullPath(uniqueName)));
 		} catch (IOException e) {
-			throw new UploadFailedException("save to local failed");
+			throw new FileUploadFailedException("Failed to save (local)");
 		}
 	}
 
