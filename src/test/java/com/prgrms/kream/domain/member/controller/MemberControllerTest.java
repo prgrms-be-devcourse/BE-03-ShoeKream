@@ -209,7 +209,8 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.imagePaths[0]").value("http://testURL"))
 				.andDo(print());
 
-		verify(amazonS3, times(1)).putObject(eq(bucket), anyString(), any(InputStream.class), any(ObjectMetadata.class));
+		verify(amazonS3, times(1))
+				.putObject(eq(bucket), anyString(), any(InputStream.class), any(ObjectMetadata.class));
 		verify(amazonS3, times(1)).getUrl(eq(bucket), anyString());
 	}
 
