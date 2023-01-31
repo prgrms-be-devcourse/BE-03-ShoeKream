@@ -101,6 +101,19 @@ public class StyleController {
 		);
 	}
 
+	@GetMapping("/products/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedResponses> getAllByProduct(@PathVariable Long id, @Valid GetFeedRequest getFeedRequest) {
+		return ApiResponse.of(
+				toGetFeedResponses(
+						styleFacade.getAllByProduct(
+								toGetFeedFacadeRequest(getFeedRequest),
+								id
+						)
+				)
+		);
+	}
+
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<UpdateFeedResponse> update(
