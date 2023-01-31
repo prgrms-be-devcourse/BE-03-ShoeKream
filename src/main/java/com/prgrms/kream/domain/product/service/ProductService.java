@@ -17,6 +17,7 @@ import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
+import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 
@@ -33,7 +34,7 @@ public class ProductService {
 	public ProductRegisterResponse register(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		Product product = productRepository.save(toProduct(productRegisterFacadeRequest));
 
-		productOptionRepository.saveAll(
+		productOptionRepository.saveAllBulk(
 				toProductOptions(productRegisterFacadeRequest.sizes(), product)
 		);
 
@@ -41,8 +42,10 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetFacadeResponse get(Long id) {
-		return toProductGetFacadeResponse(getProductEntity(id));
+	public ProductGetFacadeResponse get(Long productId) {
+		Product product = findProductEntity(productId);
+		List<ProductOption> productOptions = productOptionRepository.findAllByProduct(product);
+		return toProductGetFacadeResponse(product, productOptions);
 	}
 
 	@Transactional(readOnly = true)
@@ -60,11 +63,11 @@ public class ProductService {
 
 	@Transactional
 	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
-		Product product = getProductEntity(productFacadeUpdateRequest.id());
+		Product product = findProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
-		productOptionRepository.deleteAllByProduct(product);
-		productOptionRepository.saveAll(
+		productOptionRepository.deleteAllByProductId(product.getId());
+		productOptionRepository.saveAllBulk(
 				toProductOptions(productFacadeUpdateRequest.sizes(), product)
 		);
 
@@ -72,14 +75,37 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void delete(Long id) {
-		Product product = getProductEntity(id);
-		productOptionRepository.deleteAllByProduct(product);
+	public void delete(Long productId) {
+		Product product = findProductEntity(productId);
+		productOptionRepository.deleteAllByProductId(product.getId());
 		productRepository.delete(product);
 	}
 
-	private Product getProductEntity(Long id) {
-		return productRepository.findById(id)
+	@Transactional
+	public void compareHighestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		int highestPrice = productOption.getHighestPrice();
+		if (highestPrice < newPrice) {
+			productOption.updateHighestPrice(newPrice);
+		}
+	}
+
+	@Transactional
+	public void compareLowestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = findProductOptionEntity(productOptionId);
+		int lowestPrice = productOption.getLowestPrice();
+		if (lowestPrice == 0 || lowestPrice > newPrice) {
+			productOption.updateLowestPrice(newPrice);
+		}
+	}
+
+	private Product findProductEntity(Long productId) {
+		return productRepository.findById(productId)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
+	}
+
+	private ProductOption findProductOptionEntity(Long productOptionId) {
+		return productOptionRepository.findById(productOptionId)
+				.orElseThrow(() -> new EntityNotFoundException("productOptionId does not exist"));
 	}
 }

@@ -159,11 +159,11 @@ public class StyleMapper {
 	}
 
 	public static UpdateFeedFacadeRequest toUpdateFeedFacadeRequest(UpdateFeedRequest updateFeedRequest) {
-		return new UpdateFeedFacadeRequest(updateFeedRequest.content());
+		return new UpdateFeedFacadeRequest(updateFeedRequest.content(), updateFeedRequest.productIds());
 	}
 
 	public static UpdateFeedServiceRequest toUpdateFeedServiceRequest(UpdateFeedFacadeRequest updateFeedFacadeRequest) {
-		return new UpdateFeedServiceRequest(updateFeedFacadeRequest.content());
+		return new UpdateFeedServiceRequest(updateFeedFacadeRequest.content(), updateFeedFacadeRequest.productIds());
 	}
 
 	public static UpdateFeedServiceResponse toUpdateFeedServiceResponse(Feed feed) {

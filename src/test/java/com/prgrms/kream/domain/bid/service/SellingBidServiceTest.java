@@ -10,9 +10,15 @@ import com.prgrms.kream.domain.bid.facade.SellingBidFacade;
 import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.bid.repository.SellingBidRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.OptimisticLockException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +58,7 @@ public class SellingBidServiceTest {
 
 		// When
 		when(repository.save(any(SellingBid.class))).thenReturn(entity);
-		SellingBidCreateResponse response = service.createSellingBid(createRequest);
+		SellingBidCreateResponse response = service.register(createRequest);
 
 		// Then
 		assertThat(response.id()).isEqualTo(1L);
@@ -74,7 +80,7 @@ public class SellingBidServiceTest {
 		when(repository.findById(id)).thenReturn(Optional.of(entity));
 
 		// When
-		SellingBidFindResponse dto = service.findOneSellingBidById(findRequest);
+		SellingBidFindResponse dto = service.findById(findRequest);
 
 		// Then
 		assertThat(dto.id()).isEqualTo(entity.getId());
@@ -99,10 +105,10 @@ public class SellingBidServiceTest {
 
 		// When
 		when(repository.save(any(SellingBid.class))).thenReturn(entity);
-		service.createSellingBid(createRequest);
+		service.register(createRequest);
 
 		// Then
-		assertThatThrownBy(() -> service.findOneSellingBidById(findRequest))
+		assertThatThrownBy(() -> service.findById(findRequest))
 				.isInstanceOf(EntityNotFoundException.class);
 	}
 

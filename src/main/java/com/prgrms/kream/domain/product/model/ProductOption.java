@@ -29,16 +29,30 @@ public class ProductOption extends BaseTimeEntity {
 	private Long id;
 
 	@Column(name = "size", nullable = false, columnDefinition = "SMALLINT")
-	private Integer size;
+	private int size;
 
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
+
+	@Column(name = "highest_price", nullable = false, columnDefinition = "SMALLINT")
+	private int highestPrice;
+
+	@Column(name = "lowest_price", nullable = false, columnDefinition = "SMALLINT")
+	private int lowestPrice;
 
 	@Builder
 	public ProductOption(Long id, Integer size, Product product) {
 		this.id = id;
 		this.size = size;
 		this.product = product;
+	}
+
+	public void updateHighestPrice(int price) {
+		this.highestPrice = price;
+	}
+
+	public void updateLowestPrice(int price) {
+		this.lowestPrice = price;
 	}
 }

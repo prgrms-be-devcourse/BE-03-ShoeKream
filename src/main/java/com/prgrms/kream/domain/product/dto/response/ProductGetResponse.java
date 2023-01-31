@@ -7,5 +7,6 @@ public record ProductGetResponse(
 		String name,
 		int releasePrice,
 		String description,
+		List<ProductOptionResponse> productOptionResponses,
 		List<String> imagePaths) {
 }

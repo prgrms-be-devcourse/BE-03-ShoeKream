@@ -23,6 +23,7 @@ import com.prgrms.kream.domain.product.dto.response.ProductGetFacadeResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductRegisterResponse;
 import com.prgrms.kream.domain.product.dto.response.ProductUpdateResponse;
 import com.prgrms.kream.domain.product.model.Product;
+import com.prgrms.kream.domain.product.model.ProductOption;
 import com.prgrms.kream.domain.product.repository.ProductOptionRepository;
 import com.prgrms.kream.domain.product.repository.ProductRepository;
 
@@ -185,6 +186,34 @@ public class ProductServiceTest {
 
 		//then
 		verify(productRepository, times(1)).delete(product);
-		verify(productOptionRepository, times(1)).deleteAllByProduct(product);
+		verify(productOptionRepository, times(1)).deleteAllByProductId(product.getId());
+	}
+
+	@Test
+	@DisplayName("새로운 입찰가가 더 높을 시, 상품의 최고가로 등록한다")
+	void compareHighestPrice() {
+		//given
+		Product product = Product.builder()
+				.id(1L)
+				.name("Nike Dunk Low")
+				.releasePrice(129000)
+				.description("Black")
+				.build();
+
+		ProductOption productOption = ProductOption.builder()
+				.id(1L)
+				.size(220)
+				.product(product)
+				.build();
+
+		//mocking
+		when(productOptionRepository.findById(any()))
+				.thenReturn(Optional.of(productOption));
+
+		//when
+		productService.compareHighestPrice(1L, 130000);
+
+		//then
+		verify(productOptionRepository, times(1)).findById(1L);
 	}
 }

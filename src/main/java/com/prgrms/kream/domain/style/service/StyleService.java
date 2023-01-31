@@ -3,7 +3,6 @@ package com.prgrms.kream.domain.style.service;
 import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -46,15 +45,15 @@ public class StyleService {
 		);
 
 		// 태그 추출 및 데이터 삽입
-		Set<FeedTag> feedTags = TagExtractor.extract(savedFeed);
+		List<FeedTag> feedTags = TagExtractor.extract(savedFeed).stream().toList();
 		if (!feedTags.isEmpty()) {
-			feedTagRepository.saveAll(feedTags);
+			feedTagRepository.saveAllBulk(feedTags);
 		}
 
 		// 상품 태그 데이터 삽입
 		if (registerFeedServiceRequest.productsIds() != null) {
 			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), registerFeedServiceRequest.productsIds());
-			feedProductRepository.saveAll(feedProducts);
+			feedProductRepository.saveAllBulk(feedProducts);
 		}
 
 		return toRegisterFeedServiceResponse(savedFeed);
@@ -66,16 +65,8 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
@@ -84,16 +75,8 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
@@ -103,35 +86,30 @@ public class StyleService {
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
-
-		return toGetFeedServiceResponses(feeds, -1L);
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long id) {
+	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long memberId) {
 		List<Feed> feeds = feedRepository.findAllByMember(
-				id,
+				memberId,
 				getFeedServiceRequest.cursorId(),
 				getFeedServiceRequest.pageSize()
 		);
-		getFeedProductsOnFeeds(feeds);
 
-		if (feeds.size() > getFeedServiceRequest.pageSize()) {
-			return toGetFeedServiceResponses(
-					feeds.subList(0, feeds.size() - 1),
-					feeds.get(feeds.size() - 1).getId()
-			);
-		}
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+	}
 
-		return toGetFeedServiceResponses(feeds, -1L);
+	@Transactional(readOnly = true)
+	public GetFeedServiceResponses getAllByProduct(GetFeedServiceRequest getFeedServiceRequest, Long productId) {
+		List<Feed> feeds = feedRepository.findAllByProduct(
+				productId,
+				getFeedServiceRequest.cursorId(),
+				getFeedServiceRequest.pageSize()
+		);
+
+		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
 	}
 
 	@Transactional
@@ -141,10 +119,15 @@ public class StyleService {
 					feed.updateContent(updateFeedServiceRequest.content());
 					Feed entity = feedRepository.save(feed);
 
+					// 피드 태그 삭제 후 재등록
 					feedTagRepository.deleteAllByFeedId(entity.getId());
+					List<FeedTag> feedTags = TagExtractor.extract(entity).stream().toList();
+					feedTagRepository.saveAllBulk(feedTags);
 
-					Set<FeedTag> feedTags = TagExtractor.extract(entity);
-					feedTagRepository.saveAll(feedTags);
+					// 피드 상품태그 삭제 후 재등록
+					feedProductRepository.deleteAllByFeedId(entity.getId());
+					List<FeedProduct> feedProducts = toFeedProducts(entity.getId(), updateFeedServiceRequest.productIds());
+					feedProductRepository.saveAllBulk(feedProducts);
 
 					return entity;
 				})
@@ -160,6 +143,7 @@ public class StyleService {
 					// 관련 테이블의 레코드 삭제 (Cascade)
 					feedTagRepository.deleteAllByFeedId(feed.getId());
 					feedLikeRepository.deleteAllByFeedId(feed.getId());
+					feedProductRepository.deleteAllByFeedId(feed.getId());
 					feedRepository.delete(feed);
 				});
 	}
@@ -199,6 +183,19 @@ public class StyleService {
 					likeFeedServiceRequest.memberId()
 			);
 		}
+	}
+
+	private GetFeedServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
+		getFeedProductsOnFeeds(feeds);
+
+		if (feeds.size() > pageSize) {
+			return toGetFeedServiceResponses(
+					feeds.subList(0, feeds.size() - 1),
+					feeds.get(feeds.size() - 1).getId()
+			);
+		}
+
+		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
 	private void getFeedProductsOnFeeds(List<Feed> feeds) {

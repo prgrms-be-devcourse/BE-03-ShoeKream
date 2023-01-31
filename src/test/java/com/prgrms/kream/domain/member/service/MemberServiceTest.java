@@ -26,9 +26,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
@@ -195,5 +197,60 @@ class MemberServiceTest {
 				.isInstanceOf(AccessDeniedException.class);
 
 		verify(memberRepository, times(0)).findById(2L);
+	}
+
+	@Test
+	@DisplayName("회원 정보 수정 성공")
+	void update_success() {
+
+		MemberUpdateServiceRequest memberUpdateServiceRequest
+				= new MemberUpdateServiceRequest(
+				1L,
+				"updatedName",
+				"01023456789",
+				"changed!123"
+		);
+
+		Member member = Member.builder()
+				.id(1L)
+				.name("name")
+				.email("hello@naver.com")
+				.password("Pa!12345678")
+				.phone("01012345678")
+				.authority(ROLE_USER)
+				.isMale(false)
+				.build();
+
+		when(memberRepository.findById(1L))
+				.thenReturn(Optional.of(member));
+
+		MemberUpdateServiceResponse memberUpdateServiceResponse
+				= memberService.updateMember(memberUpdateServiceRequest);
+
+		Assertions.assertThat(memberUpdateServiceResponse)
+				.hasFieldOrPropertyWithValue("id", memberUpdateServiceRequest.id())
+				.hasFieldOrPropertyWithValue("name", memberUpdateServiceRequest.name())
+				.hasFieldOrPropertyWithValue("phone", memberUpdateServiceRequest.phone());
+
+		verify(memberRepository, times(1)).findById(1L);
+
+	}
+
+	@Test
+	@DisplayName("회원 정보 실패 - 다른 사용자의 정보를 조회")
+	void update_fail_notValidMember() {
+		MemberUpdateServiceRequest memberUpdateServiceRequest
+				= new MemberUpdateServiceRequest(
+				2L,
+				"updatedName",
+				"01023456789",
+				"changed!123"
+		);
+
+		Assertions.assertThatThrownBy(
+				() -> memberService.updateMember(memberUpdateServiceRequest)
+		).isInstanceOf(AccessDeniedException.class);
+
+		verify(memberRepository, times(0)).findById(anyLong());
 	}
 }

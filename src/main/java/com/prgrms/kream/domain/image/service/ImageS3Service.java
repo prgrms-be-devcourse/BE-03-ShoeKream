@@ -36,7 +36,7 @@ public class ImageS3Service implements ImageService {
 	public void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		if (multipartFiles != null && !multipartFiles.isEmpty()) {
 			List<Image> images = uploadImages(multipartFiles, referenceId, domainType);
-			imageRepository.saveAll(images);
+			imageRepository.saveAllBulk(images);
 		}
 	}
 

@@ -10,6 +10,8 @@ public interface FeedCustomRepository {
 
 	List<Feed> findAllByMember(Long memberId, Long cursorId, int pageSize);
 
+	List<Feed> findAllByProduct(Long productId, Long cursorId, int pageSize);
+
 	List<Feed> findAllOrderByCreatedAtDesc(Long cursorId, int pageSize);
 
 	List<Feed> findAllOrderByLikesDesc(Long cursorId, int pageSize);
