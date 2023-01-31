@@ -56,6 +56,16 @@ public class DeliveryInfo extends BaseTimeEntity {
 		this.memberId = memberId;
 	}
 
+	public void updateDeliveryInfo(
+			String name, String phone, String postCode, String address, String detail
+	) {
+		this.name = name;
+		this.phone = new Phone(phone);
+		this.postCode = postCode;
+		this.address = address;
+		this.detail = detail;
+	}
+
 	public String getPhone() {
 		return this.phone.getPhone();
 	}

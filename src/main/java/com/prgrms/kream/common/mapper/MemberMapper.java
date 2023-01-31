@@ -10,6 +10,7 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
@@ -134,4 +135,15 @@ public class MemberMapper {
 				.detail(deliveryInfo.getDetail())
 				.build();
 	}
+
+	public static DeliveryInfoUpdateResponse toDeliveryInfoUpdateResponse(DeliveryInfo deliveryInfo) {
+		return DeliveryInfoUpdateResponse.builder()
+				.name(deliveryInfo.getName())
+				.phone(deliveryInfo.getPhone())
+				.postCode(deliveryInfo.getPostCode())
+				.address(deliveryInfo.getAddress())
+				.detail(deliveryInfo.getDetail())
+				.build();
+	}
+
 }

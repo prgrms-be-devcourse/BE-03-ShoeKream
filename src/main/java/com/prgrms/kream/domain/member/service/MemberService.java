@@ -18,11 +18,13 @@ import com.prgrms.kream.common.exception.DuplicatedEmailException;
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.common.mapper.MemberMapper;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
+import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
+import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
@@ -118,5 +120,25 @@ public class MemberService {
 		}
 		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(toDeliveryInfo(deliveryInfoRegisterRequest));
 		return new DeliveryInfoRegisterResponse(deliveryInfo.getId());
+	}
+
+	@Transactional
+	public DeliveryInfoUpdateResponse updateDeliveryInfo(DeliveryInfoUpdateRequest deliveryInfoUpdateRequest) {
+		if (!isValidAccess(deliveryInfoUpdateRequest.memberId())) {
+			throw new AccessDeniedException("잘못된 접근입니다.");
+		}
+
+		DeliveryInfo deliveryInfo = deliveryInfoRepository.findById(deliveryInfoUpdateRequest.deliveryInfoId())
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 배송정보입니다."));
+
+		deliveryInfo.updateDeliveryInfo(
+				deliveryInfoUpdateRequest.name(),
+				deliveryInfoUpdateRequest.phone(),
+				deliveryInfoUpdateRequest.postCode(),
+				deliveryInfoUpdateRequest.address(),
+				deliveryInfoUpdateRequest.detail()
+		);
+
+		return MemberMapper.toDeliveryInfoUpdateResponse(deliveryInfo);
 	}
 }
