@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.prgrms.kream.common.exception.FileDeleteFailedException;
 import com.prgrms.kream.common.exception.FileUploadFailedException;
@@ -62,7 +61,7 @@ public class ImageS3Service implements ImageService {
 
 	private void deleteImage(String fileName) {
 		try {
-			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+			amazonS3.deleteObject(bucket, fileName);
 		} catch (AmazonServiceException e) {
 			throw new FileDeleteFailedException("Failed to delete (S3)");
 		}
