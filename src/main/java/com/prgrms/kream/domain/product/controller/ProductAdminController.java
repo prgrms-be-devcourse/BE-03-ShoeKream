@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/product")
+@RequestMapping("/api/v1/admin/products")
 public class ProductAdminController {
 
 	private final ProductFacade productFacade;
