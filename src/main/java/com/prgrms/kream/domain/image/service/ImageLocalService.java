@@ -35,7 +35,7 @@ public class ImageLocalService implements ImageService {
 	}
 
 	@Override
-	public void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
+	public void registerImage(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		if (multipartFiles != null && !multipartFiles.isEmpty()) {
 			List<Image> images = uploadImages(multipartFiles, referenceId, domainType);
 			imageRepository.saveAllBulk(images);
@@ -43,21 +43,21 @@ public class ImageLocalService implements ImageService {
 	}
 
 	@Override
-	public List<String> getAll(Long referenceId, DomainType domainType) {
+	public List<String> getAllImages(Long referenceId, DomainType domainType) {
 		List<Image> images = imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
 		return toImagePathDto(images);
 	}
 
 	@Override
-	public void deleteAllByReference(Long referenceId, DomainType domainType) {
-		List<Image> images = getImageEntities(referenceId, domainType);
+	public void deleteAllImagesByReference(Long referenceId, DomainType domainType) {
+		List<Image> images = getAllImageEntities(referenceId, domainType);
 		images.stream()
 				.map(Image::getFullPath)
 				.forEach(this::deleteImage);
 		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
 	}
 
-	private List<Image> getImageEntities(Long referenceId, DomainType domainType) {
+	private List<Image> getAllImageEntities(Long referenceId, DomainType domainType) {
 		return imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
 	}
 

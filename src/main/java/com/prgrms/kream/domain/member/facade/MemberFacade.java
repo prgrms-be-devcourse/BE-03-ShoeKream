@@ -49,7 +49,7 @@ public class MemberFacade {
 	@Transactional(readOnly = true)
 	public MemberGetResponse get(Long memberId) {
 		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(memberId);
-		List<String> imagePaths = imageService.getAll(memberId, MEMBER);
+		List<String> imagePaths = imageService.getAllImages(memberId, MEMBER);
 		return toMemberGetResponse(memberGetFacadeResponse, imagePaths);
 	}
 
@@ -59,10 +59,11 @@ public class MemberFacade {
 				memberService.updateMember(toMemberUpdateServiceRequest(memberUpdateFacadeRequest));
 
 		List<String> imagePaths = Collections.emptyList();
-		imageService.deleteAllByReference(memberUpdateFacadeRequest.id(), MEMBER);
+		imageService.deleteAllImagesByReference(memberUpdateFacadeRequest.id(), MEMBER);
 		if (!Objects.isNull(memberUpdateFacadeRequest.imageFile())) {
-			imageService.register(List.of(memberUpdateFacadeRequest.imageFile()), memberUpdateFacadeRequest.id(), MEMBER);
-			imagePaths = imageService.getAll(memberUpdateFacadeRequest.id(), MEMBER);
+			imageService.registerImage(List.of(memberUpdateFacadeRequest.imageFile()), memberUpdateFacadeRequest.id(),
+					MEMBER);
+			imagePaths = imageService.getAllImages(memberUpdateFacadeRequest.id(), MEMBER);
 		}
 		return toMemberUpdateResponse(memberUpdateServiceResponse, imagePaths);
 	}

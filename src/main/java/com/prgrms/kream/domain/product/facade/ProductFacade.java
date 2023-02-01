@@ -35,7 +35,7 @@ public class ProductFacade {
 	public ProductRegisterResponse registerProduct(ProductRegisterRequest productRegisterRequest) {
 		ProductRegisterResponse productRegisterResponse
 				= productService.registerProduct(toProductRegisterFacadeRequest(productRegisterRequest));
-		imageService.register(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
+		imageService.registerImage(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
 		return productRegisterResponse;
 	}
 
@@ -43,7 +43,7 @@ public class ProductFacade {
 	@Transactional(readOnly = true)
 	public ProductGetResponse getProduct(Long productId) {
 		ProductGetFacadeResponse productGetFacadeResponse = productService.getProduct(productId);
-		List<String> imagePaths = imageService.getAll(productId, DomainType.PRODUCT);
+		List<String> imagePaths = imageService.getAllImages(productId, DomainType.PRODUCT);
 		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
 
@@ -57,15 +57,15 @@ public class ProductFacade {
 	@CacheEvict(value = "product", key = "#productUpdateRequest.id()")
 	@Transactional
 	public ProductUpdateResponse updateProduct(ProductUpdateRequest productUpdateRequest) {
-		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
-		imageService.register(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
+		imageService.deleteAllImagesByReference(productUpdateRequest.id(), DomainType.PRODUCT);
+		imageService.registerImage(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
 		return productService.updateProduct(toProductUpdateFacadeRequest(productUpdateRequest));
 	}
 
 	@CacheEvict(value = "product", key = "#productId")
 	@Transactional
 	public void deleteProduct(Long productId) {
-		imageService.deleteAllByReference(productId, DomainType.PRODUCT);
+		imageService.deleteAllImagesByReference(productId, DomainType.PRODUCT);
 		productService.deleteProduct(productId);
 	}
 }

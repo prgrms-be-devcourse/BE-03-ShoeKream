@@ -34,7 +34,7 @@ public class ImageS3Service implements ImageService {
 	}
 
 	@Override
-	public void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
+	public void registerImage(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		if (multipartFiles != null && !multipartFiles.isEmpty()) {
 			List<Image> images = uploadImages(multipartFiles, referenceId, domainType);
 			imageRepository.saveAllBulk(images);
@@ -42,12 +42,12 @@ public class ImageS3Service implements ImageService {
 	}
 
 	@Override
-	public List<String> getAll(Long referenceId, DomainType domainType) {
+	public List<String> getAllImages(Long referenceId, DomainType domainType) {
 		return toImagePathDto(getImageEntities(referenceId, domainType));
 	}
 
 	@Override
-	public void deleteAllByReference(Long referenceId, DomainType domainType) {
+	public void deleteAllImagesByReference(Long referenceId, DomainType domainType) {
 		List<Image> images = getImageEntities(referenceId, domainType);
 		images.stream()
 				.map(image -> image.getFullPath().substring(56))
