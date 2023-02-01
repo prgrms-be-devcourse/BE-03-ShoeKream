@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.MysqlTestContainer;
+import com.prgrms.kream.common.config.CouponProperties;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 
 @SpringBootTest
@@ -27,6 +30,12 @@ class CouponEventControllerTest extends MysqlTestContainer {
 
 	@Autowired
 	Jackson2ObjectMapperBuilder objectMapperBuilder;
+
+	@BeforeEach
+	void addData() {
+		ReflectionTestUtils.setField(CouponProperties.class, "throughput", 100L);
+		ReflectionTestUtils.setField(CouponProperties.class, "key", "couponTest");
+	}
 
 	@Test
 	@Transactional
