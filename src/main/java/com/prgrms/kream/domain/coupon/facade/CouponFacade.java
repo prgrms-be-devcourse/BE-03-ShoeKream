@@ -3,9 +3,11 @@ package com.prgrms.kream.domain.coupon.facade;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.kream.common.config.CouponProperties;
 import com.prgrms.kream.common.jwt.JwtUtil;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
@@ -22,11 +24,12 @@ public class CouponFacade {
 	private final CouponService couponService;
 	private final CouponEventService couponEventService;
 	private final CouponEventRedisService couponEventRedisService;
+	private boolean soldOutFlag = false;
 
 	@Transactional
 	public CouponEventResponse registerCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
 		couponService.decreaseCouponAmount(couponEventRegisterRequest.couponId());
-
+		isSoldOut(couponEventRegisterRequest.couponId());
 		validCouponEventRegisterRequest(couponEventRegisterRequest);
 		return couponEventService.registerCouponEvent(couponEventRegisterRequest);
 	}
@@ -38,15 +41,18 @@ public class CouponFacade {
 
 	@Scheduled(fixedRate = 1000, initialDelay = 1_000 * 60 * 5)
 	public void couponEventSchedule() {
-		if (isSoldOut(1L)) {
+		if (soldOutFlag) {
+			couponEventRedisService.removeAll(CouponProperties.getKey());
 			return;
 		}
-		//TODO couponId 어떻게 처리할건지
-		couponEventRedisService.toQueue(1L);
+		couponEventRedisService.toQueue(CouponProperties.getKey());
 	}
 
 	@Scheduled(fixedDelay = 1000, initialDelay = 1_000 * 60 * 5)
 	public void couponEventMethod() {
+		if (soldOutFlag) {
+			CouponEventLocalQueue.removeAll();
+		}
 		while (CouponEventLocalQueue.size() > 0) {
 			registerCouponEvent(
 					CouponEventLocalQueue.pollQueue()
@@ -59,12 +65,12 @@ public class CouponFacade {
 			throw new EntityNotFoundException("존재하지 않는 Coupon Id : " + couponEventRegisterRequest.couponId());
 		}
 		if (JwtUtil.isValidAccess(couponEventRegisterRequest.memberId())) {
-			throw new RuntimeException("잘못된 접근");
+			throw new AccessDeniedException("잘못된 접근");
 		}
 	}
 
-	private boolean isSoldOut(long couponId) {
-		return couponService.checkCouponAmount(couponId);
+	private void isSoldOut(long couponId) {
+		soldOutFlag = couponService.isSoldOut(couponId);
 	}
 
 }

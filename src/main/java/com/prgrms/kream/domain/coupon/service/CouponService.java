@@ -45,7 +45,7 @@ public class CouponService {
 		return toCouponResponse(savedCoupon);
 	}
 
-	public boolean checkCouponAmount(long couponId) {
+	public boolean isSoldOut(long couponId) {
 		return getCoupon(couponId).isSoldOut();
 	}
 

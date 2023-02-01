@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CouponEventLocalQueue {
-	private static final Queue<CouponEventRegisterRequest> couponEventQueue = new ArrayDeque<>();
+	private static Queue<CouponEventRegisterRequest> couponEventQueue = new ArrayDeque<>();
 
 	public static boolean addQueue(CouponEventRegisterRequest couponEventRegisterRequest) {
 		return couponEventQueue.add(couponEventRegisterRequest);
@@ -22,5 +22,9 @@ public class CouponEventLocalQueue {
 
 	public static long size() {
 		return couponEventQueue.size();
+	}
+
+	public static void removeAll() {
+		couponEventQueue = new ArrayDeque<>();
 	}
 }

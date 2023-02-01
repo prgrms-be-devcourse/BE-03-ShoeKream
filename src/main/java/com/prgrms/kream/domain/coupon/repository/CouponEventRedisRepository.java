@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.prgrms.kream.common.config.CouponProperties;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -13,27 +14,27 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CouponEventRedisRepository {
-	private final RedisTemplate<Long, CouponEventRegisterRequest> couponEventRedisTemplate;
+	private final RedisTemplate<String, CouponEventRegisterRequest> couponEventRedisTemplate;
 
 	public void add(CouponEventRegisterRequest couponEventRegisterRequest) {
 		couponEventRedisTemplate.opsForZSet()
 				.addIfAbsent(
-						couponEventRegisterRequest.couponId(),
+						CouponProperties.getKey(),
 						couponEventRegisterRequest, System.currentTimeMillis()
 				);
 	}
 
-	public Long size(long key) {
+	public Long size(String key) {
 		return couponEventRedisTemplate.opsForZSet()
 				.size(key);
 	}
 
-	public Set<CouponEventRegisterRequest> range(long key, long start, long end) {
+	public Set<CouponEventRegisterRequest> range(String key, long start, long end) {
 		return couponEventRedisTemplate.opsForZSet()
 				.range(key, start, end);
 	}
 
-	public void removeRange(long key, long start, long end) {
+	public void removeRange(String key, long start, long end) {
 		couponEventRedisTemplate.opsForZSet()
 				.removeRange(key, start, end);
 	}
@@ -41,15 +42,19 @@ public class CouponEventRedisRepository {
 	public Long rank(CouponEventRegisterRequest couponEventRegisterRequest) {
 		return couponEventRedisTemplate.opsForZSet()
 				.rank(
-						couponEventRegisterRequest.couponId(),
+						CouponProperties.getKey(),
 						couponEventRegisterRequest
 				);
 	}
 
-	public CouponEventRegisterRequest pop(long key) {
+	public CouponEventRegisterRequest pop(String key) {
 		return Objects.requireNonNull(
 				couponEventRedisTemplate.opsForZSet()
 						.popMin(key)
 		).getValue();
+	}
+
+	public void removeAll(String key) {
+		couponEventRedisTemplate.delete(key);
 	}
 }
