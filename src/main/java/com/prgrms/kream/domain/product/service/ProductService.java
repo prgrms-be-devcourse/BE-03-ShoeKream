@@ -105,7 +105,7 @@ public class ProductService {
 		updateHighestPrice(productOption, newPrice);
 	}
 
-	public void changLowestPrice(Long productOptionId, int newPrice) {
+	public void changeLowestPrice(Long productOptionId, int newPrice) {
 		ProductOption productOption = findProductOptionEntity(productOptionId);
 		updateLowestPrice(productOption, newPrice);
 	}
