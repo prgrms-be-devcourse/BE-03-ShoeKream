@@ -1,5 +1,6 @@
 package com.prgrms.kream.common.exception;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -65,8 +66,22 @@ public class GlobalExceptionHandler {
 
 	@ResponseStatus(HttpStatus.CONFLICT)
 	@ExceptionHandler(OptimisticLockingFailureException.class)
-	public ErrorResponse optimisticLockingFailureException(OptimisticLockingFailureException exception){
+	public ErrorResponse optimisticLockingFailureException(OptimisticLockingFailureException exception) {
 		log.warn("이미 주문이 완료된 입찰입니다", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(EntityExistsException.class)
+	public ErrorResponse entityExistsException(EntityExistsException exception) {
+		log.warn("", exception);
+		return ApiResponse.error(exception.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(BalanceNotEnoughException.class)
+	public ErrorResponse balanceNotEnoughException(BalanceNotEnoughException exception) {
+		log.warn("잔액이 부족합니다", exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }

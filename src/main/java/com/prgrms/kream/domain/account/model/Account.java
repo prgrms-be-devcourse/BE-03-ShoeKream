@@ -1,6 +1,7 @@
 package com.prgrms.kream.domain.account.model;
 
 import static lombok.AccessLevel.*;
+import com.prgrms.kream.common.exception.BalanceNotEnoughException;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,19 @@ public class Account {
 		this.id = id;
 		this.memberId = memberId;
 		this.balance = Objects.requireNonNullElse(balance, 0);
-		;
+	}
+
+	public void updateBalance(TransactionType transactionType, int amount){
+		if (amount <= 0){
+			throw new IllegalArgumentException();
+		}
+		if (transactionType == TransactionType.WITHDRAW && balance < amount){
+			throw new BalanceNotEnoughException("");
+		}
+		if (transactionType == TransactionType.DEPOSIT){
+			balance += amount;
+		}else if(transactionType == TransactionType.WITHDRAW){
+			balance -= amount;
+		}
 	}
 }
