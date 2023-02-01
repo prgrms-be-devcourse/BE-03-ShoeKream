@@ -45,11 +45,13 @@ import com.prgrms.kream.domain.image.repository.ImageRepository;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
+import com.prgrms.kream.domain.member.repository.FollowingRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 @SpringBootTest
@@ -382,6 +384,30 @@ class MemberControllerTest extends MysqlTestContainer {
 
 		Assertions.assertThat(deliveryInfoRepository.findById(deliveryInfo.getId()))
 				.isEqualTo(Optional.empty());
+	}
 
+	@Test
+	@DisplayName("팔로우 등록 성공")
+	void registerFollow_success() throws Exception {
+		Member followedMember = memberRepository.save(
+				Member.builder()
+						.name("name1")
+						.email("hi@naver.com")
+						.phone("01098765432")
+						.password("Pa!12345678")
+						.isMale(false)
+						.authority(ROLE_USER)
+						.build()
+		);
+
+		FollowingRegisterRequest followingRegisterRequest = new FollowingRegisterRequest(followedMember.getId());
+
+		mockMvc.perform(post("/api/v1/member/{id}/following", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(followingRegisterRequest))
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").value("follow 등록에 성공했습니다."))
+				.andDo(print());
 	}
 }
