@@ -20,6 +20,7 @@ import com.prgrms.kream.common.mapper.MemberMapper;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
@@ -48,7 +49,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 
 	private final DeliveryInfoRepository deliveryInfoRepository;
-	private final FollowingRepository followRepository;
+	private final FollowingRepository followingRepository;
 
 	private final Jwt jwt;
 
@@ -162,5 +163,18 @@ public class MemberService {
 				&& !followingRepository.existsById(followId)) {
 			followingRepository.save(new Following(followId));
 		}
+	}
+
+	@Transactional
+	public void deleteFollowing(FollowingDeleteRequest followingDeleteRequest) {
+		FollowingId followingId = new FollowingId(
+				followingDeleteRequest.followingMemberId(),
+				followingDeleteRequest.followedMemberId()
+		);
+
+		Following following = followingRepository.findById(followingId)
+				.orElseThrow(() -> new EntityNotFoundException("entity가 존재하지 않습니다."));
+
+		followingRepository.delete(following);
 	}
 }
