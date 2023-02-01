@@ -76,7 +76,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void delete(Long productId) {
+	public void deleteProduct(Long productId) {
 		Product product = getProductEntity(productId);
 		productOptionRepository.deleteAllByProductId(product.getId());
 		productRepository.delete(product);

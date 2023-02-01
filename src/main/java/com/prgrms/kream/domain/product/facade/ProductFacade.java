@@ -64,8 +64,8 @@ public class ProductFacade {
 
 	@CacheEvict(value = "product", key = "#productId")
 	@Transactional
-	public void delete(Long productId) {
+	public void deleteProduct(Long productId) {
 		imageService.deleteAllByReference(productId, DomainType.PRODUCT);
-		productService.delete(productId);
+		productService.deleteProduct(productId);
 	}
 }

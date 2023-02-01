@@ -182,7 +182,7 @@ public class ProductServiceTest {
 				.when(productRepository).delete(any(Product.class));
 
 		//when
-		productService.delete(productId);
+		productService.deleteProduct(productId);
 
 		//then
 		verify(productRepository, times(1)).delete(product);

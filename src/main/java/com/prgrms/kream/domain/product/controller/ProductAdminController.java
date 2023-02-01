@@ -46,8 +46,8 @@ public class ProductAdminController {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<String> delete(@PathVariable Long id) {
-		productFacade.delete(id);
+	public ApiResponse<String> deleteProduct(@PathVariable Long id) {
+		productFacade.deleteProduct(id);
 
 		return ApiResponse.of("삭제되었습니다.");
 	}
