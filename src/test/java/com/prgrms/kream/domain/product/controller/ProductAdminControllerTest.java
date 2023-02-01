@@ -60,7 +60,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 				= new MockMultipartFile("images", "test.png", MediaType.IMAGE_PNG_VALUE, "test".getBytes());
 
 		//when
-		ResultActions resultActions = mockMvc.perform(multipart("/api/v1/admin/product")
+		ResultActions resultActions = mockMvc.perform(multipart("/api/v1/admin/products")
 				.file(mockMultipartFile)
 				.param("name", "Nike Zoom Vomero 5 SP")
 				.param("releasePrice", "189000")
@@ -83,7 +83,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 				"images", "updateTest.png", MediaType.IMAGE_PNG_VALUE, "updateTest".getBytes());
 
 		MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder =
-				MockMvcRequestBuilders.multipart("/api/v1/admin/product");
+				MockMvcRequestBuilders.multipart("/api/v1/admin/products");
 		mockMultipartHttpServletRequestBuilder
 				.with(request -> {
 					request.setMethod("PATCH");
@@ -113,7 +113,7 @@ public class ProductAdminControllerTest extends MysqlTestContainer {
 
 		//when
 		ResultActions resultActions
-				= mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/admin/product/{id}", productId));
+				= mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/admin/products/{id}", productId));
 
 		//then
 		resultActions

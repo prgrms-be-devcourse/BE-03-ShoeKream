@@ -23,31 +23,31 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin/product")
+@RequestMapping("/api/v1/admin/products")
 public class ProductAdminController {
 
 	private final ProductFacade productFacade;
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<ProductRegisterResponse> register(
+	public ApiResponse<ProductRegisterResponse> registerProduct(
 			@ModelAttribute @Valid ProductRegisterRequest productRegisterRequest) {
 
-		return ApiResponse.of(productFacade.register(productRegisterRequest));
+		return ApiResponse.of(productFacade.registerProduct(productRegisterRequest));
 	}
 
 	@PatchMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductUpdateResponse> update(
+	public ApiResponse<ProductUpdateResponse> updateProduct(
 			@ModelAttribute @Valid ProductUpdateRequest productUpdateRequest) {
 
-		return ApiResponse.of(productFacade.update(productUpdateRequest));
+		return ApiResponse.of(productFacade.updateProduct(productUpdateRequest));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<String> delete(@PathVariable Long id) {
-		productFacade.delete(id);
+	public ApiResponse<String> deleteProduct(@PathVariable Long id) {
+		productFacade.deleteProduct(id);
 
 		return ApiResponse.of("삭제되었습니다.");
 	}
