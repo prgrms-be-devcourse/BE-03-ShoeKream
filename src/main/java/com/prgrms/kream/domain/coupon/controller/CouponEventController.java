@@ -13,19 +13,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
-import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.facade.CouponFacade;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/coupon")
+@RequestMapping("/api/v1/coupons")
 public class CouponEventController {
 	private final CouponFacade couponFacade;
 
 	/**
-	 * 멤버에게 쿠폰을 발급한다.
+	 * 쿠폰 이벤트 요청을 레디스에 추가한다.
 	 * @author goseungwon
 	 * @param couponEventRegisterRequest 쿠폰 id, 멤버 id
 	 * @return CouponEventResponse
@@ -33,13 +32,11 @@ public class CouponEventController {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<CouponEventResponse> applyCouponEvent(
+	public ApiResponse<Long> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		CouponEventResponse couponEventResponse =
-				couponFacade.applyCouponEvent(couponEventRegisterRequest);
-
-		return ApiResponse.of(couponEventResponse);
+		long queueSize = couponFacade.applyCountEvent(couponEventRegisterRequest);
+		return ApiResponse.of(queueSize);
 	}
 
 	/**

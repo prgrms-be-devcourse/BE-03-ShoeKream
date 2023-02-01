@@ -36,7 +36,7 @@ public class CouponControllerTest extends MysqlTestContainer {
 
 		//when
 		ResultActions resultActions = mockMvc.perform(
-				post("/api/v1/admin/coupon")
+				post("/api/v1/admin/coupons")
 						.contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding(StandardCharsets.UTF_8)
 						.content(

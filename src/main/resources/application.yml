@@ -10,10 +10,16 @@ spring:
     properties:
       hibernate.format_sql: true
   profiles:
-    include: db, security, file, aws
+    include: db, security, file, aws, redis, coupon
   mvc:
     path-match:
       matching-strategy: ant_path_matcher
+  sql:
+    init:
+      platform: MySQL
+      schema-locations: classpath:db/schema.sql
+      encoding: UTF-8
+      mode: never
 
 logging:
   level:

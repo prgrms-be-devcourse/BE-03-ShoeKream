@@ -1,6 +1,6 @@
 package com.prgrms.kream.common.mapper;
 
-import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
+import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 
@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CouponEventMapper {
 
-	public static CouponEvent toCouponEvent(CouponEventServiceRequest couponEventServiceRequest) {
+	public static CouponEvent toCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
 		return CouponEvent.builder()
-				.couponId(couponEventServiceRequest.couponId())
-				.memberId(couponEventServiceRequest.memberId())
+				.couponId(couponEventRegisterRequest.couponId())
+				.memberId(couponEventRegisterRequest.memberId())
 				.build();
 	}
 

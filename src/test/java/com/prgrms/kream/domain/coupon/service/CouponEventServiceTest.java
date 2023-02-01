@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.prgrms.kream.domain.coupon.dto.request.CouponEventServiceRequest;
+import com.prgrms.kream.domain.coupon.dto.request.CouponEventRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponEventResponse;
 import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.model.Coupon;
@@ -48,18 +48,18 @@ class CouponEventServiceTest {
 				// .authority("ADMIN")
 				.name("name")
 				.build();
-		CouponEventServiceRequest couponEventServiceRequest =
-				new CouponEventServiceRequest(member.getId(), couponResponse.id());
+		CouponEventRegisterRequest couponEventRegisterRequest =
+				new CouponEventRegisterRequest(member.getId(), couponResponse.id());
 		CouponEvent couponEvent = CouponEvent.builder()
 				.id(1L)
 				.couponId(coupon.getId())
-				.memberId(couponEventServiceRequest.memberId())
+				.memberId(couponEventRegisterRequest.memberId())
 				.build();
 
 		//when
 		when(couponEventRepository.save(any(CouponEvent.class)))
 				.thenReturn(couponEvent);
-		CouponEventResponse couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventServiceRequest);
+		CouponEventResponse couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventRegisterRequest);
 
 		//then
 		assertThat(couponEventControllerResponse.id()).isEqualTo(couponEvent.getId());
@@ -85,8 +85,8 @@ class CouponEventServiceTest {
 				// .authority("ADMIN")
 				.name("name")
 				.build();
-		CouponEventServiceRequest couponEventServiceRequest =
-				new CouponEventServiceRequest(member.getId(), couponResponse.id());
+		CouponEventRegisterRequest couponEventRegisterRequest =
+				new CouponEventRegisterRequest(member.getId(), couponResponse.id());
 
 		//when
 		when(couponEventRepository.existsByMemberIdAndCouponId(any(Long.class), any(Long.class)))
@@ -95,7 +95,7 @@ class CouponEventServiceTest {
 
 		//then
 		assertThatThrownBy(
-				() -> couponEventService.registerCouponEvent(couponEventServiceRequest)
+				() -> couponEventService.registerCouponEvent(couponEventRegisterRequest)
 				).isInstanceOf(DuplicateRequestException.class)
 				.hasMessage("쿠폰을 중복으로 받을 수 없습니다.");
 	}
