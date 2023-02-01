@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
@@ -19,6 +20,7 @@ import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
+import com.prgrms.kream.domain.style.repository.FeedCommentRepository;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
 import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
@@ -37,6 +39,8 @@ public class StyleService {
 	private final FeedLikeRepository feedLikeRepository;
 
 	private final FeedProductRepository feedProductRepository;
+
+	private final FeedCommentRepository feedCommentRepository;
 
 	@Transactional
 	public RegisterFeedServiceResponse register(RegisterFeedServiceRequest registerFeedServiceRequest) {
@@ -144,6 +148,7 @@ public class StyleService {
 					feedTagRepository.deleteAllByFeedId(feed.getId());
 					feedLikeRepository.deleteAllByFeedId(feed.getId());
 					feedProductRepository.deleteAllByFeedId(feed.getId());
+					feedCommentRepository.deleteAllByFeedId(feed.getId());
 					feedRepository.delete(feed);
 				});
 	}
@@ -185,8 +190,15 @@ public class StyleService {
 		}
 	}
 
+	@Transactional
+	public void registerFeedComment(RegisterFeedCommentServiceRequest registerFeedCommentServiceRequest) {
+		feedRepository.findById(registerFeedCommentServiceRequest.feedId())
+				.map(feed -> feedCommentRepository.save(toFeedComment(registerFeedCommentServiceRequest)))
+				.orElseThrow(EntityNotFoundException::new);
+	}
+
 	private GetFeedServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
-		getFeedProductsOnFeeds(feeds);
+		getFeedProducts(feeds);
 
 		if (feeds.size() > pageSize) {
 			return toGetFeedServiceResponses(
@@ -198,7 +210,7 @@ public class StyleService {
 		return toGetFeedServiceResponses(feeds, -1L);
 	}
 
-	private void getFeedProductsOnFeeds(List<Feed> feeds) {
+	private void getFeedProducts(List<Feed> feeds) {
 		feeds.forEach(feed ->
 				feed.setProductIds(
 						feedProductRepository.findAllByFeedId(feed.getId()).stream()

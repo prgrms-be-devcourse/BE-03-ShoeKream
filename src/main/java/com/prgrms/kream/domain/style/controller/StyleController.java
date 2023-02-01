@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
 import com.prgrms.kream.domain.style.dto.response.GetFeedResponses;
@@ -159,6 +160,20 @@ public class StyleController {
 				toLikeFeedFacadeRequest(
 						id,
 						likeFeedRequest
+				)
+		);
+		return ApiResponse.of(SUCCESS_MESSAGE);
+	}
+
+	@PostMapping("/{id}/comments")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<String> registerFeedComment(
+			@PathVariable Long id,
+			@RequestBody @Valid RegisterFeedCommentRequest registerFeedCommentRequest) {
+		styleFacade.registerFeedComment(
+				toRegisterFeedCommentFacadeRequest(
+						id,
+						registerFeedCommentRequest
 				)
 		);
 		return ApiResponse.of(SUCCESS_MESSAGE);

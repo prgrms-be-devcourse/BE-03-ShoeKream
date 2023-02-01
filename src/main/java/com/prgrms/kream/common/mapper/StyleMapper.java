@@ -9,6 +9,9 @@ import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
@@ -28,6 +31,7 @@ import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedLike;
 import com.prgrms.kream.domain.style.model.FeedProduct;
 
@@ -193,6 +197,35 @@ public class StyleMapper {
 		return FeedLike.builder()
 				.feedId(likeFeedServiceRequest.feedId())
 				.memberId(likeFeedServiceRequest.memberId())
+				.build();
+	}
+
+	public static RegisterFeedCommentFacadeRequest toRegisterFeedCommentFacadeRequest(
+			Long id,
+			RegisterFeedCommentRequest registerFeedCommentRequest
+	) {
+		return new RegisterFeedCommentFacadeRequest(
+				registerFeedCommentRequest.content(),
+				registerFeedCommentRequest.memberId(),
+				id
+		);
+	}
+
+	public static RegisterFeedCommentServiceRequest toRegisterFeedCommentServiceRequest(
+			RegisterFeedCommentFacadeRequest registerFeedCommentFacadeRequest
+	) {
+		return new RegisterFeedCommentServiceRequest(
+				registerFeedCommentFacadeRequest.content(),
+				registerFeedCommentFacadeRequest.memberId(),
+				registerFeedCommentFacadeRequest.feedId()
+		);
+	}
+
+	public static FeedComment toFeedComment(RegisterFeedCommentServiceRequest registerFeedCommentServiceRequest) {
+		return FeedComment.builder()
+				.feedId(registerFeedCommentServiceRequest.feedId())
+				.memberId(registerFeedCommentServiceRequest.memberId())
+				.content(registerFeedCommentServiceRequest.content())
 				.build();
 	}
 

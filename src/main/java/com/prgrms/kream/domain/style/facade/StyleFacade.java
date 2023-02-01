@@ -12,6 +12,7 @@ import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
 import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
 import com.prgrms.kream.domain.style.dto.response.GetFeedFacadeResponses;
@@ -102,6 +103,13 @@ public class StyleFacade {
 	public void deleteFeedLike(LikeFeedFacadeRequest likeFeedFacadeRequest) {
 		styleService.deleteFeedLike(
 				toLikeFeedServiceRequest(likeFeedFacadeRequest)
+		);
+	}
+
+	@Transactional
+	public void registerFeedComment(RegisterFeedCommentFacadeRequest registerFeedCommentFacadeRequest) {
+		styleService.registerFeedComment(
+				toRegisterFeedCommentServiceRequest(registerFeedCommentFacadeRequest)
 		);
 	}
 
