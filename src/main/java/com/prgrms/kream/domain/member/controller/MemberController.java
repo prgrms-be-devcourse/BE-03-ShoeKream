@@ -38,6 +38,7 @@ import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
+import com.prgrms.kream.domain.member.facade.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -154,5 +155,11 @@ public class MemberController {
 	) {
 		memberFacade.deleteFollowing(followingDeleteRequest);
 		return ApiResponse.of("follow 삭제에 성공했습니다.");
+	}
+
+	@GetMapping("/{id}/following")
+	@ResponseStatus(OK)
+	public ApiResponse<FollowingGetAllResponse> getAllFollowings() {
+		return ApiResponse.of(memberFacade.getAllFollowings());
 	}
 }

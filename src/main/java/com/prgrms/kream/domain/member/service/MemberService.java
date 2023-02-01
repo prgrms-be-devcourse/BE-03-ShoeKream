@@ -3,6 +3,7 @@ package com.prgrms.kream.domain.member.service;
 import static com.prgrms.kream.common.jwt.JwtUtil.*;
 import static com.prgrms.kream.common.mapper.MemberMapper.*;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.EntityNotFoundException;
@@ -32,6 +33,7 @@ import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.facade.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Following;
 import com.prgrms.kream.domain.member.model.FollowingId;
@@ -176,5 +178,17 @@ public class MemberService {
 				.orElseThrow(() -> new EntityNotFoundException("entity가 존재하지 않습니다."));
 
 		followingRepository.delete(following);
+	}
+
+	public FollowingGetAllResponse getAllFollowings() {
+		Long followingMemberId = getMemberId();
+		List<Long> followedMemberIds = followingRepository.findAllByFollowingId_FollowingMemberId(followingMemberId)
+				.stream()
+				.map(following -> following
+						.getFollowingId()
+						.getFollowedMemberId())
+				.toList();
+
+		return new FollowingGetAllResponse(followedMemberIds);
 	}
 }

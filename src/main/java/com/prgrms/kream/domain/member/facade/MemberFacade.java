@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.kream.common.jwt.JwtUtil;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
@@ -94,5 +93,9 @@ public class MemberFacade {
 
 	public void deleteFollowing(FollowingDeleteRequest followingDeleteRequest) {
 		memberService.deleteFollowing(followingDeleteRequest);
+	}
+
+	public FollowingGetAllResponse getAllFollowings() {
+		return memberService.getAllFollowings();
 	}
 }
