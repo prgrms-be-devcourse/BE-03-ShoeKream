@@ -13,8 +13,9 @@ drop table if exists follow cascade;
 drop table if exists image cascade;
 drop table if exists product_option cascade;
 drop table if exists selling_bid cascade;
-drop table if exists `transaction` cascade;
+drop table if exists `transaction_history` cascade;
 drop table if exists `member` cascade;
+drop table if exists feed_comment cascade;
 
 
 CREATE TABLE `member`
@@ -52,15 +53,17 @@ CREATE TABLE `product`
 
 CREATE TABLE `order`
 (
-    `id`                BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `buyer_id`          BIGINT      NOT NULL,
-    `seller_id`         BIGINT      NOT NULL,
-    `product_option_id` BIGINT      NOT NULL,
-    `price`             INT         NOT NULL,
-    `order_status`      VARCHAR(10) NOT NULL,
-    `order_request`     VARCHAR(50) NOT NULL,
-    `created_at`        TIMESTAMP   NOT NULL,
-    `updated_at`        TIMESTAMP   NOT NULL
+    `id`                        BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `bid_id`                    BIGINT      NOT NULL,
+    `is_based_on_selling_bid`   BIT   NOT NULL,
+    `buyer_id`                  BIGINT      NOT NULL,
+    `seller_id`                 BIGINT      NOT NULL,
+    `product_option_id`         BIGINT      NOT NULL,
+    `price`                     INT         NOT NULL,
+    `order_status`              VARCHAR(10) NOT NULL,
+    `order_request`             VARCHAR(50) NOT NULL,
+    `created_at`                TIMESTAMP   NOT NULL,
+    `updated_at`                TIMESTAMP   NOT NULL
 );
 
 CREATE TABLE `coupon`
@@ -82,11 +85,11 @@ CREATE TABLE `account`
     `updated_at` TIMESTAMP NOT NULL
 );
 
-CREATE TABLE `transaction`
+CREATE TABLE `transaction_history`
 (
     `id`               BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `account_id`       BIGINT      NOT NULL,
-    `account`          INT         NOT NULL,
+    `amount`           INT         NOT NULL,
     `transaction_type` VARCHAR(10) NOT NULL,
     `created_at`       TIMESTAMP   NOT NULL,
     `updated_at`       TIMESTAMP   NOT NULL
@@ -197,3 +200,13 @@ CREATE TABLE `follow`
 );
 
 CREATE INDEX index_product ON product (id DESC);
+
+CREATE TABLE `feed_comment`
+(
+    `id`         BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `member_id`  BIGINT       NOT NULL,
+    `feed_id`    BIGINT       NOT NULL,
+    `content`    VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP    NOT NULL,
+    `updated_at` TIMESTAMP    NOT NULL
+);
