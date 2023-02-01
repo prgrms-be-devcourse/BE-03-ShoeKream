@@ -27,6 +27,7 @@ import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
@@ -134,5 +135,14 @@ public class MemberController {
 	) {
 		memberFacade.deleteDeliveryInfo(deliveryInfoDeleteRequest);
 		return ApiResponse.of("삭제 성공하였습니다.");
+	}
+
+	@PostMapping("/{id}/following")
+	@ResponseStatus(OK)
+	public ApiResponse<String> registerFollowing(
+			@RequestBody @Valid FollowingRegisterRequest followingRegisterRequest
+	) {
+		memberFacade.registerFollowing(followingRegisterRequest);
+		return ApiResponse.of("follow 등록에 성공했습니다.");
 	}
 }

@@ -16,6 +16,7 @@ import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
@@ -83,5 +84,9 @@ public class MemberFacade {
 
 		memberService.deleteDeliveryInfo(deliveryInfoDeleteRequest);
 
+	}
+
+	public void registerFollowing(FollowingRegisterRequest followingRegisterRequest) {
+		memberService.registerFollowing(followingRegisterRequest);
 	}
 }
