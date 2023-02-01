@@ -51,10 +51,14 @@ public class ImageLocalService implements ImageService {
 	@Override
 	public void deleteAllImagesByReference(Long referenceId, DomainType domainType) {
 		List<Image> images = getAllImageEntities(referenceId, domainType);
-		images.stream()
-				.map(Image::getFullPath)
-				.forEach(this::deleteImage);
-		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
+
+		if (images.size() != 0) {
+			images.stream()
+					.map(Image::getFullPath)
+					.forEach(this::deleteImage);
+
+			imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
+		}
 	}
 
 	private List<Image> getAllImageEntities(Long referenceId, DomainType domainType) {
