@@ -43,6 +43,7 @@ import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.facade.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Following;
 import com.prgrms.kream.domain.member.model.FollowingId;
@@ -622,5 +623,34 @@ class MemberServiceTest {
 
 		verify(followRepository, times(0))
 				.delete(following);
+	}
+
+	@Test
+	@DisplayName("팔로우 하는 followedMemberIds 조회 성공")
+	void getAllFollowing_success() {
+
+		FollowingId followingId1 = new FollowingId(1L, 2L);
+		FollowingId followingId2 = new FollowingId(1L, 3L);
+		FollowingId followingId3 = new FollowingId(1L, 4L);
+
+		Following following1 = new Following(followingId1);
+		Following following2 = new Following(followingId2);
+		Following following3 = new Following(followingId3);
+
+		List<Following> followingList = List.of(following1, following2, following3);
+		List<Long> memberIds = followingList.stream()
+				.map(following -> following.getFollowingId().getFollowedMemberId())
+				.toList();
+
+		when(followRepository.findAllByFollowingId_FollowingMemberId(1L))
+				.thenReturn(followingList);
+
+		FollowingGetAllResponse followingGetAllResponse = memberService.getAllFollowings();
+
+		Assertions.assertThat(followingGetAllResponse.FollowedMemberIds())
+				.isEqualTo(memberIds);
+
+		verify(followRepository, times(1))
+				.findAllByFollowingId_FollowingMemberId(1L);
 	}
 }

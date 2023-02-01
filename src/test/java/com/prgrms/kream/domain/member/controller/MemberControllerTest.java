@@ -127,6 +127,7 @@ class MemberControllerTest extends MysqlTestContainer {
 	@AfterEach
 	void tearDown() {
 		memberRepository.deleteAll();
+		followRepository.deleteAll();
 	}
 
 	@Test
@@ -436,6 +437,28 @@ class MemberControllerTest extends MysqlTestContainer {
 				)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data").value("follow 삭제에 성공했습니다."))
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("팔로우 조회 성공")
+	void getAllFollowing_success() throws Exception {
+		FollowingId followingId1 = new FollowingId(memberId, 2L);
+		FollowingId followingId2 = new FollowingId(memberId, 3L);
+		FollowingId followingId3 = new FollowingId(memberId, 4L);
+
+		Following following1 = new Following(followingId1);
+		Following following2 = new Following(followingId2);
+		Following following3 = new Following(followingId3);
+
+		followRepository.save(following1);
+		followRepository.save(following2);
+		followRepository.save(following3);
+
+		mockMvc.perform(get("/api/v1/member/{id}/following", memberId))
+				.andExpect(jsonPath("$.data.FollowedMemberIds[0]").value("2"))
+				.andExpect(jsonPath("$.data.FollowedMemberIds[1]").value("3"))
+				.andExpect(jsonPath("$.data.FollowedMemberIds[2]").value("4"))
 				.andDo(print());
 	}
 }
