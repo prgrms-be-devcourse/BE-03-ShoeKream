@@ -1,7 +1,7 @@
 package com.prgrms.kream.domain.account.controller;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.account.dto.request.AccountUpdateRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
 import com.prgrms.kream.domain.account.facade.AccountFacade;
@@ -31,8 +31,8 @@ public class AccountController {
 	@PutMapping
 	@ResponseStatus(code = HttpStatus.OK)
 	public ApiResponse<AccountUpdateResponse> updateBalance(
-			@RequestBody @Valid AccountUpdateRequest accountUpdateRequest
+			@RequestBody @Valid AccountUpdateFacadeRequest accountUpdateFacadeRequest
 	) {
-		return ApiResponse.of(accountFacade.updateBalance(accountUpdateRequest));
+		return ApiResponse.of(accountFacade.updateBalance(accountUpdateFacadeRequest));
 	}
 }

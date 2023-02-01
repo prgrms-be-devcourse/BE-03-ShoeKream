@@ -3,7 +3,7 @@ package com.prgrms.kream.domain.account.service;
 import static com.prgrms.kream.common.mapper.AccountMapper.*;
 import com.prgrms.kream.common.exception.BalanceNotEnoughException;
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
-import com.prgrms.kream.domain.account.dto.request.AccountUpdateRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
 import com.prgrms.kream.domain.account.model.Account;
@@ -28,10 +28,10 @@ public class AccountService {
 	}
 
 	@Transactional
-	public AccountUpdateResponse updateBalance(AccountUpdateRequest accountUpdateRequest){
+	public AccountUpdateResponse updateBalance(AccountUpdateServiceRequest accountUpdateServiceRequest){
 		try{
-			getAccountEntityByMemberId(accountUpdateRequest.memberId())
-					.updateBalance(accountUpdateRequest.transactionType(), accountUpdateRequest.amount());
+			getAccountEntityByMemberId(accountUpdateServiceRequest.memberId())
+					.updateBalance(accountUpdateServiceRequest.transactionType(), accountUpdateServiceRequest.amount());
 		}catch (EntityNotFoundException | BalanceNotEnoughException e){
 			return new AccountUpdateResponse(false);
 		}

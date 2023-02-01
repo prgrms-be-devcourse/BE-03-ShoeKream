@@ -1,7 +1,8 @@
 package com.prgrms.kream.domain.account.facade;
 
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
-import com.prgrms.kream.domain.account.dto.request.AccountUpdateRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
 import com.prgrms.kream.domain.account.service.AccountService;
@@ -9,6 +10,7 @@ import com.prgrms.kream.domain.account.service.TransactionHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static com.prgrms.kream.common.mapper.AccountMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,13 @@ public class AccountFacade {
 	}
 
 	@Transactional
-	public AccountUpdateResponse updateBalance(AccountUpdateRequest accountUpdateRequest){
-		return accountService.updateBalance(accountUpdateRequest);
+	public AccountUpdateResponse updateBalance(AccountUpdateFacadeRequest accountUpdateFacadeRequest){
+		AccountUpdateServiceRequest accountUpdateServiceRequest =
+				toAccountUpdateServiceRequest(accountUpdateFacadeRequest);
+		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
+		if (accountUpdateResponse.isSucceed()) {
+			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateFacadeRequest));
+		}
+		return accountUpdateResponse;
 	}
 }

@@ -4,7 +4,7 @@ import com.prgrms.kream.domain.account.model.TransactionType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-public record AccountUpdateRequest(
+public record AccountUpdateServiceRequest(
 		@NotNull(message = "계좌 주인 ID는 필수 입력값입니다")
 		Long memberId,
 
