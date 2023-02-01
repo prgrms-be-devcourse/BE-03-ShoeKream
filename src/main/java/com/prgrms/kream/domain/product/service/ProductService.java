@@ -63,7 +63,7 @@ public class ProductService {
 	}
 
 	@Transactional
-	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
+	public ProductUpdateResponse updateProduct(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
 		Product product = getProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
@@ -87,7 +87,7 @@ public class ProductService {
 		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int highestPrice = productOption.getHighestPrice();
 		if (highestPrice < newPrice) {
-			updateHighestPrice(productOption, newPrice);
+			changeHighestPrice(productOption, newPrice);
 		}
 	}
 
@@ -96,27 +96,27 @@ public class ProductService {
 		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int lowestPrice = productOption.getLowestPrice();
 		if (lowestPrice == 0 || lowestPrice > newPrice) {
-			updateLowestPrice(productOption, newPrice);
+			changeLowestPrice(productOption, newPrice);
 		}
 	}
 
-	public void changeHighestPrice(Long productOptionId, int newPrice) {
+	public void updateHighestPrice(Long productOptionId, int newPrice) {
 		ProductOption productOption = getProductOptionEntity(productOptionId);
-		updateHighestPrice(productOption, newPrice);
+		changeHighestPrice(productOption, newPrice);
 	}
 
-	public void changeLowestPrice(Long productOptionId, int newPrice) {
+	public void updateLowestPrice(Long productOptionId, int newPrice) {
 		ProductOption productOption = getProductOptionEntity(productOptionId);
-		updateLowestPrice(productOption, newPrice);
+		changeLowestPrice(productOption, newPrice);
 	}
 
 	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void updateHighestPrice(ProductOption productOption, int newPrice) {
+	public void changeHighestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateHighestPrice(newPrice);
 	}
 
 	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void updateLowestPrice(ProductOption productOption, int newPrice) {
+	public void changeLowestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateLowestPrice(newPrice);
 	}
 

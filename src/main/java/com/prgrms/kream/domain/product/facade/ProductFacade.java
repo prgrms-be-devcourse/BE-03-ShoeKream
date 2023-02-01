@@ -56,10 +56,10 @@ public class ProductFacade {
 
 	@CacheEvict(value = "product", key = "#productUpdateRequest.id()")
 	@Transactional
-	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
+	public ProductUpdateResponse updateProduct(ProductUpdateRequest productUpdateRequest) {
 		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
 		imageService.register(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
-		return productService.update(toProductUpdateFacadeRequest(productUpdateRequest));
+		return productService.updateProduct(toProductUpdateFacadeRequest(productUpdateRequest));
 	}
 
 	@CacheEvict(value = "product", key = "#productId")

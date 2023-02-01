@@ -38,10 +38,10 @@ public class ProductAdminController {
 
 	@PatchMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductUpdateResponse> update(
+	public ApiResponse<ProductUpdateResponse> updateProduct(
 			@ModelAttribute @Valid ProductUpdateRequest productUpdateRequest) {
 
-		return ApiResponse.of(productFacade.update(productUpdateRequest));
+		return ApiResponse.of(productFacade.updateProduct(productUpdateRequest));
 	}
 
 	@DeleteMapping("/{id}")

@@ -156,7 +156,7 @@ public class ProductServiceTest {
 				.thenReturn(Optional.of(product));
 
 		//when
-		ProductUpdateResponse productUpdateResponse = productService.update(productUpdateFacadeRequest);
+		ProductUpdateResponse productUpdateResponse = productService.updateProduct(productUpdateFacadeRequest);
 
 		//then
 		assertThat(productUpdateResponse.id()).isEqualTo(productId);
