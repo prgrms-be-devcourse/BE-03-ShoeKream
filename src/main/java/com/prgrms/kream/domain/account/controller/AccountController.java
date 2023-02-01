@@ -2,12 +2,16 @@ package com.prgrms.kream.domain.account.controller;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
+import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetFacadeRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
+import com.prgrms.kream.domain.account.dto.response.TransactionHistoryGetResponse;
 import com.prgrms.kream.domain.account.facade.AccountFacade;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,5 +38,13 @@ public class AccountController {
 			@RequestBody @Valid AccountUpdateFacadeRequest accountUpdateFacadeRequest
 	) {
 		return ApiResponse.of(accountFacade.updateBalance(accountUpdateFacadeRequest));
+	}
+
+	@GetMapping("transaction-histories/{memberId}")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ApiResponse<List<TransactionHistoryGetResponse>> getAllByMemberId(@PathVariable("memberId")Long memberId){
+		TransactionHistoryGetFacadeRequest transactionHistoryGetFacadeRequest =
+				new TransactionHistoryGetFacadeRequest(memberId);
+		return ApiResponse.of(accountFacade.getAllTransactionHistories(transactionHistoryGetFacadeRequest));
 	}
 }

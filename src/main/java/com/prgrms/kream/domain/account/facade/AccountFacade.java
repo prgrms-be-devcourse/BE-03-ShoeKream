@@ -1,16 +1,21 @@
 package com.prgrms.kream.domain.account.facade;
 
+import static com.prgrms.kream.common.mapper.AccountMapper.*;
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountGetRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
+import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetFacadeRequest;
+import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetServiceRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
+import com.prgrms.kream.domain.account.dto.response.TransactionHistoryGetResponse;
 import com.prgrms.kream.domain.account.service.AccountService;
 import com.prgrms.kream.domain.account.service.TransactionHistoryService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.prgrms.kream.common.mapper.AccountMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +34,7 @@ public class AccountFacade {
 	}
 
 	@Transactional
-	public AccountUpdateResponse updateBalance(AccountUpdateFacadeRequest accountUpdateFacadeRequest){
+	public AccountUpdateResponse updateBalance(AccountUpdateFacadeRequest accountUpdateFacadeRequest) {
 		AccountUpdateServiceRequest accountUpdateServiceRequest =
 				toAccountUpdateServiceRequest(accountUpdateFacadeRequest);
 		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
@@ -37,5 +42,12 @@ public class AccountFacade {
 			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateFacadeRequest));
 		}
 		return accountUpdateResponse;
+	}
+
+	@Transactional(readOnly = true)
+	public List<TransactionHistoryGetResponse> getAllTransactionHistories(
+			TransactionHistoryGetFacadeRequest transactionHistoryGetFacadeRequest) {
+		Long accountId = accountService.get(new AccountGetRequest(transactionHistoryGetFacadeRequest.memberId())).id();
+		return transactionHistoryService.getAll(new TransactionHistoryGetServiceRequest(accountId));
 	}
 }

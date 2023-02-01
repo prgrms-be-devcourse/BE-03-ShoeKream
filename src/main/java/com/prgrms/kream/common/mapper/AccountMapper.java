@@ -5,6 +5,7 @@ import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryCreateRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
+import com.prgrms.kream.domain.account.dto.response.AccountGetResponse;
 import com.prgrms.kream.domain.account.dto.response.TransactionHistoryCreateResponse;
 import com.prgrms.kream.domain.account.model.Account;
 import com.prgrms.kream.domain.account.model.TransactionHistory;
@@ -22,6 +23,12 @@ public class AccountMapper {
 				.memberId(accountCreateRequest.memberId())
 				.balance(0)
 				.build();
+	}
+
+	public static AccountGetResponse toAccountGetResponse(Account account){
+		return new AccountGetResponse(
+				account.getId(), account.getMemberId(), account.getBalance()
+		);
 	}
 
 	public static AccountUpdateServiceRequest toAccountUpdateServiceRequest(AccountUpdateFacadeRequest accountUpdateFacadeRequest){
