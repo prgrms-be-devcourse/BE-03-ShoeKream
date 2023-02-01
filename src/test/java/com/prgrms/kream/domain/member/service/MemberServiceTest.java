@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +31,7 @@ import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
@@ -568,5 +570,57 @@ class MemberServiceTest {
 		verify(followRepository, times(1)).existsById(any(FollowingId.class));
 		verify(followRepository, times(1)).save(any(Following.class));
 
+	}
+
+	@Test
+	@DisplayName("팔로우 삭제 성공")
+	void deleteFollow_success() {
+
+		FollowingId followingId = new FollowingId(1L, 2L);
+		Following following = new Following(followingId);
+
+		when(followRepository.findById(any(FollowingId.class)))
+				.thenReturn(Optional.of(following));
+
+		memberService.deleteFollowing(new FollowingDeleteRequest(1L, 2L));
+		ArgumentCaptor<FollowingId> followingIdArgumentCaptor = ArgumentCaptor.forClass(FollowingId.class);
+		ArgumentCaptor<Following> followingArgumentCaptor = ArgumentCaptor.forClass(Following.class);
+
+		verify(followRepository, times(1))
+				.findById(followingIdArgumentCaptor.capture());
+
+		Assertions.assertThat(1L)
+				.isEqualTo(followingIdArgumentCaptor.getValue().getFollowingMemberId());
+		Assertions.assertThat(2L)
+				.isEqualTo(followingIdArgumentCaptor.getValue().getFollowedMemberId());
+
+		verify(followRepository, times(1))
+				.delete(followingArgumentCaptor.capture());
+
+		Assertions.assertThat(followingId)
+				.usingRecursiveComparison()
+				.isEqualTo(followingArgumentCaptor.getValue().getFollowingId());
+	}
+
+	@Test
+	@DisplayName("팔로우 등록 실패 - 존재하지 않는 following 관계")
+	void deleteFollow_fail_notExistFollowing() {
+
+		FollowingId followingId = new FollowingId(1L, 2L);
+		Following following = new Following(followingId);
+
+		when(followRepository.findById(any(FollowingId.class)))
+				.thenReturn(Optional.empty());
+
+		Assertions.assertThatThrownBy(
+						() -> memberService.deleteFollowing(new FollowingDeleteRequest(1L, 2L))
+				)
+				.isInstanceOf(EntityNotFoundException.class);
+
+		verify(followRepository, times(1))
+				.findById(any(FollowingId.class));
+
+		verify(followRepository, times(0))
+				.delete(following);
 	}
 }

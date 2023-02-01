@@ -45,10 +45,13 @@ import com.prgrms.kream.domain.image.repository.ImageRepository;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
+import com.prgrms.kream.domain.member.model.Following;
+import com.prgrms.kream.domain.member.model.FollowingId;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
 import com.prgrms.kream.domain.member.repository.FollowingRepository;
@@ -82,6 +85,9 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Autowired
 	private DeliveryInfoRepository deliveryInfoRepository;
+
+	@Autowired
+	private FollowingRepository followRepository;
 
 	static Long memberId;
 
@@ -184,7 +190,8 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.name").value("name"))
 				.andExpect(jsonPath("$.data.email").value("hello@naver.com"))
 				.andExpect(jsonPath("$.data.phone").value("01012345678"))
-				.andExpect(jsonPath("$.data.imagePaths[0]").value("https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png"));
+				.andExpect(jsonPath("$.data.imagePaths[0]").value(
+						"https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png"));
 	}
 
 	@Test
@@ -410,6 +417,25 @@ class MemberControllerTest extends MysqlTestContainer {
 				)
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data").value("follow 등록에 성공했습니다."))
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("팔로우 삭제 성공")
+	void deleteFollowing_success() throws Exception {
+
+		FollowingId followingId = new FollowingId(1L, 2L);
+		followRepository.save(new Following(followingId));
+
+		FollowingDeleteRequest followingDeleteRequest =
+				new FollowingDeleteRequest(1L, 2L);
+
+		mockMvc.perform(delete("/api/v1/member/{id}/following", memberId)
+						.contentType(APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(followingDeleteRequest))
+				)
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").value("follow 삭제에 성공했습니다."))
 				.andDo(print());
 	}
 }
