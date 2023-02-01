@@ -1,14 +1,16 @@
 package com.prgrms.kream.common.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Data
-@Component
-@ConfigurationProperties("spring.redis")
+@Getter
+@ConstructorBinding
+@RequiredArgsConstructor
+@ConfigurationProperties(prefix = "spring.redis")
 public class RedisProperties {
-	private String host;
-	private int port;
+	private final String host;
+	private final int port;
 }

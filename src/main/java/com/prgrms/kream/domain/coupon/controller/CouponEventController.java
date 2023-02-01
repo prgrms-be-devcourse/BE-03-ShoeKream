@@ -24,7 +24,7 @@ public class CouponEventController {
 	private final CouponFacade couponFacade;
 
 	/**
-	 * 멤버에게 쿠폰을 발급한다.
+	 * 쿠폰 이벤트 요청을 레디스에 추가한다.
 	 * @author goseungwon
 	 * @param couponEventRegisterRequest 쿠폰 id, 멤버 id
 	 * @return CouponEventResponse
@@ -32,11 +32,11 @@ public class CouponEventController {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<String> applyCouponEvent(
+	public ApiResponse<Long> applyCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
 		long queueSize = couponFacade.applyCountEvent(couponEventRegisterRequest);
-		return ApiResponse.of("이벤트 응모 완료 현재 대기번호 : " + queueSize);
+		return ApiResponse.of(queueSize);
 	}
 
 	/**
