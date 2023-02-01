@@ -21,15 +21,18 @@ import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedLike;
 import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
+import com.prgrms.kream.domain.style.repository.FeedCommentRepository;
 import com.prgrms.kream.domain.style.repository.FeedLikeRepository;
 import com.prgrms.kream.domain.style.repository.FeedProductRepository;
 import com.prgrms.kream.domain.style.repository.FeedRepository;
@@ -50,6 +53,9 @@ class StyleServiceTest {
 
 	@Mock
 	private FeedProductRepository feedProductRepository;
+
+	@Mock
+	private FeedCommentRepository feedCommentRepository;
 
 	@InjectMocks
 	private StyleService styleService;
@@ -90,6 +96,12 @@ class StyleServiceTest {
 					.productId(2L)
 					.build()
 	);
+
+	private static final FeedComment FEED_COMMENT = FeedComment.builder()
+			.feedId(FEED.getId())
+			.memberId(MEMBER.getId())
+			.content(FEED.getId() + "번 피드의 댓글입니다.")
+			.build();
 
 	@Test
 	@DisplayName("피드를 등록할 수 있다.")
@@ -170,6 +182,18 @@ class StyleServiceTest {
 		verify(feedLikeRepository).existsByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
 		verify(feedLikeRepository).deleteByFeedIdAndMemberId(FEED.getId(), MEMBER.getId());
 		assertThat(FEED.getLikes()).isEqualTo(0L);
+	}
+
+	@Test
+	@DisplayName("피드에 사용자 댓글을 등록할 수 있다.")
+	void testRegisterFeedComment() {
+		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
+		when(feedCommentRepository.save(any(FeedComment.class))).thenReturn(FEED_COMMENT);
+
+		styleService.registerFeedComment(getRegisterFeedCommentServiceRequest());
+
+		verify(feedRepository).findById(FEED.getId());
+		verify(feedCommentRepository).save(any(FeedComment.class));
 	}
 
 	@Test
@@ -288,6 +312,14 @@ class StyleServiceTest {
 
 	private LikeFeedServiceRequest getLikeFeedServiceRequest() {
 		return new LikeFeedServiceRequest(FEED.getId(), MEMBER.getId());
+	}
+
+	private RegisterFeedCommentServiceRequest getRegisterFeedCommentServiceRequest() {
+		return new RegisterFeedCommentServiceRequest(
+				FEED_COMMENT.getContent(),
+				FEED_COMMENT.getMemberId(),
+				FEED_COMMENT.getFeedId()
+		);
 	}
 
 }
