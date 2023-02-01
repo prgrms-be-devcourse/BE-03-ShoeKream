@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.order.facade;
 
+import static com.prgrms.kream.common.mapper.OrderMapper.*;
 import com.prgrms.kream.domain.bid.dto.request.BuyingBidFindRequest;
 import com.prgrms.kream.domain.bid.dto.request.SellingBidFindRequest;
 import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
@@ -14,11 +15,12 @@ import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
 import com.prgrms.kream.domain.order.model.Order;
 import com.prgrms.kream.domain.order.service.OrderService;
+import com.prgrms.kream.domain.product.service.ProductService;
 import java.util.Collections;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.prgrms.kream.common.mapper.OrderMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class OrderFacade {
 	private final OrderService orderService;
 	private final SellingBidService sellingBidService;
 	private final BuyingBidService buyingBidService;
+	private final ProductService productService;
 
 	@Transactional
 	public OrderCreateResponse registerBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
@@ -40,7 +43,20 @@ public class OrderFacade {
 						sellingBidFindResponse.productOptionId(), sellingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
+		SellingBidFindRequest sellingBidFindRequest =
+				new SellingBidFindRequest(Collections.singletonList(orderCreateFacadeRequest.bidId()));
+
 		sellingBidService.deleteById(sellingBidFindResponse.id());
+
+		SellingBidFindResponse lowestSellingBid = null;
+		try {
+			lowestSellingBid =
+					sellingBidService.findLowestSellingBidByProductOptionId(sellingBidFindRequest);
+		} catch (EntityNotFoundException e) {
+			productService.changeHighestPrice(sellingBidFindResponse.productOptionId(), 0);
+		}
+
+		productService.changeHighestPrice(sellingBidFindResponse.productOptionId(), lowestSellingBid.price());
 
 		return orderService.register(orderCreateServiceRequest);
 	}
@@ -61,25 +77,44 @@ public class OrderFacade {
 
 		buyingBidService.deleteById(buyingBidFindResponse.id());
 
+		BuyingBidFindRequest buyingBidFindRequest =
+				new BuyingBidFindRequest(Collections.singletonList(orderCreateFacadeRequest.bidId()));
+
+		BuyingBidFindResponse highestBuyingBid = null;
+		try {
+			highestBuyingBid =
+					buyingBidService.findHighestBuyingBidByProductOptionId(buyingBidFindRequest);
+		} catch (EntityNotFoundException e) {
+			productService.changeHighestPrice(buyingBidFindResponse.productOptionId(), 0);
+		}
+
+		productService.changeHighestPrice(buyingBidFindResponse.productOptionId(), highestBuyingBid.price());
+
 		return orderService.register(orderCreateServiceRequest);
 	}
 
 	@Transactional(readOnly = true)
-	public OrderFindResponse findById(OrderFindRequest orderFindRequest){
+	public OrderFindResponse findById(OrderFindRequest orderFindRequest) {
 		return orderService.findById(orderFindRequest);
 	}
 
 	@Transactional
-	public void deleteById(Long id){
+	public void deleteById(Long id) {
 		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
 		OrderFindRequest orderFindRequest = new OrderFindRequest(id);
 		Order order = toOrder(orderService.findById(orderFindRequest));
 
 		// todo 주문 취소시 패널티를 준다(거래 금지 일시 or 수수료)
-		if (order.getIsBasedOnSellingBid()){
+		if (order.getIsBasedOnSellingBid()) {
+			SellingBidFindResponse sellingBidFindResponse =
+					sellingBidService.findById(new SellingBidFindRequest(Collections.singletonList(order.getBidId())));
 			sellingBidService.restoreById(order.getBidId());
-		}else{
+			productService.compareLowestPrice(order.getProductOptionId(), sellingBidFindResponse.price());
+		} else {
+			BuyingBidFindResponse buyingBidFindResponse =
+					buyingBidService.findById(new BuyingBidFindRequest(Collections.singletonList(order.getBidId())));
 			buyingBidService.restoreById(order.getBidId());
+			productService.compareHighestPrice(order.getProductOptionId(), buyingBidFindResponse.price());
 		}
 
 		orderService.deleteById(orderCancelRequest);
