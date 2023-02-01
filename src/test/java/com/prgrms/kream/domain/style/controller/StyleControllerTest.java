@@ -163,7 +163,7 @@ class StyleControllerTest extends MysqlTestContainer {
 
 	@Test
 	@Order(10)
-	@DisplayName("피드에 사용자 댓글을 등록할 수 있다.")
+	@DisplayName("피드의 사용자 댓글을 등록할 수 있다.")
 	void testRegisterFeedComment() throws Exception {
 		mockMvc.perform(post("/api/v1/feed/1/comments")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -171,6 +171,15 @@ class StyleControllerTest extends MysqlTestContainer {
 								new RegisterFeedCommentRequest("피드의 댓글입니다.", memberId)
 						)))
 				.andExpect(status().isCreated())
+				.andDo(print());
+	}
+
+	@Test
+	@Order(11)
+	@DisplayName("피드의 댓글을 조회할 수 있다.")
+	void testGetAllFeedComments() throws Exception {
+		mockMvc.perform(get("/api/v1/feed/1/comments"))
+				.andExpect(status().isOk())
 				.andDo(print());
 	}
 

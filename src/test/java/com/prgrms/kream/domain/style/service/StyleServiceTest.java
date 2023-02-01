@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
+import com.prgrms.kream.domain.style.dto.request.GetFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
@@ -185,7 +186,7 @@ class StyleServiceTest {
 	}
 
 	@Test
-	@DisplayName("피드에 사용자 댓글을 등록할 수 있다.")
+	@DisplayName("피드의 사용자 댓글을 등록할 수 있다.")
 	void testRegisterFeedComment() {
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 		when(feedCommentRepository.save(any(FeedComment.class))).thenReturn(FEED_COMMENT);
@@ -194,6 +195,28 @@ class StyleServiceTest {
 
 		verify(feedRepository).findById(FEED.getId());
 		verify(feedCommentRepository).save(any(FeedComment.class));
+	}
+
+	@Test
+	@DisplayName("피드의 댓글을 조회할 수 있다.")
+	void testGetAllFeedComments() {
+		GetFeedCommentServiceRequest getFeedCommentServiceRequest
+				= new GetFeedCommentServiceRequest(FEED.getId(), null, 10);
+		when(feedRepository.existsById(FEED.getId())).thenReturn(true);
+		when(feedCommentRepository.findAllByFeedId(
+				FEED.getId(),
+				getFeedCommentServiceRequest.cursorId(),
+				getFeedCommentServiceRequest.pageSize()
+		)).thenReturn(List.of(FEED_COMMENT));
+
+		styleService.getAllFeedComments(getFeedCommentServiceRequest);
+
+		verify(feedRepository).existsById(FEED.getId());
+		verify(feedCommentRepository).findAllByFeedId(
+				FEED.getId(),
+				getFeedCommentServiceRequest.cursorId(),
+				getFeedCommentServiceRequest.pageSize()
+		);
 	}
 
 	@Test
@@ -258,7 +281,6 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize());
 		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isEmpty();
 	}
-
 
 	@Test
 	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")
