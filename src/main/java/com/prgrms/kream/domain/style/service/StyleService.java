@@ -142,15 +142,14 @@ public class StyleService {
 
 	@Transactional
 	public void delete(Long id) {
-		feedRepository.findById(id)
-				.ifPresent(feed -> {
-					// 관련 테이블의 레코드 삭제 (Cascade)
-					feedTagRepository.deleteAllByFeedId(feed.getId());
-					feedLikeRepository.deleteAllByFeedId(feed.getId());
-					feedProductRepository.deleteAllByFeedId(feed.getId());
-					feedCommentRepository.deleteAllByFeedId(feed.getId());
-					feedRepository.delete(feed);
-				});
+		if (feedRepository.existsById(id)) {
+			// 관련 테이블의 레코드 삭제 (Cascade)
+			feedTagRepository.deleteAllByFeedId(id);
+			feedLikeRepository.deleteAllByFeedId(id);
+			feedProductRepository.deleteAllByFeedId(id);
+			feedCommentRepository.deleteAllByFeedId(id);
+			feedRepository.deleteAllById(id);
+		}
 	}
 
 	@Transactional
