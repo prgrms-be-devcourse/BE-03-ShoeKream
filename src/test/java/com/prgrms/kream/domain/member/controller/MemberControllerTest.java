@@ -65,7 +65,8 @@ class MemberControllerTest extends MysqlTestContainer {
 	@MockBean
 	AmazonS3 amazonS3;
 
-	private final String bucket = "s3test";
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucket;
 
 	@Value("${jwt.accessToken}")
 	private String accessToken;
@@ -102,7 +103,8 @@ class MemberControllerTest extends MysqlTestContainer {
 				Image.builder()
 						.referenceId(memberId)
 						.domainType(MEMBER)
-						.fullPath("/path/test1")
+						.fullPath(
+								"https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png")
 						.originalName("profile1")
 						.build()
 		);
@@ -182,7 +184,7 @@ class MemberControllerTest extends MysqlTestContainer {
 				.andExpect(jsonPath("$.data.name").value("name"))
 				.andExpect(jsonPath("$.data.email").value("hello@naver.com"))
 				.andExpect(jsonPath("$.data.phone").value("01012345678"))
-				.andExpect(jsonPath("$.data.imagePaths[0]").value("/path/test1"));
+				.andExpect(jsonPath("$.data.imagePaths[0]").value("https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png"));
 	}
 
 	@Test
