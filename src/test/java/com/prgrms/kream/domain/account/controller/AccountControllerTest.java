@@ -206,7 +206,7 @@ public class AccountControllerTest extends MysqlTestContainer {
 	}
 
 	@Test
-	@DisplayName("입금시 거래 내역 생셩 테스트")
+	@DisplayName("초과 출금시 거래내역 롤백 및 거래내역 생성 방지 테스트")
 	void transactionHistoryRegisterOverWithDrawTestTest() throws Exception{
 		// Given
 		accountRepository.save(account1);
@@ -227,5 +227,28 @@ public class AccountControllerTest extends MysqlTestContainer {
 		// Then
 		assertThat(transactionHistories).hasSize(0);
 		assertThat(retrieved.getBalance()).isEqualTo(10000);
+	}
+
+	@Test
+	@DisplayName("거래 내역 가져오기 테스트")
+	void transactionGetAllTest() throws Exception{
+		// Given
+		accountRepository.save(account1);
+		AccountUpdateFacadeRequest accountUpdateFacadeRequest1 =
+				new AccountUpdateFacadeRequest(1L, 1L, TransactionType.DEPOSIT, 20000);
+		AccountUpdateFacadeRequest accountUpdateFacadeRequest2 =
+				new AccountUpdateFacadeRequest(1L, 1L, TransactionType.DEPOSIT, 4000);
+
+		// When
+		ResultActions resultActions =
+				mockMvc.perform(get("/api/v1/accounts/transaction-histories/{memberId}", 1L)
+						.contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding("UTF-8")
+				);
+
+		// Then
+		resultActions
+				.andExpect(status().isOk())
+				.andDo(print());
 	}
 }
