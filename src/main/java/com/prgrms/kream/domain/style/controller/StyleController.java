@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
+import com.prgrms.kream.domain.style.dto.request.GetFeedCommentRequest;
 import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedCommentResponses;
 import com.prgrms.kream.domain.style.dto.response.GetFeedResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
@@ -163,4 +166,36 @@ public class StyleController {
 		);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
+
+	@PostMapping("/{id}/comments")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<String> registerFeedComment(
+			@PathVariable Long id,
+			@RequestBody @Valid RegisterFeedCommentRequest registerFeedCommentRequest) {
+		styleFacade.registerFeedComment(
+				toRegisterFeedCommentFacadeRequest(
+						id,
+						registerFeedCommentRequest
+				)
+		);
+		return ApiResponse.of(SUCCESS_MESSAGE);
+	}
+
+	@GetMapping("/{id}/comments")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<GetFeedCommentResponses> getAllFeedComments(
+			@PathVariable Long id,
+			@Valid GetFeedCommentRequest getFeedCommentRequest) {
+		return ApiResponse.of(
+				toGetFeedCommentResponses(
+						styleFacade.getAllFeedComments(
+								toGetFeedCommentFacadeRequest(
+										id,
+										getFeedCommentRequest
+								)
+						)
+				)
+		);
+	}
+
 }
