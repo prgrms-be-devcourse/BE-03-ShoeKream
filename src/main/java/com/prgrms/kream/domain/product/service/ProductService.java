@@ -32,7 +32,7 @@ public class ProductService {
 	private final ProductOptionRepository productOptionRepository;
 
 	@Transactional
-	public ProductRegisterResponse register(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
+	public ProductRegisterResponse registerProduct(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		Product product = productRepository.save(toProduct(productRegisterFacadeRequest));
 
 		productOptionRepository.saveAllBulk(
@@ -43,14 +43,14 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetFacadeResponse get(Long productId) {
-		Product product = findProductEntity(productId);
+	public ProductGetFacadeResponse getProduct(Long productId) {
+		Product product = getProductEntity(productId);
 		List<ProductOption> productOptions = productOptionRepository.findAllByProduct(product);
 		return toProductGetFacadeResponse(product, productOptions);
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
+	public ProductGetAllResponses getAllProducts(ProductGetAllRequest productGetAllRequest) {
 		List<Product> products = productRepository.findAllByCursor(
 				productGetAllRequest.cursorId(), productGetAllRequest.pageSize(), productGetAllRequest.searchWord());
 
@@ -63,8 +63,8 @@ public class ProductService {
 	}
 
 	@Transactional
-	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
-		Product product = findProductEntity(productFacadeUpdateRequest.id());
+	public ProductUpdateResponse updateProduct(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
+		Product product = getProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
 		productOptionRepository.deleteAllByProductId(product.getId());
@@ -76,56 +76,56 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void delete(Long productId) {
-		Product product = findProductEntity(productId);
+	public void deleteProduct(Long productId) {
+		Product product = getProductEntity(productId);
 		productOptionRepository.deleteAllByProductId(product.getId());
 		productRepository.delete(product);
 	}
 
 	@Transactional
 	public void compareHighestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int highestPrice = productOption.getHighestPrice();
 		if (highestPrice < newPrice) {
-			updateHighestPrice(productOption, newPrice);
+			changeHighestPrice(productOption, newPrice);
 		}
 	}
 
 	@Transactional
 	public void compareLowestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int lowestPrice = productOption.getLowestPrice();
 		if (lowestPrice == 0 || lowestPrice > newPrice) {
-			updateLowestPrice(productOption, newPrice);
+			changeLowestPrice(productOption, newPrice);
 		}
 	}
 
-	public void changeHighestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
-		updateHighestPrice(productOption, newPrice);
+	public void updateHighestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = getProductOptionEntity(productOptionId);
+		changeHighestPrice(productOption, newPrice);
 	}
 
-	public void changLowestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
-		updateLowestPrice(productOption, newPrice);
+	public void updateLowestPrice(Long productOptionId, int newPrice) {
+		ProductOption productOption = getProductOptionEntity(productOptionId);
+		changeLowestPrice(productOption, newPrice);
 	}
 
 	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void updateHighestPrice(ProductOption productOption, int newPrice) {
+	public void changeHighestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateHighestPrice(newPrice);
 	}
 
 	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void updateLowestPrice(ProductOption productOption, int newPrice) {
+	public void changeLowestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateLowestPrice(newPrice);
 	}
 
-	private Product findProductEntity(Long productId) {
+	private Product getProductEntity(Long productId) {
 		return productRepository.findById(productId)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
 	}
 
-	private ProductOption findProductOptionEntity(Long productOptionId) {
+	private ProductOption getProductOptionEntity(Long productOptionId) {
 		return productOptionRepository.findById(productOptionId)
 				.orElseThrow(() -> new EntityNotFoundException("productOptionId does not exist"));
 	}

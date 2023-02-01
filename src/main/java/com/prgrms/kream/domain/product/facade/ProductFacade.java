@@ -32,40 +32,40 @@ public class ProductFacade {
 
 	@CacheEvict(value = "products", allEntries = true)
 	@Transactional
-	public ProductRegisterResponse register(ProductRegisterRequest productRegisterRequest) {
+	public ProductRegisterResponse registerProduct(ProductRegisterRequest productRegisterRequest) {
 		ProductRegisterResponse productRegisterResponse
-				= productService.register(toProductRegisterFacadeRequest(productRegisterRequest));
-		imageService.register(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
+				= productService.registerProduct(toProductRegisterFacadeRequest(productRegisterRequest));
+		imageService.registerImage(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
 		return productRegisterResponse;
 	}
 
 	@Cacheable(cacheNames = "product", key = "#productId")
 	@Transactional(readOnly = true)
-	public ProductGetResponse get(Long productId) {
-		ProductGetFacadeResponse productGetFacadeResponse = productService.get(productId);
-		List<String> imagePaths = imageService.getAll(productId, DomainType.PRODUCT);
+	public ProductGetResponse getProduct(Long productId) {
+		ProductGetFacadeResponse productGetFacadeResponse = productService.getProduct(productId);
+		List<String> imagePaths = imageService.getAllImages(productId, DomainType.PRODUCT);
 		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
 
 	@Cacheable(cacheNames = "products", key = "#productGetAllRequest",
 			condition = "#productGetAllRequest.searchWord().length() == 0")
 	@Transactional(readOnly = true)
-	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
-		return productService.getAll(productGetAllRequest);
+	public ProductGetAllResponses getAllProducts(ProductGetAllRequest productGetAllRequest) {
+		return productService.getAllProducts(productGetAllRequest);
 	}
 
 	@CacheEvict(value = "product", key = "#productUpdateRequest.id()")
 	@Transactional
-	public ProductUpdateResponse update(ProductUpdateRequest productUpdateRequest) {
-		imageService.deleteAllByReference(productUpdateRequest.id(), DomainType.PRODUCT);
-		imageService.register(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
-		return productService.update(toProductUpdateFacadeRequest(productUpdateRequest));
+	public ProductUpdateResponse updateProduct(ProductUpdateRequest productUpdateRequest) {
+		imageService.deleteAllImagesByReference(productUpdateRequest.id(), DomainType.PRODUCT);
+		imageService.registerImage(productUpdateRequest.images(), productUpdateRequest.id(), DomainType.PRODUCT);
+		return productService.updateProduct(toProductUpdateFacadeRequest(productUpdateRequest));
 	}
 
 	@CacheEvict(value = "product", key = "#productId")
 	@Transactional
-	public void delete(Long productId) {
-		imageService.deleteAllByReference(productId, DomainType.PRODUCT);
-		productService.delete(productId);
+	public void deleteProduct(Long productId) {
+		imageService.deleteAllImagesByReference(productId, DomainType.PRODUCT);
+		productService.deleteProduct(productId);
 	}
 }

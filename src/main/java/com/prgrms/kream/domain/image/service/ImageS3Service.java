@@ -34,7 +34,7 @@ public class ImageS3Service implements ImageService {
 	}
 
 	@Override
-	public void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
+	public void registerImage(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
 		if (multipartFiles != null && !multipartFiles.isEmpty()) {
 			List<Image> images = uploadImages(multipartFiles, referenceId, domainType);
 			imageRepository.saveAllBulk(images);
@@ -42,21 +42,21 @@ public class ImageS3Service implements ImageService {
 	}
 
 	@Override
-	public List<String> getAll(Long referenceId, DomainType domainType) {
+	public List<String> getAllImages(Long referenceId, DomainType domainType) {
 		return toImagePathDto(getImageEntities(referenceId, domainType));
 	}
 
 	@Override
-	public void deleteAllByReference(Long referenceId, DomainType domainType) {
+	public void deleteAllImagesByReference(Long referenceId, DomainType domainType) {
 		List<Image> images = getImageEntities(referenceId, domainType);
-		images.stream()
-				.map(image -> image.getFullPath().substring(56))
-				.forEach(this::deleteImage);
-		imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
-	}
 
-	private List<Image> getImageEntities(Long referenceId, DomainType domainType) {
-		return imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
+		if (images.size() != 0) {
+			images.stream()
+					.map(image -> getFileName(image.getFullPath()))
+					.forEach(this::deleteImage);
+
+			imageRepository.deleteAllByReferenceIdAndDomainType(referenceId, domainType);
+		}
 	}
 
 	private void deleteImage(String fileName) {
@@ -65,6 +65,15 @@ public class ImageS3Service implements ImageService {
 		} catch (AmazonServiceException e) {
 			throw new FileDeleteFailedException("Failed to delete (S3)");
 		}
+	}
+
+	private String getFileName(String fullPath) {
+		int slash = fullPath.lastIndexOf("/");
+		return fullPath.substring(slash + 1);
+	}
+
+	private List<Image> getImageEntities(Long referenceId, DomainType domainType) {
+		return imageRepository.findAllByReferenceIdAndDomainType(referenceId, domainType);
 	}
 
 	private List<Image> uploadImages(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType) {
