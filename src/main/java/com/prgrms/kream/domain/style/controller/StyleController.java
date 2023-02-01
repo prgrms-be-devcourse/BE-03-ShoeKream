@@ -17,23 +17,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedResponses;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateRequest;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateResponse;
 import com.prgrms.kream.domain.style.facade.StyleFacade;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/feed")
+@RequestMapping("/api/v1/feeds")
 public class StyleController {
 
 	private final String SUCCESS_MESSAGE = "성공적으로 작업이 완료 됐습니다.";
@@ -42,13 +42,13 @@ public class StyleController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<RegisterFeedResponse> register(
-			@ModelAttribute @Valid RegisterFeedRequest registerFeedRequest
+	public ApiResponse<FeedRegisterResponse> registerFeed(
+			@ModelAttribute @Valid FeedRegisterRequest feedRegisterRequest
 	) {
 		return ApiResponse.of(
-				toRegisterFeedResponse(
-						styleFacade.register(
-								toRegisterFeedFacadeRequest(registerFeedRequest)
+				toFeedRegisterResponse(
+						styleFacade.registerFeed(
+								toFeedRegisterFacadeRequest(feedRegisterRequest)
 						)
 				)
 		);
@@ -56,11 +56,11 @@ public class StyleController {
 
 	@GetMapping("/trending")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getTrendingFeeds(@Valid GetFeedRequest getFeedRequest) {
+	public ApiResponse<FeedGetResponses> getAllTrendingFeeds(@Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
-				toGetFeedResponses(
-						styleFacade.getTrendingFeeds(
-								toGetFeedFacadeRequest(getFeedRequest)
+				toFeedGetResponses(
+						styleFacade.getAllTrendingFeeds(
+								toFeedGetFacadeRequest(feedGetRequest)
 						)
 				)
 		);
@@ -68,11 +68,11 @@ public class StyleController {
 
 	@GetMapping("/newest")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getNewestFeeds(@Valid GetFeedRequest getFeedRequest) {
+	public ApiResponse<FeedGetResponses> getAllNewestFeeds(@Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
-				toGetFeedResponses(
-						styleFacade.getNewestFeeds(
-								toGetFeedFacadeRequest(getFeedRequest)
+				toFeedGetResponses(
+						styleFacade.getAllNewestFeeds(
+								toFeedGetFacadeRequest(feedGetRequest)
 						)
 				)
 		);
@@ -80,118 +80,118 @@ public class StyleController {
 
 	@GetMapping("/tags/{tag}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByTag(@PathVariable String tag, @Valid GetFeedRequest getFeedRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeedsByTag(@PathVariable String tag, @Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
-				toGetFeedResponses(
-						styleFacade.getAllByTag(
-								toGetFeedFacadeRequest(getFeedRequest),
+				toFeedGetResponses(
+						styleFacade.getAllFeedsByTag(
+								toFeedGetFacadeRequest(feedGetRequest),
 								tag
 						)
 				)
 		);
 	}
 
-	@GetMapping("/members/{id}")
+	@GetMapping("/members/{memberId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByMember(@PathVariable Long id, @Valid GetFeedRequest getFeedRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeedsByMember(@PathVariable Long memberId, @Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
-				toGetFeedResponses(
-						styleFacade.getAllByMember(
-								toGetFeedFacadeRequest(getFeedRequest),
-								id
+				toFeedGetResponses(
+						styleFacade.getAllFeedsByMember(
+								toFeedGetFacadeRequest(feedGetRequest),
+								memberId
 						)
 				)
 		);
 	}
 
-	@GetMapping("/products/{id}")
+	@GetMapping("/products/{productId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedResponses> getAllByProduct(@PathVariable Long id, @Valid GetFeedRequest getFeedRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeedsByProduct(@PathVariable Long productId, @Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
-				toGetFeedResponses(
-						styleFacade.getAllByProduct(
-								toGetFeedFacadeRequest(getFeedRequest),
-								id
+				toFeedGetResponses(
+						styleFacade.getAllFeedsByProduct(
+								toFeedGetFacadeRequest(feedGetRequest),
+								productId
 						)
 				)
 		);
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/{feedId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<UpdateFeedResponse> update(
-			@PathVariable long id,
-			@RequestBody @Valid UpdateFeedRequest updateFeedRequest) {
+	public ApiResponse<FeedUpdateResponse> updateFeed(
+			@PathVariable long feedId,
+			@RequestBody @Valid FeedUpdateRequest feedUpdateRequest) {
 		return ApiResponse.of(
-				toUpdateFeedResponse(
-						styleFacade.update(
-								id,
-								toUpdateFeedFacadeRequest(updateFeedRequest)
+				toFeedUpdateResponse(
+						styleFacade.updateFeed(
+								feedId,
+								toFeedUpdateFacadeRequest(feedUpdateRequest)
 						)
 				)
 		);
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{feedId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<String> delete(@PathVariable Long id) {
-		styleFacade.delete(id);
+	public ApiResponse<String> deleteFeed(@PathVariable Long feedId) {
+		styleFacade.deleteFeed(feedId);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
-	@PostMapping("/{id}/like")
+	@PostMapping("/{feedId}/likes")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse<String> registerFeedLike(
-			@PathVariable Long id,
-			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
+			@PathVariable Long feedId,
+			@RequestBody @Valid FeedLikeRequest feedLikeRequest) {
 		styleFacade.registerFeedLike(
-				toLikeFeedFacadeRequest(
-						id,
-						likeFeedRequest
+				toFeedLikeFacadeRequest(
+						feedId,
+						feedLikeRequest
 				)
 		);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
-	@DeleteMapping("/{id}/like")
+	@DeleteMapping("/{feedId}/likes")
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<String> deleteFeedLike(
-			@PathVariable Long id,
-			@RequestBody @Valid LikeFeedRequest likeFeedRequest) {
+			@PathVariable Long feedId,
+			@RequestBody @Valid FeedLikeRequest feedLikeRequest) {
 		styleFacade.deleteFeedLike(
-				toLikeFeedFacadeRequest(
-						id,
-						likeFeedRequest
+				toFeedLikeFacadeRequest(
+						feedId,
+						feedLikeRequest
 				)
 		);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
-	@PostMapping("/{id}/comments")
+	@PostMapping("/{feedId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ApiResponse<String> registerFeedComment(
-			@PathVariable Long id,
-			@RequestBody @Valid RegisterFeedCommentRequest registerFeedCommentRequest) {
+			@PathVariable Long feedId,
+			@RequestBody @Valid FeedCommentRegisterRequest feedCommentRegisterRequest) {
 		styleFacade.registerFeedComment(
-				toRegisterFeedCommentFacadeRequest(
-						id,
-						registerFeedCommentRequest
+				toFeedCommentRegisterFacadeRequest(
+						feedId,
+						feedCommentRegisterRequest
 				)
 		);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
-	@GetMapping("/{id}/comments")
+	@GetMapping("/{feedId}/comments")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<GetFeedCommentResponses> getAllFeedComments(
-			@PathVariable Long id,
-			@Valid GetFeedCommentRequest getFeedCommentRequest) {
+	public ApiResponse<FeedCommentGetResponses> getAllFeedComments(
+			@PathVariable Long feedId,
+			@Valid FeedCommentGetRequest feedCommentGetRequest) {
 		return ApiResponse.of(
-				toGetFeedCommentResponses(
+				toFeedCommentGetResponses(
 						styleFacade.getAllFeedComments(
-								toGetFeedCommentFacadeRequest(
-										id,
-										getFeedCommentRequest
+								toFeedCommentGetFacadeRequest(
+										feedId,
+										feedCommentGetRequest
 								)
 						)
 				)

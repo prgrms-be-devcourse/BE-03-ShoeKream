@@ -25,9 +25,9 @@ import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -84,7 +84,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(put("/api/v1/feed/1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.", List.of(4L, 5L, 6L))
+								new FeedUpdateRequest("이 피드의 태그는 총 #한개 입니다.", List.of(4L, 5L, 6L))
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -97,7 +97,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(post("/api/v1/feed/1/like")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(
-						new LikeFeedRequest(memberId)
+						new FeedLikeRequest(memberId)
 				)))
 				.andExpect(status().isCreated())
 				.andDo(print());
@@ -110,7 +110,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(delete("/api/v1/feed/1/like")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new LikeFeedRequest(memberId)
+								new FeedLikeRequest(memberId)
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -168,7 +168,7 @@ class StyleControllerTest extends MysqlTestContainer {
 		mockMvc.perform(post("/api/v1/feed/1/comments")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new RegisterFeedCommentRequest("피드의 댓글입니다.", memberId)
+								new FeedCommentRegisterRequest("피드의 댓글입니다.", memberId)
 						)))
 				.andExpect(status().isCreated())
 				.andDo(print());

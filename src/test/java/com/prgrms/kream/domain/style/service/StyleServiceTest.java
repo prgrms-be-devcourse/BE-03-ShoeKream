@@ -19,15 +19,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedLike;
@@ -113,7 +113,7 @@ class StyleServiceTest {
 		when(feedProductRepository.saveAllBulk(Mockito.<FeedProduct>anyList()))
 				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 
-		RegisterFeedServiceResponse feedResponse = styleService.register(getRegisterFeedServiceRequest());
+		FeedRegisterServiceResponse feedResponse = styleService.registerFeed(getRegisterFeedServiceRequest());
 
 		verify(feedRepository).save(any(Feed.class));
 		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
@@ -140,8 +140,8 @@ class StyleServiceTest {
 				.thenReturn(FEED_PRODUCTS.stream().map(FeedProduct::getId).toList());
 		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
 
-		UpdateFeedServiceResponse updateFeedServiceResponse =
-				styleService.update(
+		FeedUpdateServiceResponse feedUpdateServiceResponse =
+				styleService.updateFeed(
 						FEED.getId(),
 						getUpdateFeedServiceRequest("이 피드의 태그는 총 #한개 입니다.")
 				);
@@ -152,7 +152,7 @@ class StyleServiceTest {
 		verify(feedTagRepository).saveAllBulk(Mockito.<FeedTag>anyList());
 		verify(feedProductRepository).deleteAllByFeedId(FEED.getId());
 		verify(feedProductRepository).saveAllBulk(Mockito.<FeedProduct>anyList());
-		assertThat(updateFeedServiceResponse.id()).isEqualTo(FEED.getId());
+		assertThat(feedUpdateServiceResponse.id()).isEqualTo(FEED.getId());
 	}
 
 	@Test
@@ -188,34 +188,34 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("피드의 사용자 댓글을 등록할 수 있다.")
 	void testRegisterFeedComment() {
-		when(feedRepository.findById(FEED.getId())).thenReturn(Optional.of(FEED));
+		when(feedRepository.existsById(FEED.getId())).thenReturn(true);
 		when(feedCommentRepository.save(any(FeedComment.class))).thenReturn(FEED_COMMENT);
 
 		styleService.registerFeedComment(getRegisterFeedCommentServiceRequest());
 
-		verify(feedRepository).findById(FEED.getId());
+		verify(feedRepository).existsById(FEED.getId());
 		verify(feedCommentRepository).save(any(FeedComment.class));
 	}
 
 	@Test
 	@DisplayName("피드의 댓글을 조회할 수 있다.")
 	void testGetAllFeedComments() {
-		GetFeedCommentServiceRequest getFeedCommentServiceRequest
-				= new GetFeedCommentServiceRequest(FEED.getId(), null, 10);
+		FeedCommentGetServiceRequest feedCommentGetServiceRequest
+				= new FeedCommentGetServiceRequest(FEED.getId(), null, 10);
 		when(feedRepository.existsById(FEED.getId())).thenReturn(true);
 		when(feedCommentRepository.findAllByFeedId(
 				FEED.getId(),
-				getFeedCommentServiceRequest.cursorId(),
-				getFeedCommentServiceRequest.pageSize()
+				feedCommentGetServiceRequest.cursorId(),
+				feedCommentGetServiceRequest.pageSize()
 		)).thenReturn(List.of(FEED_COMMENT));
 
-		styleService.getAllFeedComments(getFeedCommentServiceRequest);
+		styleService.getAllFeedComments(feedCommentGetServiceRequest);
 
 		verify(feedRepository).existsById(FEED.getId());
 		verify(feedCommentRepository).findAllByFeedId(
 				FEED.getId(),
-				getFeedCommentServiceRequest.cursorId(),
-				getFeedCommentServiceRequest.pageSize()
+				feedCommentGetServiceRequest.cursorId(),
+				feedCommentGetServiceRequest.pageSize()
 		);
 	}
 
@@ -230,7 +230,7 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize()
 		)).thenReturn(List.of(FEED));
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByTag(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByTag(
 				getFeedServiceRequest(),
 				tag);
 
@@ -238,7 +238,7 @@ class StyleServiceTest {
 				tag,
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize());
-		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
+		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isNotEmpty();
 	}
 
 	@Test
@@ -250,7 +250,7 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize()
 		)).thenReturn(List.of(FEED));
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMember(
 				getFeedServiceRequest(),
 				MEMBER.getId());
 
@@ -258,7 +258,7 @@ class StyleServiceTest {
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize());
-		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isNotEmpty();
+		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isNotEmpty();
 	}
 
 	@Test
@@ -271,7 +271,7 @@ class StyleServiceTest {
 				getFeedServiceRequest().pageSize()
 		)).thenReturn(Collections.emptyList());
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByProduct(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByProduct(
 				getFeedServiceRequest(),
 				1L);
 
@@ -279,7 +279,7 @@ class StyleServiceTest {
 				1L,
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize());
-		assertThat(getFeedServiceResponses.getFeedServiceResponses()).isEmpty();
+		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isEmpty();
 	}
 
 	@Test
@@ -292,17 +292,17 @@ class StyleServiceTest {
 		)).thenReturn(List.of(FEED));
 		when(feedProductRepository.findAllByFeedId(FEED.getId())).thenReturn(FEED_PRODUCTS);
 
-		GetFeedServiceResponses getFeedServiceResponses = styleService.getAllByMember(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMember(
 				getFeedServiceRequest(),
 				MEMBER.getId()
 		);
 
 		verify(feedProductRepository).findAllByFeedId(any(Long.class));
-		assertThat(getFeedServiceResponses.getFeedServiceResponses().get(0).products()).isNotEmpty();
+		assertThat(feedGetServiceResponses.feedGetServiceResponses().get(0).products()).isNotEmpty();
 	}
 
-	private RegisterFeedServiceRequest getRegisterFeedServiceRequest() {
-		return new RegisterFeedServiceRequest(
+	private FeedRegisterServiceRequest getRegisterFeedServiceRequest() {
+		return new FeedRegisterServiceRequest(
 				FEED.getContent(),
 				MEMBER.getId(),
 				FEED_PRODUCTS.stream()
@@ -311,11 +311,11 @@ class StyleServiceTest {
 		);
 	}
 
-	private GetFeedServiceRequest getFeedServiceRequest() {
-		return new GetFeedServiceRequest(FEED.getId(), 10);
+	private FeedGetServiceRequest getFeedServiceRequest() {
+		return new FeedGetServiceRequest(FEED.getId(), 10);
 	}
 
-	private UpdateFeedServiceRequest getUpdateFeedServiceRequest(String content) {
+	private FeedUpdateServiceRequest getUpdateFeedServiceRequest(String content) {
 		List<FeedProduct> updatedFeedProducts = new ArrayList<>(FEED_PRODUCTS);
 		updatedFeedProducts.add(
 				FeedProduct.builder()
@@ -325,19 +325,19 @@ class StyleServiceTest {
 						.build()
 		);
 
-		return new UpdateFeedServiceRequest(
+		return new FeedUpdateServiceRequest(
 				content,
 				updatedFeedProducts.stream()
 						.map(FeedProduct::getProductId)
 						.toList());
 	}
 
-	private LikeFeedServiceRequest getLikeFeedServiceRequest() {
-		return new LikeFeedServiceRequest(FEED.getId(), MEMBER.getId());
+	private FeedLikeServiceRequest getLikeFeedServiceRequest() {
+		return new FeedLikeServiceRequest(FEED.getId(), MEMBER.getId());
 	}
 
-	private RegisterFeedCommentServiceRequest getRegisterFeedCommentServiceRequest() {
-		return new RegisterFeedCommentServiceRequest(
+	private FeedCommentRegisterServiceRequest getRegisterFeedCommentServiceRequest() {
+		return new FeedCommentRegisterServiceRequest(
 				FEED_COMMENT.getContent(),
 				FEED_COMMENT.getMemberId(),
 				FEED_COMMENT.getFeedId()

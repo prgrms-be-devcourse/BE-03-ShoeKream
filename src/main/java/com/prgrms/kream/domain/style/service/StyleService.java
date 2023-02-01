@@ -9,16 +9,16 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedProduct;
@@ -46,9 +46,9 @@ public class StyleService {
 	private final FeedCommentRepository feedCommentRepository;
 
 	@Transactional
-	public RegisterFeedServiceResponse register(RegisterFeedServiceRequest registerFeedServiceRequest) {
+	public FeedRegisterServiceResponse registerFeed(FeedRegisterServiceRequest feedRegisterServiceRequest) {
 		Feed savedFeed = feedRepository.save(
-				toFeed(registerFeedServiceRequest)
+				toFeed(feedRegisterServiceRequest)
 		);
 
 		// 태그 추출 및 데이터 삽입
@@ -58,93 +58,89 @@ public class StyleService {
 		}
 
 		// 상품 태그 데이터 삽입
-		if (registerFeedServiceRequest.productsIds() != null) {
-			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), registerFeedServiceRequest.productsIds());
+		if (feedRegisterServiceRequest.productsIds() != null) {
+			List<FeedProduct> feedProducts = toFeedProducts(savedFeed.getId(), feedRegisterServiceRequest.productsIds());
 			feedProductRepository.saveAllBulk(feedProducts);
 		}
 
-		return toRegisterFeedServiceResponse(savedFeed);
+		return toFeedRegisterServiceResponse(savedFeed);
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getTrendingFeeds(GetFeedServiceRequest getFeedServiceRequest) {
+	public FeedGetServiceResponses getAllTrendingFeeds(FeedGetServiceRequest feedGetServiceRequest) {
 		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc(
-				getFeedServiceRequest.cursorId(),
-				getFeedServiceRequest.pageSize()
+				feedGetServiceRequest.cursorId(),
+				feedGetServiceRequest.pageSize()
 		);
 
-		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getNewestFeeds(GetFeedServiceRequest getFeedServiceRequest) {
+	public FeedGetServiceResponses getAllNewestFeeds(FeedGetServiceRequest feedGetServiceRequest) {
 		List<Feed> feeds = feedRepository.findAllOrderByCreatedAtDesc(
-				getFeedServiceRequest.cursorId(),
-				getFeedServiceRequest.pageSize()
+				feedGetServiceRequest.cursorId(),
+				feedGetServiceRequest.pageSize()
 		);
 
-		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByTag(GetFeedServiceRequest getFeedServiceRequest, String tag) {
+	public FeedGetServiceResponses getAllFeedsByTag(FeedGetServiceRequest feedGetServiceRequest, String tag) {
 		List<Feed> feeds = feedRepository.findAllByTag(
 				tag,
-				getFeedServiceRequest.cursorId(),
-				getFeedServiceRequest.pageSize()
+				feedGetServiceRequest.cursorId(),
+				feedGetServiceRequest.pageSize()
 		);
 
-		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByMember(GetFeedServiceRequest getFeedServiceRequest, Long memberId) {
+	public FeedGetServiceResponses getAllFeedsByMember(FeedGetServiceRequest feedGetServiceRequest, Long memberId) {
 		List<Feed> feeds = feedRepository.findAllByMember(
 				memberId,
-				getFeedServiceRequest.cursorId(),
-				getFeedServiceRequest.pageSize()
+				feedGetServiceRequest.cursorId(),
+				feedGetServiceRequest.pageSize()
 		);
 
-		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedServiceResponses getAllByProduct(GetFeedServiceRequest getFeedServiceRequest, Long productId) {
+	public FeedGetServiceResponses getAllFeedsByProduct(FeedGetServiceRequest feedGetServiceRequest, Long productId) {
 		List<Feed> feeds = feedRepository.findAllByProduct(
 				productId,
-				getFeedServiceRequest.cursorId(),
-				getFeedServiceRequest.pageSize()
+				feedGetServiceRequest.cursorId(),
+				feedGetServiceRequest.pageSize()
 		);
 
-		return getFeedsOnPageSize(feeds, getFeedServiceRequest.pageSize());
+		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
 	}
 
 	@Transactional
-	public UpdateFeedServiceResponse update(Long id, UpdateFeedServiceRequest updateFeedServiceRequest) {
-		Feed updatedFeed = feedRepository.findById(id)
-				.map(feed -> {
-					feed.updateContent(updateFeedServiceRequest.content());
-					Feed entity = feedRepository.save(feed);
+	public FeedUpdateServiceResponse updateFeed(Long id, FeedUpdateServiceRequest feedUpdateServiceRequest) {
+		Feed feed = getFeedEntity(id);
 
-					// 피드 태그 삭제 후 재등록
-					feedTagRepository.deleteAllByFeedId(entity.getId());
-					List<FeedTag> feedTags = TagExtractor.extract(entity).stream().toList();
-					feedTagRepository.saveAllBulk(feedTags);
+		feed.updateContent(feedUpdateServiceRequest.content());
+		Feed entity = feedRepository.save(feed);
 
-					// 피드 상품태그 삭제 후 재등록
-					feedProductRepository.deleteAllByFeedId(entity.getId());
-					List<FeedProduct> feedProducts = toFeedProducts(entity.getId(), updateFeedServiceRequest.productIds());
-					feedProductRepository.saveAllBulk(feedProducts);
+		// 피드 태그 삭제 후 재등록
+		feedTagRepository.deleteAllByFeedId(entity.getId());
+		List<FeedTag> feedTags = TagExtractor.extract(entity).stream().toList();
+		feedTagRepository.saveAllBulk(feedTags);
 
-					return entity;
-				})
-				.orElseThrow(EntityNotFoundException::new);
+		// 피드 상품태그 삭제 후 재등록
+		feedProductRepository.deleteAllByFeedId(entity.getId());
+		List<FeedProduct> feedProducts = toFeedProducts(entity.getId(), feedUpdateServiceRequest.productIds());
+		feedProductRepository.saveAllBulk(feedProducts);
 
-		return toUpdateFeedServiceResponse(updatedFeed);
+		return toFeedUpdateServiceResponse(feed);
 	}
 
 	@Transactional
-	public void delete(Long id) {
+	public void deleteFeed(Long id) {
 		if (feedRepository.existsById(id)) {
 			// 관련 테이블의 레코드 삭제 (Cascade)
 			feedTagRepository.deleteAllByFeedId(id);
@@ -156,82 +152,78 @@ public class StyleService {
 	}
 
 	@Transactional
-	public void registerFeedLike(LikeFeedServiceRequest likeFeedServiceRequest) {
+	public void registerFeedLike(FeedLikeServiceRequest feedLikeServiceRequest) {
 		if (!feedLikeRepository.existsByFeedIdAndMemberId(
-				likeFeedServiceRequest.feedId(),
-				likeFeedServiceRequest.memberId()
+				feedLikeServiceRequest.feedId(),
+				feedLikeServiceRequest.memberId()
 		)) {
-			feedRepository.findById(likeFeedServiceRequest.feedId())
-					.map(feed -> {
-						feed.increaseLikes();
-						return feedRepository.save(feed);
-					})
-					.orElseThrow(EntityNotFoundException::new);
+			Feed feed = getFeedEntity(feedLikeServiceRequest.feedId());
+			feed.increaseLikes();
+			feedRepository.save(feed);
 
-			feedLikeRepository.save(toFeedLike(likeFeedServiceRequest));
+			feedLikeRepository.save(toFeedLike(feedLikeServiceRequest));
 		}
 	}
 
 	@Transactional
-	public void deleteFeedLike(LikeFeedServiceRequest likeFeedServiceRequest) {
+	public void deleteFeedLike(FeedLikeServiceRequest feedLikeServiceRequest) {
 		if (feedLikeRepository.existsByFeedIdAndMemberId(
-				likeFeedServiceRequest.feedId(),
-				likeFeedServiceRequest.memberId()
+				feedLikeServiceRequest.feedId(),
+				feedLikeServiceRequest.memberId()
 		)) {
-			feedRepository.findById(likeFeedServiceRequest.feedId())
-					.map(feed -> {
-						feed.decreaseLikes();
-						return feedRepository.save(feed);
-					})
-					.orElseThrow(EntityNotFoundException::new);
+			Feed feed = getFeedEntity(feedLikeServiceRequest.feedId());
+			feed.decreaseLikes();
+			feedRepository.save(feed);
 
 			feedLikeRepository.deleteByFeedIdAndMemberId(
-					likeFeedServiceRequest.feedId(),
-					likeFeedServiceRequest.memberId()
+					feedLikeServiceRequest.feedId(),
+					feedLikeServiceRequest.memberId()
 			);
 		}
 	}
 
 	@Transactional
-	public void registerFeedComment(RegisterFeedCommentServiceRequest registerFeedCommentServiceRequest) {
-		feedRepository.findById(registerFeedCommentServiceRequest.feedId())
-				.map(feed -> feedCommentRepository.save(toFeedComment(registerFeedCommentServiceRequest)))
-				.orElseThrow(EntityNotFoundException::new);
+	public void registerFeedComment(FeedCommentRegisterServiceRequest feedCommentRegisterServiceRequest) {
+		if (feedRepository.existsById(feedCommentRegisterServiceRequest.feedId())) {
+			feedCommentRepository.save(toFeedComment(feedCommentRegisterServiceRequest));
+			return;
+		}
+		throw new EntityNotFoundException();
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedCommentServiceResponses getAllFeedComments(GetFeedCommentServiceRequest getFeedCommentServiceRequest) {
-		if (feedRepository.existsById(getFeedCommentServiceRequest.feedId())) {
+	public FeedCommentGetServiceResponses getAllFeedComments(FeedCommentGetServiceRequest feedCommentGetServiceRequest) {
+		if (feedRepository.existsById(feedCommentGetServiceRequest.feedId())) {
 			List<FeedComment> feedComments = feedCommentRepository.findAllByFeedId(
-					getFeedCommentServiceRequest.feedId(),
-					getFeedCommentServiceRequest.cursorId(),
-					getFeedCommentServiceRequest.pageSize()
+					feedCommentGetServiceRequest.feedId(),
+					feedCommentGetServiceRequest.cursorId(),
+					feedCommentGetServiceRequest.pageSize()
 			);
 
-			if (feedComments.size() > getFeedCommentServiceRequest.pageSize()) {
-				return toGetFeedCommentServiceResponses(
-						feedComments.subList(0, feedComments.size() -1),
+			if (feedComments.size() > feedCommentGetServiceRequest.pageSize()) {
+				return toFeedCommentGetServiceResponses(
+						feedComments.subList(0, feedComments.size() - 1),
 						feedComments.get(feedComments.size() - 1).getId()
 				);
 			}
 
-			return toGetFeedCommentServiceResponses(feedComments, -1L);
+			return toFeedCommentGetServiceResponses(feedComments, -1L);
 		}
 
 		throw new EntityNotFoundException();
 	}
 
-	private GetFeedServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
+	private FeedGetServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
 		getFeedProducts(feeds);
 
 		if (feeds.size() > pageSize) {
-			return toGetFeedServiceResponses(
+			return toFeedGetServiceResponses(
 					feeds.subList(0, feeds.size() - 1),
 					feeds.get(feeds.size() - 1).getId()
 			);
 		}
 
-		return toGetFeedServiceResponses(feeds, -1L);
+		return toFeedGetServiceResponses(feeds, -1L);
 	}
 
 	private void getFeedProducts(List<Feed> feeds) {
@@ -240,6 +232,11 @@ public class StyleService {
 						feedProductRepository.findAllByFeedId(feed.getId()).stream()
 								.map(FeedProduct::getProductId)
 								.toList()));
+	}
+
+	private Feed getFeedEntity(long id) {
+		return feedRepository.findById(id)
+				.orElseThrow(EntityNotFoundException::new);
 	}
 
 }
