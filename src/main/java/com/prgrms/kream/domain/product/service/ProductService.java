@@ -43,14 +43,14 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetFacadeResponse get(Long productId) {
-		Product product = findProductEntity(productId);
+	public ProductGetFacadeResponse getProduct(Long productId) {
+		Product product = getProductEntity(productId);
 		List<ProductOption> productOptions = productOptionRepository.findAllByProduct(product);
 		return toProductGetFacadeResponse(product, productOptions);
 	}
 
 	@Transactional(readOnly = true)
-	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
+	public ProductGetAllResponses getAllProducts(ProductGetAllRequest productGetAllRequest) {
 		List<Product> products = productRepository.findAllByCursor(
 				productGetAllRequest.cursorId(), productGetAllRequest.pageSize(), productGetAllRequest.searchWord());
 
@@ -64,7 +64,7 @@ public class ProductService {
 
 	@Transactional
 	public ProductUpdateResponse update(ProductUpdateFacadeRequest productFacadeUpdateRequest) {
-		Product product = findProductEntity(productFacadeUpdateRequest.id());
+		Product product = getProductEntity(productFacadeUpdateRequest.id());
 		product.update(productFacadeUpdateRequest.releasePrice(), productFacadeUpdateRequest.description());
 
 		productOptionRepository.deleteAllByProductId(product.getId());
@@ -77,14 +77,14 @@ public class ProductService {
 
 	@Transactional
 	public void delete(Long productId) {
-		Product product = findProductEntity(productId);
+		Product product = getProductEntity(productId);
 		productOptionRepository.deleteAllByProductId(product.getId());
 		productRepository.delete(product);
 	}
 
 	@Transactional
 	public void compareHighestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int highestPrice = productOption.getHighestPrice();
 		if (highestPrice < newPrice) {
 			updateHighestPrice(productOption, newPrice);
@@ -93,7 +93,7 @@ public class ProductService {
 
 	@Transactional
 	public void compareLowestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		int lowestPrice = productOption.getLowestPrice();
 		if (lowestPrice == 0 || lowestPrice > newPrice) {
 			updateLowestPrice(productOption, newPrice);
@@ -101,12 +101,12 @@ public class ProductService {
 	}
 
 	public void changeHighestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		updateHighestPrice(productOption, newPrice);
 	}
 
 	public void changeLowestPrice(Long productOptionId, int newPrice) {
-		ProductOption productOption = findProductOptionEntity(productOptionId);
+		ProductOption productOption = getProductOptionEntity(productOptionId);
 		updateLowestPrice(productOption, newPrice);
 	}
 
@@ -120,12 +120,12 @@ public class ProductService {
 		productOption.updateLowestPrice(newPrice);
 	}
 
-	private Product findProductEntity(Long productId) {
+	private Product getProductEntity(Long productId) {
 		return productRepository.findById(productId)
 				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
 	}
 
-	private ProductOption findProductOptionEntity(Long productOptionId) {
+	private ProductOption getProductOptionEntity(Long productOptionId) {
 		return productOptionRepository.findById(productOptionId)
 				.orElseThrow(() -> new EntityNotFoundException("productOptionId does not exist"));
 	}

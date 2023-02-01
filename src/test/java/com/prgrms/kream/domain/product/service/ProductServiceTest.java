@@ -85,7 +85,7 @@ public class ProductServiceTest {
 				.thenReturn(Optional.of(product));
 
 		//when
-		ProductGetFacadeResponse result = productService.get(productId);
+		ProductGetFacadeResponse result = productService.getProduct(productId);
 
 		//then
 		assertThat(result).usingRecursiveComparison().isEqualTo(product);
@@ -94,7 +94,7 @@ public class ProductServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 상품 id로 조회하면 예외가 발생한다")
 	void get_with_not_exist_id() {
-		assertThatThrownBy(() -> productService.get(40L))
+		assertThatThrownBy(() -> productService.getProduct(40L))
 				.isInstanceOf(EntityNotFoundException.class)
 				.hasMessage("productId does not exist");
 	}
@@ -128,7 +128,7 @@ public class ProductServiceTest {
 				.thenReturn(products);
 
 		//when
-		ProductGetAllResponses productGetAllResponses = productService.getAll(productGetAllRequest);
+		ProductGetAllResponses productGetAllResponses = productService.getAllProducts(productGetAllRequest);
 
 		//then
 		assertThat(productGetAllResponses.productGetAllResponses()).hasSize(2);

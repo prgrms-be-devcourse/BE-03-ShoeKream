@@ -28,13 +28,14 @@ public class ProductController {
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductGetResponse> get(@PathVariable Long id) {
-		return ApiResponse.of(productFacade.get(id));
+	public ApiResponse<ProductGetResponse> getProduct(@PathVariable Long id) {
+		return ApiResponse.of(productFacade.getProduct(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductGetAllResponses> getAll(@RequestBody @Valid ProductGetAllRequest productGetAllRequest) {
-		return ApiResponse.of(productFacade.getAll(productGetAllRequest));
+	public ApiResponse<ProductGetAllResponses> getAllProducts(
+			@RequestBody @Valid ProductGetAllRequest productGetAllRequest) {
+		return ApiResponse.of(productFacade.getAllProducts(productGetAllRequest));
 	}
 }

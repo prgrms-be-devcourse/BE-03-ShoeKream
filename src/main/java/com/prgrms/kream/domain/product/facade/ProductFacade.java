@@ -41,8 +41,8 @@ public class ProductFacade {
 
 	@Cacheable(cacheNames = "product", key = "#productId")
 	@Transactional(readOnly = true)
-	public ProductGetResponse get(Long productId) {
-		ProductGetFacadeResponse productGetFacadeResponse = productService.get(productId);
+	public ProductGetResponse getProduct(Long productId) {
+		ProductGetFacadeResponse productGetFacadeResponse = productService.getProduct(productId);
 		List<String> imagePaths = imageService.getAll(productId, DomainType.PRODUCT);
 		return toProductGetResponse(productGetFacadeResponse, imagePaths);
 	}
@@ -50,8 +50,8 @@ public class ProductFacade {
 	@Cacheable(cacheNames = "products", key = "#productGetAllRequest",
 			condition = "#productGetAllRequest.searchWord().length() == 0")
 	@Transactional(readOnly = true)
-	public ProductGetAllResponses getAll(ProductGetAllRequest productGetAllRequest) {
-		return productService.getAll(productGetAllRequest);
+	public ProductGetAllResponses getAllProducts(ProductGetAllRequest productGetAllRequest) {
+		return productService.getAllProducts(productGetAllRequest);
 	}
 
 	@CacheEvict(value = "product", key = "#productUpdateRequest.id()")
