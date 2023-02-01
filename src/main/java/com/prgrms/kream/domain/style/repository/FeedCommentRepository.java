@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.prgrms.kream.domain.style.model.FeedComment;
 
-public interface FeedCommentRepository extends JpaRepository<FeedComment, Long> {
+public interface FeedCommentRepository extends JpaRepository<FeedComment, Long>, FeedCommentCustomRepository {
 
 	@Modifying(clearAutomatically = true)
 	@Query("delete from FeedComment feedComment where feedComment.feedId = :feedId")

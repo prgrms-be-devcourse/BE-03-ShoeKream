@@ -9,15 +9,18 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.kream.domain.style.dto.request.GetFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.GetFeedCommentServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
+import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedProduct;
 import com.prgrms.kream.domain.style.model.FeedTag;
 import com.prgrms.kream.domain.style.repository.FeedCommentRepository;
@@ -194,6 +197,28 @@ public class StyleService {
 		feedRepository.findById(registerFeedCommentServiceRequest.feedId())
 				.map(feed -> feedCommentRepository.save(toFeedComment(registerFeedCommentServiceRequest)))
 				.orElseThrow(EntityNotFoundException::new);
+	}
+
+	@Transactional(readOnly = true)
+	public GetFeedCommentServiceResponses getAllFeedComments(GetFeedCommentServiceRequest getFeedCommentServiceRequest) {
+		if (feedRepository.existsById(getFeedCommentServiceRequest.feedId())) {
+			List<FeedComment> feedComments = feedCommentRepository.findAllByFeedId(
+					getFeedCommentServiceRequest.feedId(),
+					getFeedCommentServiceRequest.cursorId(),
+					getFeedCommentServiceRequest.pageSize()
+			);
+
+			if (feedComments.size() > getFeedCommentServiceRequest.pageSize()) {
+				return toGetFeedCommentServiceResponses(
+						feedComments.subList(0, feedComments.size() -1),
+						feedComments.get(feedComments.size() - 1).getId()
+				);
+			}
+
+			return toGetFeedCommentServiceResponses(feedComments, -1L);
+		}
+
+		throw new EntityNotFoundException();
 	}
 
 	private GetFeedServiceResponses getFeedsOnPageSize(List<Feed> feeds, Integer pageSize) {
