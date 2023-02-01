@@ -26,7 +26,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
@@ -340,24 +339,40 @@ class MemberServiceTest {
 				.memberId(1L)
 				.build();
 
-		List<DeliveryInfo> deliveryInfoList = List.of(
-				deliveryInfo1, deliveryInfo2, deliveryInfo3, deliveryInfo4, deliveryInfo5, deliveryInfo6
-		);
+		List<DeliveryInfo> deliveryInfoList =
+				List.of(
+						deliveryInfo1, deliveryInfo2, deliveryInfo3,
+						deliveryInfo4, deliveryInfo5, deliveryInfo6
+				);
 
-		PageImpl<DeliveryInfo> result = new PageImpl<>(
+		List<DeliveryInfoGetResponse> deliveryInfoGetResponseList = deliveryInfoList.stream()
+				.map(deliveryInfo -> DeliveryInfoGetResponse.builder()
+						.id(deliveryInfo.getId())
+						.name(deliveryInfo.getName())
+						.phone(deliveryInfo.getPhone())
+						.postCode(deliveryInfo.getPostCode())
+						.address(deliveryInfo.getAddress())
+						.detail(deliveryInfo.getDetail())
+						.build())
+				.toList();
+
+		PageImpl<DeliveryInfo> foundDeliveryInfoPage = new PageImpl<>(
 				deliveryInfoList, PageRequest.of(0, 5), 6);
+
+		PageImpl<DeliveryInfoGetResponse> expectedResult = new PageImpl<>(
+				deliveryInfoGetResponseList, PageRequest.of(0, 5), 6);
 
 		when(deliveryInfoRepository.findAllByMemberId(
 				eq(1L),
 				eq(PageRequest.of(0, 5)))
-		).thenReturn(result);
+		).thenReturn(foundDeliveryInfoPage);
 
 		Page<DeliveryInfoGetResponse> deliveryInfoPage =
 				memberService.getDeliveryInfoPage(1L, PageRequest.of(0, 5));
 
-		Assertions.assertThat(result)
+		Assertions.assertThat(deliveryInfoPage)
 				.usingRecursiveComparison()
-				.isEqualTo(deliveryInfoPage);
+				.isEqualTo(expectedResult);
 
 		verify(deliveryInfoRepository, times(1))
 				.findAllByMemberId(eq(1L), eq(PageRequest.of(0, 5)));
