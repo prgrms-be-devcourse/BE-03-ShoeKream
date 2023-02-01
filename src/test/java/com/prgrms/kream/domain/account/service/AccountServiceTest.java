@@ -4,7 +4,7 @@ import static com.prgrms.kream.domain.account.model.TransactionType.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
-import com.prgrms.kream.domain.account.dto.request.AccountUpdateRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
 import com.prgrms.kream.domain.account.model.Account;
@@ -73,18 +73,18 @@ public class AccountServiceTest {
 	void updateBalanceTest(){
 		// Given
 		accountRepository.saveAll(List.of(account1, account2, account3));
-		AccountUpdateRequest accountUpdateRequest1 =
-				new AccountUpdateRequest(1L, WITHDRAW, 1000 );
-		AccountUpdateRequest accountUpdateRequest2 =
-				new AccountUpdateRequest(1L, DEPOSIT, 20000 );
-		AccountUpdateRequest accountUpdateRequest3 =
-				new AccountUpdateRequest(1L, WITHDRAW, 50000 );
+		AccountUpdateServiceRequest accountUpdateServiceRequest1 =
+				new AccountUpdateServiceRequest(1L, WITHDRAW, 1000 );
+		AccountUpdateServiceRequest accountUpdateServiceRequest2 =
+				new AccountUpdateServiceRequest(1L, DEPOSIT, 20000 );
+		AccountUpdateServiceRequest accountUpdateServiceRequest3 =
+				new AccountUpdateServiceRequest(1L, WITHDRAW, 50000 );
 
 		// When
 		when(accountRepository.findByMemberId(any(Long.class))).thenReturn(Optional.of(account1));
-		AccountUpdateResponse accountUpdateResponse1 = accountService.updateBalance(accountUpdateRequest1);
-		AccountUpdateResponse accountUpdateResponse2 = accountService.updateBalance(accountUpdateRequest2);
-		AccountUpdateResponse accountUpdateResponse3 = accountService.updateBalance(accountUpdateRequest3);
+		AccountUpdateResponse accountUpdateResponse1 = accountService.updateBalance(accountUpdateServiceRequest1);
+		AccountUpdateResponse accountUpdateResponse2 = accountService.updateBalance(accountUpdateServiceRequest2);
+		AccountUpdateResponse accountUpdateResponse3 = accountService.updateBalance(accountUpdateServiceRequest3);
 		Account retreived = accountRepository.findByMemberId(1L).get();
 
 
