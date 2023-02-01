@@ -30,10 +30,10 @@ public class ProductAdminController {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<ProductRegisterResponse> register(
+	public ApiResponse<ProductRegisterResponse> registerProduct(
 			@ModelAttribute @Valid ProductRegisterRequest productRegisterRequest) {
 
-		return ApiResponse.of(productFacade.register(productRegisterRequest));
+		return ApiResponse.of(productFacade.registerProduct(productRegisterRequest));
 	}
 
 	@PatchMapping

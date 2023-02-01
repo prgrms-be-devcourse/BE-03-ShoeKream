@@ -32,9 +32,9 @@ public class ProductFacade {
 
 	@CacheEvict(value = "products", allEntries = true)
 	@Transactional
-	public ProductRegisterResponse register(ProductRegisterRequest productRegisterRequest) {
+	public ProductRegisterResponse registerProduct(ProductRegisterRequest productRegisterRequest) {
 		ProductRegisterResponse productRegisterResponse
-				= productService.register(toProductRegisterFacadeRequest(productRegisterRequest));
+				= productService.registerProduct(toProductRegisterFacadeRequest(productRegisterRequest));
 		imageService.register(productRegisterRequest.images(), productRegisterResponse.id(), DomainType.PRODUCT);
 		return productRegisterResponse;
 	}

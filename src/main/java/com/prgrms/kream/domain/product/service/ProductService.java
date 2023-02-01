@@ -32,7 +32,7 @@ public class ProductService {
 	private final ProductOptionRepository productOptionRepository;
 
 	@Transactional
-	public ProductRegisterResponse register(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
+	public ProductRegisterResponse registerProduct(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
 		Product product = productRepository.save(toProduct(productRegisterFacadeRequest));
 
 		productOptionRepository.saveAllBulk(

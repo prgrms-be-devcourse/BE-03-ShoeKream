@@ -61,7 +61,7 @@ public class ProductServiceTest {
 				.thenReturn(product);
 
 		//when
-		ProductRegisterResponse result = productService.register(productRegisterFacadeRequest);
+		ProductRegisterResponse result = productService.registerProduct(productRegisterFacadeRequest);
 
 		//then
 		assertThat(result).usingRecursiveComparison().isEqualTo(product);
