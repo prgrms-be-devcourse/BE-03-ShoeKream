@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Builder;
+import org.checkerframework.checker.units.qual.C;
 import org.hibernate.validator.constraints.Length;
 
 import com.prgrms.kream.common.model.BaseTimeEntity;
@@ -26,6 +27,12 @@ public class Order extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(name = "bid_id", nullable = false, unique = true)
+	private Long bidId;
+
+	@Column(name = "is_based_on_selling_bid", nullable = false, unique = false, columnDefinition = "BIT")
+	private boolean isBasedOnSellingBid;
 
 	@Column(name = "buyer_id", nullable = false, unique = false)
 	private Long buyerId;
@@ -48,14 +55,21 @@ public class Order extends BaseTimeEntity {
 	private String orderRequest;
 
 	@Builder
-	Order(Long id, Long buyerId, Long sellerId, Long productOptionId, int price, OrderStatus orderStatus,
+	Order(Long id, Long bidId, boolean isBasedOnSellingBid, Long buyerId, Long sellerId, Long productOptionId, int price,
+			OrderStatus orderStatus,
 			String orderRequest) {
 		this.id = id;
+		this.bidId = bidId;
+		this.isBasedOnSellingBid = isBasedOnSellingBid;
 		this.buyerId = buyerId;
 		this.sellerId = sellerId;
 		this.productOptionId = productOptionId;
 		this.price = price;
 		this.orderRequest = orderRequest;
 		this.orderStatus = Objects.requireNonNullElse(orderStatus, OrderStatus.PAYED);
+	}
+
+	public boolean getIsBasedOnSellingBid(){
+		return this.isBasedOnSellingBid;
 	}
 }

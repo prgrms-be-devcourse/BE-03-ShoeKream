@@ -1,11 +1,13 @@
 package com.prgrms.kream.domain.order;
 
+import com.prgrms.kream.domain.bid.model.SellingBid;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.model.Order;
 import com.prgrms.kream.domain.order.model.OrderStatus;
 import com.prgrms.kream.domain.order.repository.OrderRepository;
 import com.prgrms.kream.domain.order.service.OrderService;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +23,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 	@Mock
-	OrderRepository repository;
+	OrderRepository orderRepository;
 
 	@InjectMocks
-	OrderService service;
+	OrderService orderService;
 
-	Long sellingBid = 456L;
+	Long sellingBidId = 56L;
 	Long orderId = 1L;
 
 	Long buyerId = 2L;
@@ -37,7 +39,8 @@ public class OrderServiceTest {
 	void orderCreateByBidTest() {
 		// Given
 		OrderCreateServiceRequest orderCreateServiceRequest =
-				new OrderCreateServiceRequest(orderId, buyerId, sellerId, 4L, 1500, "문 앞에 놔주세요.");
+				new OrderCreateServiceRequest(orderId, sellingBidId, true,
+						buyerId, sellerId, 4L, 1500, "문 앞에 놔주세요.");
 		Order order = Order.builder()
 				.id(orderId)
 				.buyerId(buyerId)
@@ -49,8 +52,8 @@ public class OrderServiceTest {
 				.build();
 
 		// When
-		when(repository.save(any(Order.class))).thenReturn(order);
-		OrderCreateResponse orderCreateResponse = service.createOrder(orderCreateServiceRequest);
+		when(orderRepository.save(any(Order.class))).thenReturn(order);
+		OrderCreateResponse orderCreateResponse = orderService.register(orderCreateServiceRequest);
 
 		// Then
 		assertThat(orderCreateResponse.id()).isEqualTo(1L);
