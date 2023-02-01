@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public record TransactionHistoryCreateRequest(
-		@NotNull(message = "거래 내역 ID는 필수 입력 값입니다.")
+		// @NotNull(message = "거래 내역 ID는 필수 입력 값입니다.")
 		Long id,
 
 		@NotNull(message = "거래 당사자 ID는 필수 입력 값입니다.")

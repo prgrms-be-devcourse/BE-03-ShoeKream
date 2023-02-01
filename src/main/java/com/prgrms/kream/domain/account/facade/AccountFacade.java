@@ -4,6 +4,7 @@ import static com.prgrms.kream.common.mapper.AccountMapper.*;
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountGetRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateOtherServiceRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetFacadeRequest;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetServiceRequest;
@@ -40,6 +41,16 @@ public class AccountFacade {
 		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
 		if (accountUpdateResponse.isSucceed()) {
 			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateFacadeRequest));
+		}
+		return accountUpdateResponse;
+	}
+	@Transactional
+	public AccountUpdateResponse updateBalance(AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest) {
+		AccountUpdateServiceRequest accountUpdateServiceRequest =
+				toAccountUpdateServiceRequest(accountUpdateOtherServiceRequest);
+		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
+		if (accountUpdateResponse.isSucceed()) {
+			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateOtherServiceRequest));
 		}
 		return accountUpdateResponse;
 	}

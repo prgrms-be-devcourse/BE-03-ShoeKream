@@ -1,6 +1,9 @@
 package com.prgrms.kream.domain.order.facade;
 
 import static com.prgrms.kream.common.mapper.OrderMapper.*;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateOtherServiceRequest;
+import com.prgrms.kream.domain.account.facade.AccountFacade;
+import com.prgrms.kream.domain.account.model.TransactionType;
 import com.prgrms.kream.domain.bid.dto.request.BuyingBidFindRequest;
 import com.prgrms.kream.domain.bid.dto.request.SellingBidFindRequest;
 import com.prgrms.kream.domain.bid.dto.response.BuyingBidFindResponse;
@@ -11,9 +14,12 @@ import com.prgrms.kream.domain.order.dto.request.OrderCancelRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
+import com.prgrms.kream.domain.order.dto.request.OrderUpdateStatusRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
+import com.prgrms.kream.domain.order.dto.response.OrderUpdateStatusResponse;
 import com.prgrms.kream.domain.order.model.Order;
+import com.prgrms.kream.domain.order.model.OrderStatus;
 import com.prgrms.kream.domain.order.service.OrderService;
 import com.prgrms.kream.domain.product.service.ProductService;
 import java.util.Collections;
@@ -29,6 +35,9 @@ public class OrderFacade {
 	private final SellingBidService sellingBidService;
 	private final BuyingBidService buyingBidService;
 	private final ProductService productService;
+	private final AccountFacade accountFacade;
+
+	private final Long myId = 0L;
 
 	@Transactional
 	public OrderCreateResponse registerBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
@@ -39,7 +48,7 @@ public class OrderFacade {
 		// TODO 자신의 ID를 가져오는 방법 생각하기
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), orderCreateFacadeRequest.bidId(), true,
-						0L, sellingBidFindResponse.memberId(),
+						myId, sellingBidFindResponse.memberId(),
 						sellingBidFindResponse.productOptionId(), sellingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
@@ -58,6 +67,11 @@ public class OrderFacade {
 
 		productService.changeHighestPrice(sellingBidFindResponse.productOptionId(), lowestSellingBid.price());
 
+		AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
+				new AccountUpdateOtherServiceRequest(orderCreateServiceRequest.buyerId(), TransactionType.DEPOSIT,
+						orderCreateServiceRequest.price());
+		accountFacade.updateBalance(accountUpdateOtherServiceRequest);
+
 		return orderService.register(orderCreateServiceRequest);
 	}
 
@@ -71,7 +85,7 @@ public class OrderFacade {
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), orderCreateFacadeRequest.bidId(),
 						false,
-						buyingBidFindResponse.memberId(), 0L,
+						buyingBidFindResponse.memberId(), myId,
 						buyingBidFindResponse.productOptionId(), buyingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
@@ -89,6 +103,11 @@ public class OrderFacade {
 		}
 
 		productService.changeHighestPrice(buyingBidFindResponse.productOptionId(), highestBuyingBid.price());
+
+		AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
+				new AccountUpdateOtherServiceRequest(orderCreateServiceRequest.buyerId(), TransactionType.DEPOSIT,
+						orderCreateServiceRequest.price());
+		accountFacade.updateBalance(accountUpdateOtherServiceRequest);
 
 		return orderService.register(orderCreateServiceRequest);
 	}
@@ -118,5 +137,21 @@ public class OrderFacade {
 		}
 
 		orderService.deleteById(orderCancelRequest);
+	}
+
+	@Transactional
+	public OrderUpdateStatusResponse updateOrderStatus(OrderUpdateStatusRequest orderUpdateStatusRequest) {
+		OrderUpdateStatusResponse orderUpdateStatusResponse =
+				orderService.updateStatus(orderUpdateStatusRequest);
+		if (orderUpdateStatusResponse.orderStatus() == OrderStatus.ORDER_CONFIRMED) {
+			AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
+					new AccountUpdateOtherServiceRequest(
+							orderService.findById(new OrderFindRequest(orderUpdateStatusRequest.id())).sellerId(),
+							TransactionType.DEPOSIT,
+							orderService.findById(new OrderFindRequest(orderUpdateStatusRequest.id())).price()
+					);
+			accountFacade.updateBalance(accountUpdateOtherServiceRequest);
+		}
+		return orderService.updateStatus(orderUpdateStatusRequest);
 	}
 }

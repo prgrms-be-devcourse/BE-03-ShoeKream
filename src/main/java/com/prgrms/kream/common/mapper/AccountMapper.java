@@ -2,6 +2,7 @@ package com.prgrms.kream.common.mapper;
 
 import com.prgrms.kream.domain.account.dto.request.AccountCreateRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateFacadeRequest;
+import com.prgrms.kream.domain.account.dto.request.AccountUpdateOtherServiceRequest;
 import com.prgrms.kream.domain.account.dto.request.AccountUpdateServiceRequest;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryCreateRequest;
 import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
@@ -39,6 +40,15 @@ public class AccountMapper {
 				);
 	}
 
+	public static AccountUpdateServiceRequest toAccountUpdateServiceRequest(
+			AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest){
+		return new AccountUpdateServiceRequest(
+						accountUpdateOtherServiceRequest.memberId(),
+						accountUpdateOtherServiceRequest.transactionType(),
+						accountUpdateOtherServiceRequest.amount()
+				);
+	}
+
 	public static TransactionHistoryCreateResponse toTransactionHistoryCreateResponse(
 			TransactionHistory transactionHistory) {
 		return new TransactionHistoryCreateResponse(
@@ -62,6 +72,14 @@ public class AccountMapper {
 				accountUpdateFacadeRequest.memberId(),
 				accountUpdateFacadeRequest.transactionType(),
 				accountUpdateFacadeRequest.amount()
+		);
+	}
+	public static TransactionHistoryCreateRequest toTransactionHistoryCreateRequest(AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest){
+		return new TransactionHistoryCreateRequest(
+				null,
+				accountUpdateOtherServiceRequest.memberId(),
+				accountUpdateOtherServiceRequest.transactionType(),
+				accountUpdateOtherServiceRequest.amount()
 		);
 	}
 }
