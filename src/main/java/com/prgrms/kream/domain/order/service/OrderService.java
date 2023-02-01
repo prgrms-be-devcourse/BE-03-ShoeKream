@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.order.service;
 
+import static com.prgrms.kream.common.mapper.OrderMapper.*;
 import com.prgrms.kream.common.mapper.OrderMapper;
 import com.prgrms.kream.domain.order.dto.request.OrderCancelRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateServiceRequest;
@@ -11,7 +12,6 @@ import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static com.prgrms.kream.common.mapper.OrderMapper.*;
 
 @Service
 @RequiredArgsConstructor
