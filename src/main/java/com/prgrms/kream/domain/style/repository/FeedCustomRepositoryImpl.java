@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.prgrms.kream.domain.style.dto.request.SortType;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.QFeed;
 import com.prgrms.kream.domain.style.model.QFeedProduct;
 import com.prgrms.kream.domain.style.model.QFeedTag;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -30,7 +33,16 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	QFeedProduct qFeedProduct = QFeedProduct.feedProduct;
 
 	@Override
-	public List<Feed> findAllByTag(String tag, Long cursorId, int pageSize) {
+	public List<Feed> findAllByTag(String tag, Long cursorId, int pageSize, SortType sortType) {
+		Feed feed = null;
+		if (sortType == SortType.POPULAR) {
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
+
+			if (feed == null) {
+				return Collections.emptyList();
+			}
+		}
+
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.where(qFeed.id.in(
@@ -38,28 +50,46 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 								.select(qFeedTag.feedId)
 								.from(qFeedTag)
 								.where(qFeedTag.tag.eq(tag))),
-						loeFeedId(cursorId)
+						dynamicWhereClause(cursorId, feed, sortType)
 				)
-				.orderBy(qFeed.id.desc())
+				.orderBy(dynamicOrderByClause(sortType))
 				.limit(pageSize+1)
 				.fetch();
 	}
 
 	@Override
-	public List<Feed> findAllByMember(Long memberId, Long cursorId, int pageSize) {
+	public List<Feed> findAllByMemberId(Long memberId, Long cursorId, int pageSize, SortType sortType) {
+		Feed feed = null;
+		if (sortType == SortType.POPULAR) {
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
+
+			if (feed == null) {
+				return Collections.emptyList();
+			}
+		}
+
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.where(
 						qFeed.authorId.eq(memberId),
-						loeFeedId(cursorId)
+						dynamicWhereClause(cursorId, feed, sortType)
 				)
-				.orderBy(qFeed.id.desc())
+				.orderBy(dynamicOrderByClause(sortType))
 				.limit(pageSize+1)
 				.fetch();
 	}
 
 	@Override
-	public List<Feed> findAllByProduct(Long productId, Long cursorId, int pageSize) {
+	public List<Feed> findAllByProductId(Long productId, Long cursorId, int pageSize, SortType sortType) {
+		Feed feed = null;
+		if (sortType == SortType.POPULAR) {
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
+
+			if (feed == null) {
+				return Collections.emptyList();
+			}
+		}
+
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.where(qFeed.id.in(
@@ -67,41 +97,57 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 								.select(qFeedProduct.feedId)
 								.from(qFeedProduct)
 								.where(qFeedProduct.productId.eq(productId))),
-						loeFeedId(cursorId)
+						dynamicWhereClause(cursorId, feed, sortType)
 				)
-				.orderBy(qFeed.id.desc())
+				.orderBy(dynamicOrderByClause(sortType))
 				.limit(pageSize+1)
 				.fetch();
 	}
 
 	@Override
-	public List<Feed> findAllOrderByCreatedAtDesc(Long cursorId, int pageSize) {
-		return jpaQueryFactory
-				.selectFrom(qFeed)
-				.where(loeFeedId(cursorId))
-				.orderBy(qFeed.id.desc())
-				.limit(pageSize+1)
-				.fetch();
-	}
+	public List<Feed> findAll(Long cursorId, int pageSize, SortType sortType) {
+		Feed feed = null;
+		if (sortType == SortType.POPULAR) {
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
 
-	@Override
-	public List<Feed> findAllOrderByLikesDesc(Long cursorId, int pageSize) {
-		Feed feed = jpaQueryFactory
-				.selectFrom(qFeed)
-				.where(eqFeedId(cursorId))
-				.orderBy(qFeed.likes.desc(), qFeed.id.desc())
-				.fetchFirst();
-
-		if (feed == null) {
-			return Collections.emptyList();
+			if (feed == null) {
+				return Collections.emptyList();
+			}
 		}
 
 		return jpaQueryFactory
 				.selectFrom(qFeed)
-				.where(ltLikesOrEqLikesAndLoeFeedId(feed.getLikes(), feed.getId()))
-				.orderBy(qFeed.likes.desc(), qFeed.id.desc())
+				.where(dynamicWhereClause(cursorId, feed, sortType))
+				.orderBy(dynamicOrderByClause(sortType))
 				.limit(pageSize+1)
 				.fetch();
+	}
+
+	private Feed findTopByIdOrderByLikesDescAndIdDesc(Long cursorId) {
+		return jpaQueryFactory
+				.selectFrom(qFeed)
+				.where(eqFeedId(cursorId))
+				.orderBy(qFeed.likes.desc(), qFeed.id.desc())
+				.fetchFirst();
+	}
+
+	private OrderSpecifier<?>[] dynamicOrderByClause(SortType sortType) {
+		return switch (sortType) {
+			case POPULAR -> new OrderSpecifier[] {
+					new OrderSpecifier(Order.DESC, qFeed.likes),
+					new OrderSpecifier(Order.DESC, qFeed.id)
+			};
+			case NEWEST -> new OrderSpecifier[] {
+					new OrderSpecifier(Order.DESC, qFeed.id)
+			};
+		};
+	}
+
+	private BooleanExpression dynamicWhereClause(Long cursorId, Feed feed, SortType sortType) {
+		return switch (sortType) {
+			case POPULAR -> ltLikesOrEqLikesAndLoeFeedId(feed.getLikes(), cursorId);
+			case NEWEST -> loeFeedId(cursorId);
+		};
 	}
 
 	private BooleanExpression loeFeedId(Long feedId) {

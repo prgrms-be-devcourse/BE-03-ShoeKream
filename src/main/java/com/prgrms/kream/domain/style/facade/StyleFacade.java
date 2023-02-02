@@ -10,17 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.kream.domain.image.model.DomainType;
 import com.prgrms.kream.domain.image.service.ImageService;
 import com.prgrms.kream.domain.member.service.MemberService;
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentFacadeResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedFacadeResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedFacadeResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateFacadeRequest;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetFacadeResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetFacadeResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateFacadeResponse;
 import com.prgrms.kream.domain.style.service.StyleService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,105 +36,99 @@ public class StyleFacade {
 	private final ImageService imageService;
 
 	@Transactional
-	public RegisterFeedFacadeResponse register(RegisterFeedFacadeRequest registerFeedFacadeRequest) {
-		RegisterFeedFacadeResponse registerFeedFacadeResponse = toRegisterFeedFacadeResponse(
-				styleService.register(
-						toRegisterFeedServiceRequest(registerFeedFacadeRequest)
+	public FeedRegisterFacadeResponse registerFeed(FeedRegisterFacadeRequest feedRegisterFacadeRequest) {
+		FeedRegisterFacadeResponse feedRegisterFacadeResponse = toFeedRegisterFacadeResponse(
+				styleService.registerFeed(
+						toFeedRegisterServiceRequest(feedRegisterFacadeRequest)
 				)
 		);
 
 		// 이미지 등록 서비스 호출
 		imageService.registerImage(
-				registerFeedFacadeRequest.images(),
-				registerFeedFacadeResponse.id(),
+				feedRegisterFacadeRequest.images(),
+				feedRegisterFacadeResponse.id(),
 				DomainType.FEED
 		);
 
-		return registerFeedFacadeResponse;
+		return feedRegisterFacadeResponse;
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getTrendingFeeds(GetFeedFacadeRequest getFeedFacadeRequest) {
-		return merge(styleService.getTrendingFeeds(toGetFeedServiceRequest(getFeedFacadeRequest)));
+	public FeedGetFacadeResponses getAllFeeds(FeedGetFacadeRequest feedGetFacadeRequest) {
+		return merge(styleService.getAllFeeds(toFeedGetServiceRequest(feedGetFacadeRequest)));
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getNewestFeeds(GetFeedFacadeRequest getFeedFacadeRequest) {
-		return merge(styleService.getNewestFeeds(toGetFeedServiceRequest(getFeedFacadeRequest)));
+	public FeedGetFacadeResponses getAllFeedsByTag(FeedGetFacadeRequest feedGetFacadeRequest, String tag) {
+		return merge(styleService.getAllFeedsByTag(toFeedGetServiceRequest(feedGetFacadeRequest), tag));
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByTag(GetFeedFacadeRequest getFeedFacadeRequest, String tag) {
-		return merge(styleService.getAllByTag(toGetFeedServiceRequest(getFeedFacadeRequest), tag));
+	public FeedGetFacadeResponses getAllFeedsByMemberId(FeedGetFacadeRequest feedGetFacadeRequest, Long memberId) {
+		return merge(styleService.getAllFeedsByMemberId(toFeedGetServiceRequest(feedGetFacadeRequest), memberId));
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByMember(GetFeedFacadeRequest getFeedFacadeRequest, Long memberId) {
-		return merge(styleService.getAllByMember(toGetFeedServiceRequest(getFeedFacadeRequest), memberId));
-	}
-
-	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses getAllByProduct(GetFeedFacadeRequest getFeedFacadeRequest, Long productId) {
-		return merge(styleService.getAllByProduct(toGetFeedServiceRequest(getFeedFacadeRequest), productId));
+	public FeedGetFacadeResponses getAllFeedsByProductId(FeedGetFacadeRequest feedGetFacadeRequest, Long productId) {
+		return merge(styleService.getAllFeedsByProductId(toFeedGetServiceRequest(feedGetFacadeRequest), productId));
 	}
 
 	@Transactional
-	public UpdateFeedFacadeResponse update(Long id, UpdateFeedFacadeRequest updateFeedFacadeRequest) {
-		return toUpdateFeedFacadeResponse(
-				styleService.update(
+	public FeedUpdateFacadeResponse updateFeed(Long id, FeedUpdateFacadeRequest feedUpdateFacadeRequest) {
+		return toFeedUpdateFacadeResponse(
+				styleService.updateFeed(
 						id,
-						toUpdateFeedServiceRequest(updateFeedFacadeRequest)
+						toFeedUpdateServiceRequest(feedUpdateFacadeRequest)
 				)
 		);
 	}
 
 	@Transactional
-	public void delete(long id) {
-		styleService.delete(id);
+	public void deleteFeed(long id) {
+		styleService.deleteFeed(id);
 		imageService.deleteAllImagesByReference(id, DomainType.FEED);
 	}
 
 	@Transactional
-	public void registerFeedLike(LikeFeedFacadeRequest likeFeedFacadeRequest) {
+	public void registerFeedLike(FeedLikeFacadeRequest feedLikeFacadeRequest) {
 		styleService.registerFeedLike(
-				toLikeFeedServiceRequest(likeFeedFacadeRequest)
+				toFeedLikeServiceRequest(feedLikeFacadeRequest)
 		);
 	}
 
 	@Transactional
-	public void deleteFeedLike(LikeFeedFacadeRequest likeFeedFacadeRequest) {
+	public void deleteFeedLike(FeedLikeFacadeRequest feedLikeFacadeRequest) {
 		styleService.deleteFeedLike(
-				toLikeFeedServiceRequest(likeFeedFacadeRequest)
+				toFeedLikeServiceRequest(feedLikeFacadeRequest)
 		);
 	}
 
 	@Transactional
-	public void registerFeedComment(RegisterFeedCommentFacadeRequest registerFeedCommentFacadeRequest) {
+	public void registerFeedComment(FeedCommentRegisterFacadeRequest feedCommentRegisterFacadeRequest) {
 		styleService.registerFeedComment(
-				toRegisterFeedCommentServiceRequest(registerFeedCommentFacadeRequest)
+				toFeedCommentRegisterServiceRequest(feedCommentRegisterFacadeRequest)
 		);
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedCommentFacadeResponses getAllFeedComments(GetFeedCommentFacadeRequest getFeedCommentFacadeRequest) {
-		return toGetFeedCommentFacadeResponses(
+	public FeedCommentGetFacadeResponses getAllFeedComments(FeedCommentGetFacadeRequest feedCommentGetFacadeRequest) {
+		return toFeedCommentGetFacadeResponses(
 				styleService.getAllFeedComments(
-						toGetFeedCommentServiceRequest(getFeedCommentFacadeRequest)
+						toFeedCommentGetServiceRequest(feedCommentGetFacadeRequest)
 				)
 		);
 	}
 
-	@Transactional(readOnly = true)
-	public GetFeedFacadeResponses merge(GetFeedServiceResponses getFeedServiceResponses) {
-		return toGetFeedFacadeResponses(
-				getFeedServiceResponses.getFeedServiceResponses().stream()
+	private FeedGetFacadeResponses merge(FeedGetServiceResponses feedGetServiceResponses) {
+		return toFeedGetFacadeResponses(
+				feedGetServiceResponses.feedGetServiceResponses().stream()
 						.map(getFeedServiceResponse ->
-								toGetFeedFacadeResponse(
+								toFeedGetFacadeResponse(
 										getFeedServiceResponse,
 										imageService.getAllImages(getFeedServiceResponse.id(), DomainType.FEED)
 								))
 						.collect(Collectors.toList()),
-				getFeedServiceResponses.lastId()
+				feedGetServiceResponses.lastId()
 		);
 	}
 
