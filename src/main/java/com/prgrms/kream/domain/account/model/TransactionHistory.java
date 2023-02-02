@@ -1,6 +1,7 @@
 package com.prgrms.kream.domain.account.model;
 
 import static lombok.AccessLevel.*;
+import com.prgrms.kream.common.model.BaseTimeEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "transaction_history")
 @NoArgsConstructor(access = PROTECTED)
-public class TransactionHistory {
+public class TransactionHistory extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

@@ -2,6 +2,7 @@ package com.prgrms.kream.domain.account.model;
 
 import static lombok.AccessLevel.*;
 import com.prgrms.kream.common.exception.BalanceNotEnoughException;
+import com.prgrms.kream.common.model.BaseTimeEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "account")
 @NoArgsConstructor(access = PROTECTED)
-public class Account {
+public class Account extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
