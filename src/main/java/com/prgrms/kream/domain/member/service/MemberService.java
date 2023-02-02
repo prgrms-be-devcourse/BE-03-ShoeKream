@@ -56,7 +56,7 @@ public class MemberService {
 	private final Jwt jwt;
 
 	@Transactional
-	public MemberRegisterResponse register(MemberRegisterRequest memberRegisterRequest) {
+	public MemberRegisterResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
 		if (isDuplicatedEmail(memberRegisterRequest.email())) {
 			throw new DuplicatedEmailException("중복된 이메일입니다.");
 		}
@@ -67,7 +67,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
+	public MemberLoginResponse loginMember(MemberLoginRequest memberLoginRequest) {
 		Member member = memberRepository.findByEmail(memberLoginRequest.email())
 				.orElseThrow(EntityNotFoundException::new);
 
@@ -84,7 +84,7 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public MemberGetFacadeResponse get(Long id) {
+	public MemberGetFacadeResponse getMember(Long id) {
 		if (!Objects.equals(getMemberId(), id)) {
 			throw new AccessDeniedException("잘못된 접근입니다");
 		}

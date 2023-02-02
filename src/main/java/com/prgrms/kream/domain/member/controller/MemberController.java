@@ -55,27 +55,27 @@ public class MemberController {
 
 	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
-	public ApiResponse<MemberRegisterResponse> register(
+	public ApiResponse<MemberRegisterResponse> registerMember(
 			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
 	) {
-		return ApiResponse.of(memberFacade.register(memberRegisterRequest));
+		return ApiResponse.of(memberFacade.registerMember(memberRegisterRequest));
 	}
 
 	@PostMapping("/login")
 	@ResponseStatus(OK)
-	public ApiResponse<String> login(
+	public ApiResponse<String> loginMember(
 			@RequestBody @Valid MemberLoginRequest memberLoginRequest,
 			HttpServletResponse httpServletResponse
 	) {
 		httpServletResponse.addCookie(
-				new Cookie(accessToken, memberFacade.login(memberLoginRequest).token())
+				new Cookie(accessToken, memberFacade.loginMember(memberLoginRequest).token())
 		);
 		return ApiResponse.of("로그인 성공하였습니다.");
 	}
 
 	@GetMapping("/logout")
 	@ResponseStatus(OK)
-	public ApiResponse<String> logout(HttpServletResponse httpServletResponse) {
+	public ApiResponse<String> logoutMember(HttpServletResponse httpServletResponse) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication != null && !authentication.getPrincipal().equals("anonymousUser")) {
@@ -89,13 +89,13 @@ public class MemberController {
 
 	@GetMapping("/{id}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberGetResponse> get(@PathVariable Long id) {
-		return ApiResponse.of(memberFacade.get(id));
+	public ApiResponse<MemberGetResponse> getMember(@PathVariable Long id) {
+		return ApiResponse.of(memberFacade.getMember(id));
 	}
 
 	@PostMapping("/{id}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberUpdateResponse> update(
+	public ApiResponse<MemberUpdateResponse> updateMember(
 			@PathVariable Long id,
 			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
 	) {

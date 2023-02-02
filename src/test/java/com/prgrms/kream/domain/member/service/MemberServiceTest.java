@@ -83,7 +83,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원가입 성공")
-	void register_success() {
+	void registerMember_success() {
 		Member member = Member.builder()
 				.id(1L)
 				.name("name")
@@ -102,7 +102,7 @@ class MemberServiceTest {
 		when(memberRepository.save(any(Member.class)))
 				.thenReturn(member);
 
-		MemberRegisterResponse memberRegisterResponse = memberService.register(memberRegisterRequest);
+		MemberRegisterResponse memberRegisterResponse = memberService.registerMember(memberRegisterRequest);
 
 		// 테스트 추가
 		Assertions.assertThat(memberRegisterResponse)
@@ -114,7 +114,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 실패 - 비밀번호 불일치함")
-	void login_fail_password() {
+	void loginMember_fail_password() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -130,7 +130,7 @@ class MemberServiceTest {
 				.thenReturn(Optional.of(member));
 
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(member.getEmail(), "wrongPassword");
-		Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+		Assertions.assertThatThrownBy(() -> memberService.loginMember(memberLoginRequest))
 				.isInstanceOf(BadCredentialsException.class);
 
 		verify(memberRepository, times(1)).findByEmail(member.getEmail());
@@ -139,9 +139,9 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 실패 - 존재하지 않는 이메일")
-	void login_fail_notExistEmail() {
+	void loginMember_fail_notExistEmail() {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest("wrongEmail", "Pa!12345678");
-		Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+		Assertions.assertThatThrownBy(() -> memberService.loginMember(memberLoginRequest))
 				.isInstanceOf(EntityNotFoundException.class);
 
 		verify(memberRepository, times(1)).findByEmail("wrongEmail");
@@ -150,7 +150,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 성공")
-	void login_fail() {
+	void loginMember_fail() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -169,7 +169,7 @@ class MemberServiceTest {
 		when(jwt.sign(any(Jwt.Claims.class))).thenReturn(accessToken);
 
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(member.getEmail(), password);
-		MemberLoginResponse login = memberService.login(memberLoginRequest);
+		MemberLoginResponse login = memberService.loginMember(memberLoginRequest);
 
 		Assertions.assertThat(login.token()).isEqualTo(accessToken);
 		verify(memberRepository, times(1)).findByEmail(member.getEmail());
@@ -178,7 +178,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 성공")
-	void get_success() {
+	void getMember_success() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -193,7 +193,7 @@ class MemberServiceTest {
 		when(memberRepository.findById(1L))
 				.thenReturn(Optional.of(member));
 
-		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(member.getId());
+		MemberGetFacadeResponse memberGetFacadeResponse = memberService.getMember(member.getId());
 
 		Assertions.assertThat(memberGetFacadeResponse)
 				.usingRecursiveComparison()
@@ -204,11 +204,11 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 실패 - id에 해당하는 member 존재하지 않음")
-	void get_fail_notExistMember() {
+	void getMember_fail_notExistMember() {
 		when(memberRepository.findById(1L))
 				.thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> memberService.get(1L))
+		Assertions.assertThatThrownBy(() -> memberService.getMember(1L))
 				.isInstanceOf(EntityNotFoundException.class)
 				.hasMessage("존재하지 않은 회원입니다.");
 
@@ -217,8 +217,8 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 실패 - 사용자가 다른 사용자의 정보 조회")
-	void get_fail_otherMember() {
-		Assertions.assertThatThrownBy(() -> memberService.get(2L))
+	void getMember_fail_otherMember() {
+		Assertions.assertThatThrownBy(() -> memberService.getMember(2L))
 				.isInstanceOf(AccessDeniedException.class);
 
 		verify(memberRepository, times(0)).findById(2L);
@@ -226,7 +226,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 수정 성공")
-	void update_success() {
+	void updateMember_success() {
 
 		MemberUpdateServiceRequest memberUpdateServiceRequest
 				= new MemberUpdateServiceRequest(
@@ -263,7 +263,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 실패 - 다른 사용자의 정보를 조회")
-	void update_fail_notValidMember() {
+	void updateMember_fail_notValidMember() {
 		MemberUpdateServiceRequest memberUpdateServiceRequest
 				= new MemberUpdateServiceRequest(
 				2L,
