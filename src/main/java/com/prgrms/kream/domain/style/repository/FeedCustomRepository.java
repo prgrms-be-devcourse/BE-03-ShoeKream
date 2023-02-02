@@ -9,9 +9,9 @@ public interface FeedCustomRepository {
 
 	List<Feed> findAllByTag(String tag, Long cursorId, int pageSize, SortType sortType);
 
-	List<Feed> findAllByMember(Long memberId, Long cursorId, int pageSize, SortType sortType);
+	List<Feed> findAllByMemberId(Long memberId, Long cursorId, int pageSize, SortType sortType);
 
-	List<Feed> findAllByProduct(Long productId, Long cursorId, int pageSize, SortType sortType);
+	List<Feed> findAllByProductId(Long productId, Long cursorId, int pageSize, SortType sortType);
 
 	List<Feed> findAll(Long cursorId, int pageSize, SortType sortType);
 

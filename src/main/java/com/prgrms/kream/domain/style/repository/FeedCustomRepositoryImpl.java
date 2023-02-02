@@ -36,7 +36,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	public List<Feed> findAllByTag(String tag, Long cursorId, int pageSize, SortType sortType) {
 		Feed feed = null;
 		if (sortType == SortType.POPULAR) {
-			feed = findTopByLikes(cursorId);
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
 
 			if (feed == null) {
 				return Collections.emptyList();
@@ -58,10 +58,10 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	}
 
 	@Override
-	public List<Feed> findAllByMember(Long memberId, Long cursorId, int pageSize, SortType sortType) {
+	public List<Feed> findAllByMemberId(Long memberId, Long cursorId, int pageSize, SortType sortType) {
 		Feed feed = null;
 		if (sortType == SortType.POPULAR) {
-			feed = findTopByLikes(cursorId);
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
 
 			if (feed == null) {
 				return Collections.emptyList();
@@ -80,10 +80,10 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	}
 
 	@Override
-	public List<Feed> findAllByProduct(Long productId, Long cursorId, int pageSize, SortType sortType) {
+	public List<Feed> findAllByProductId(Long productId, Long cursorId, int pageSize, SortType sortType) {
 		Feed feed = null;
 		if (sortType == SortType.POPULAR) {
-			feed = findTopByLikes(cursorId);
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
 
 			if (feed == null) {
 				return Collections.emptyList();
@@ -108,7 +108,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 	public List<Feed> findAll(Long cursorId, int pageSize, SortType sortType) {
 		Feed feed = null;
 		if (sortType == SortType.POPULAR) {
-			feed = findTopByLikes(cursorId);
+			feed = findTopByIdOrderByLikesDescAndIdDesc(cursorId);
 
 			if (feed == null) {
 				return Collections.emptyList();
@@ -123,7 +123,7 @@ public class FeedCustomRepositoryImpl implements FeedCustomRepository {
 				.fetch();
 	}
 
-	private Feed findTopByLikes(Long cursorId) {
+	private Feed findTopByIdOrderByLikesDescAndIdDesc(Long cursorId) {
 		return jpaQueryFactory
 				.selectFrom(qFeed)
 				.where(eqFeedId(cursorId))

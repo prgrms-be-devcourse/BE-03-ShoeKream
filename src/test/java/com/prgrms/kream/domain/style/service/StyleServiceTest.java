@@ -247,18 +247,18 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("사용자 식별자를 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByMember() {
-		when(feedRepository.findAllByMember(
+		when(feedRepository.findAllByMemberId(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize(),
 				SortType.NEWEST
 		)).thenReturn(List.of(FEED));
 
-		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMember(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMemberId(
 				getFeedServiceRequest(),
 				MEMBER.getId());
 
-		verify(feedRepository).findAllByMember(
+		verify(feedRepository).findAllByMemberId(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize(),
@@ -270,18 +270,18 @@ class StyleServiceTest {
 	@DisplayName("상품 식별자를 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByProduct() {
 		FEED.setProductIds(Collections.emptyList());
-		when(feedRepository.findAllByProduct(
+		when(feedRepository.findAllByProductId(
 				1L,
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize(),
 				SortType.NEWEST
 		)).thenReturn(Collections.emptyList());
 
-		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByProduct(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByProductId(
 				getFeedServiceRequest(),
 				1L);
 
-		verify(feedRepository).findAllByProduct(
+		verify(feedRepository).findAllByProductId(
 				1L,
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize(),
@@ -292,7 +292,7 @@ class StyleServiceTest {
 	@Test
 	@DisplayName("피드에 등록된 상품 태그를 조회할 수 있다.")
 	void testGetFeedProductsOnFeeds() {
-		when(feedRepository.findAllByMember(
+		when(feedRepository.findAllByMemberId(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
 				getFeedServiceRequest().pageSize(),
@@ -300,7 +300,7 @@ class StyleServiceTest {
 		)).thenReturn(List.of(FEED));
 		when(feedProductRepository.findAllByFeedId(FEED.getId())).thenReturn(FEED_PRODUCTS);
 
-		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMember(
+		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMemberId(
 				getFeedServiceRequest(),
 				MEMBER.getId()
 		);

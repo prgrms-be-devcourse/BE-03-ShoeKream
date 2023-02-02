@@ -90,8 +90,8 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
-	public FeedGetServiceResponses getAllFeedsByMember(FeedGetServiceRequest feedGetServiceRequest, Long memberId) {
-		List<Feed> feeds = feedRepository.findAllByMember(
+	public FeedGetServiceResponses getAllFeedsByMemberId(FeedGetServiceRequest feedGetServiceRequest, Long memberId) {
+		List<Feed> feeds = feedRepository.findAllByMemberId(
 				memberId,
 				feedGetServiceRequest.cursorId(),
 				feedGetServiceRequest.pageSize(),
@@ -102,8 +102,8 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
-	public FeedGetServiceResponses getAllFeedsByProduct(FeedGetServiceRequest feedGetServiceRequest, Long productId) {
-		List<Feed> feeds = feedRepository.findAllByProduct(
+	public FeedGetServiceResponses getAllFeedsByProductId(FeedGetServiceRequest feedGetServiceRequest, Long productId) {
+		List<Feed> feeds = feedRepository.findAllByProductId(
 				productId,
 				feedGetServiceRequest.cursorId(),
 				feedGetServiceRequest.pageSize(),

@@ -81,10 +81,10 @@ public class StyleController {
 
 	@GetMapping("/members/{memberId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<FeedGetResponses> getAllFeedsByMember(@PathVariable Long memberId, @Valid FeedGetRequest feedGetRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeedsByMemberId(@PathVariable Long memberId, @Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
 				toFeedGetResponses(
-						styleFacade.getAllFeedsByMember(
+						styleFacade.getAllFeedsByMemberId(
 								toFeedGetFacadeRequest(feedGetRequest),
 								memberId
 						)
@@ -94,10 +94,10 @@ public class StyleController {
 
 	@GetMapping("/products/{productId}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<FeedGetResponses> getAllFeedsByProduct(@PathVariable Long productId, @Valid FeedGetRequest feedGetRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeedsByProductId(@PathVariable Long productId, @Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
 				toFeedGetResponses(
-						styleFacade.getAllFeedsByProduct(
+						styleFacade.getAllFeedsByProductId(
 								toFeedGetFacadeRequest(feedGetRequest),
 								productId
 						)

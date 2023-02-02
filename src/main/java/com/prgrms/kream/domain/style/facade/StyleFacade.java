@@ -64,13 +64,13 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public FeedGetFacadeResponses getAllFeedsByMember(FeedGetFacadeRequest feedGetFacadeRequest, Long memberId) {
-		return merge(styleService.getAllFeedsByMember(toFeedGetServiceRequest(feedGetFacadeRequest), memberId));
+	public FeedGetFacadeResponses getAllFeedsByMemberId(FeedGetFacadeRequest feedGetFacadeRequest, Long memberId) {
+		return merge(styleService.getAllFeedsByMemberId(toFeedGetServiceRequest(feedGetFacadeRequest), memberId));
 	}
 
 	@Transactional(readOnly = true)
-	public FeedGetFacadeResponses getAllFeedsByProduct(FeedGetFacadeRequest feedGetFacadeRequest, Long productId) {
-		return merge(styleService.getAllFeedsByProduct(toFeedGetServiceRequest(feedGetFacadeRequest), productId));
+	public FeedGetFacadeResponses getAllFeedsByProductId(FeedGetFacadeRequest feedGetFacadeRequest, Long productId) {
+		return merge(styleService.getAllFeedsByProductId(toFeedGetServiceRequest(feedGetFacadeRequest), productId));
 	}
 
 	@Transactional
