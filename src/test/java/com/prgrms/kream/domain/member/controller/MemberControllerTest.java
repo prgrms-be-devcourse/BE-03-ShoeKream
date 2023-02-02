@@ -132,7 +132,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("회원가입 - 성공")
-	void register_success() throws Exception {
+	void registerMember_success() throws Exception {
 		MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
 				"name", "email@naver.com", "01012345678", "aA12345678!", true, ROLE_USER);
 

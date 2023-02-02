@@ -41,8 +41,8 @@ public class MemberFacade {
 	private final MemberService memberService;
 	private final ImageService imageService;
 
-	public MemberRegisterResponse register(MemberRegisterRequest memberRegisterRequest) {
-		return memberService.register(memberRegisterRequest);
+	public MemberRegisterResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
+		return memberService.registerMember(memberRegisterRequest);
 	}
 
 	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {

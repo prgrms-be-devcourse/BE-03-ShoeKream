@@ -56,7 +56,7 @@ public class MemberService {
 	private final Jwt jwt;
 
 	@Transactional
-	public MemberRegisterResponse register(MemberRegisterRequest memberRegisterRequest) {
+	public MemberRegisterResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
 		if (isDuplicatedEmail(memberRegisterRequest.email())) {
 			throw new DuplicatedEmailException("중복된 이메일입니다.");
 		}

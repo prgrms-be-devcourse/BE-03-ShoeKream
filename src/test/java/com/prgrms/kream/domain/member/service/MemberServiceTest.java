@@ -83,7 +83,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원가입 성공")
-	void register_success() {
+	void registerMember_success() {
 		Member member = Member.builder()
 				.id(1L)
 				.name("name")
@@ -102,7 +102,7 @@ class MemberServiceTest {
 		when(memberRepository.save(any(Member.class)))
 				.thenReturn(member);
 
-		MemberRegisterResponse memberRegisterResponse = memberService.register(memberRegisterRequest);
+		MemberRegisterResponse memberRegisterResponse = memberService.registerMember(memberRegisterRequest);
 
 		// 테스트 추가
 		Assertions.assertThat(memberRegisterResponse)
@@ -130,7 +130,7 @@ class MemberServiceTest {
 				.thenReturn(Optional.of(member));
 
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(member.getEmail(), "wrongPassword");
-		Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+		Assertions.assertThatThrownBy(() -> memberService.loginMember(memberLoginRequest))
 				.isInstanceOf(BadCredentialsException.class);
 
 		verify(memberRepository, times(1)).findByEmail(member.getEmail());
@@ -141,7 +141,7 @@ class MemberServiceTest {
 	@DisplayName("로그인 실패 - 존재하지 않는 이메일")
 	void login_fail_notExistEmail() {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest("wrongEmail", "Pa!12345678");
-		Assertions.assertThatThrownBy(() -> memberService.login(memberLoginRequest))
+		Assertions.assertThatThrownBy(() -> memberService.loginMember(memberLoginRequest))
 				.isInstanceOf(EntityNotFoundException.class);
 
 		verify(memberRepository, times(1)).findByEmail("wrongEmail");
@@ -169,7 +169,7 @@ class MemberServiceTest {
 		when(jwt.sign(any(Jwt.Claims.class))).thenReturn(accessToken);
 
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(member.getEmail(), password);
-		MemberLoginResponse login = memberService.login(memberLoginRequest);
+		MemberLoginResponse login = memberService.loginMember(memberLoginRequest);
 
 		Assertions.assertThat(login.token()).isEqualTo(accessToken);
 		verify(memberRepository, times(1)).findByEmail(member.getEmail());

@@ -55,10 +55,10 @@ public class MemberController {
 
 	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
-	public ApiResponse<MemberRegisterResponse> register(
+	public ApiResponse<MemberRegisterResponse> registerMember(
 			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
 	) {
-		return ApiResponse.of(memberFacade.register(memberRegisterRequest));
+		return ApiResponse.of(memberFacade.registerMember(memberRegisterRequest));
 	}
 
 	@PostMapping("/login")
