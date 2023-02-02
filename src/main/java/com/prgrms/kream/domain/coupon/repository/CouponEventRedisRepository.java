@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class CouponEventRedisRepository {
 	private final RedisTemplate<String, CouponEventRegisterRequest> couponEventRedisTemplate;
 
-	public void add(CouponEventRegisterRequest couponEventRegisterRequest) {
+	public void register(CouponEventRegisterRequest couponEventRegisterRequest) {
 		couponEventRedisTemplate.opsForZSet()
 				.addIfAbsent(
 						CouponProperties.getKey(),
@@ -24,17 +24,17 @@ public class CouponEventRedisRepository {
 				);
 	}
 
-	public Long size(String key) {
+	public Long getSize(String key) {
 		return couponEventRedisTemplate.opsForZSet()
 				.size(key);
 	}
 
-	public Set<CouponEventRegisterRequest> range(String key, long start, long end) {
+	public Set<CouponEventRegisterRequest> getRange(String key, long start, long end) {
 		return couponEventRedisTemplate.opsForZSet()
 				.range(key, start, end);
 	}
 
-	public void removeRange(String key, long start, long end) {
+	public void deleteRange(String key, long start, long end) {
 		couponEventRedisTemplate.opsForZSet()
 				.removeRange(key, start, end);
 	}
@@ -54,7 +54,7 @@ public class CouponEventRedisRepository {
 		).getValue();
 	}
 
-	public void removeAll(String key) {
+	public void deleteAll(String key) {
 		couponEventRedisTemplate.delete(key);
 	}
 }

@@ -31,7 +31,7 @@ public class CouponController {
 	 */
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<CouponResponse> couponRegister(
+	public ApiResponse<CouponResponse> registerCoupon(
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {
 		CouponResponse couponResponse = couponService.registerCoupon(couponRegisterRequest);

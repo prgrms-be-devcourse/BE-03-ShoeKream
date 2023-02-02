@@ -21,7 +21,7 @@ public class CouponEventService {
 
 	@Transactional
 	public CouponEventResponse registerCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
-		if (checkDuplicateApply(couponEventRegisterRequest.memberId(), couponEventRegisterRequest.couponId())) {
+		if (isDuplicateApply(couponEventRegisterRequest.memberId(), couponEventRegisterRequest.couponId())) {
 			throw new DuplicateRequestException("이미 쿠폰을 발급 받으셨습니다.");
 		}
 		CouponEvent entity = toCouponEvent(couponEventRegisterRequest);
@@ -29,7 +29,7 @@ public class CouponEventService {
 		return toCouponEventResponse(savedCouponEvent);
 	}
 
-	private boolean checkDuplicateApply(long memberId, long couponId) {
+	private boolean isDuplicateApply(long memberId, long couponId) {
 		return couponEventRepository.existsByMemberIdAndCouponId(memberId, couponId);
 	}
 }

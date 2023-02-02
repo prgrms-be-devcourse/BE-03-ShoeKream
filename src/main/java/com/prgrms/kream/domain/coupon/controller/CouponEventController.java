@@ -26,16 +26,16 @@ public class CouponEventController {
 	/**
 	 * 쿠폰 이벤트 요청을 레디스에 추가한다.
 	 * @author goseungwon
-	 * @param couponEventRegisterRequest 쿠폰 id, 멤버 id
+	 * @param couponEventRegisterRequest 쿠폰 id, 사용자 id
 	 * @return CouponEventResponse
 	 * @see CouponFacade
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ApiResponse<Long> applyCouponEvent(
+	public ApiResponse<Long> registerCouponEvent(
 			@RequestBody @Valid CouponEventRegisterRequest couponEventRegisterRequest
 	) {
-		long queueSize = couponFacade.applyCountEvent(couponEventRegisterRequest);
+		long queueSize = couponFacade.registerCouponEventToRedis(couponEventRegisterRequest);
 		return ApiResponse.of(queueSize);
 	}
 
@@ -46,7 +46,7 @@ public class CouponEventController {
 	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public ModelAndView showCouponEventPage() {
+	public ModelAndView getCouponEventPage() {
 		return new ModelAndView("static_coupon_event_page");
 	}
 }

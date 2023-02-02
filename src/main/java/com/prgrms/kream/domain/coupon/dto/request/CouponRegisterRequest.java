@@ -19,5 +19,4 @@ public record CouponRegisterRequest(
 		@NotNull(message = "쿠폰 수량은 필수 입력사항 입니다.")
 		int amount
 ) {
-
 }
