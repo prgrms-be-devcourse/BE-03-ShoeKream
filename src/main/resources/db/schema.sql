@@ -9,7 +9,7 @@ drop table if exists coupon cascade;
 drop table if exists feed_like cascade;
 drop table if exists feed_product cascade;
 drop table if exists feed_tag cascade;
-drop table if exists follow cascade;
+drop table if exists following cascade;
 drop table if exists image cascade;
 drop table if exists product_option cascade;
 drop table if exists selling_bid cascade;
@@ -53,17 +53,17 @@ CREATE TABLE `product`
 
 CREATE TABLE `order`
 (
-    `id`                        BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `bid_id`                    BIGINT      NOT NULL,
-    `is_based_on_selling_bid`   BIT   NOT NULL,
-    `buyer_id`                  BIGINT      NOT NULL,
-    `seller_id`                 BIGINT      NOT NULL,
-    `product_option_id`         BIGINT      NOT NULL,
-    `price`                     INT         NOT NULL,
-    `order_status`              VARCHAR(10) NOT NULL,
-    `order_request`             VARCHAR(50) NOT NULL,
-    `created_at`                TIMESTAMP   NOT NULL,
-    `updated_at`                TIMESTAMP   NOT NULL
+    `id`                      BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `bid_id`                  BIGINT      NOT NULL,
+    `is_based_on_selling_bid` BIT         NOT NULL,
+    `buyer_id`                BIGINT      NOT NULL,
+    `seller_id`               BIGINT      NOT NULL,
+    `product_option_id`       BIGINT      NOT NULL,
+    `price`                   INT         NOT NULL,
+    `order_status`            VARCHAR(10) NOT NULL,
+    `order_request`           VARCHAR(50) NOT NULL,
+    `created_at`              TIMESTAMP   NOT NULL,
+    `updated_at`              TIMESTAMP   NOT NULL
 );
 
 CREATE TABLE `coupon`
@@ -192,11 +192,13 @@ CREATE TABLE `buying_bid`
     `updated_at`        TIMESTAMP NOT NULL
 );
 
-CREATE TABLE `follow`
+CREATE TABLE `following`
 (
-    `id`                  BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `following_member_id` BIGINT NOT NULL,
-    `followed_member_id`  BIGINT NOT NULL
+    `following_member_id` BIGINT    NOT NULL,
+    `followed_member_id`  BIGINT    NOT NULL,
+    `created_at`          TIMESTAMP NOT NULL,
+    `updated_at`          TIMESTAMP NOT NULL,
+    PRIMARY KEY (followed_member_id, following_member_id)
 );
 
 CREATE INDEX index_product ON product (id DESC);
