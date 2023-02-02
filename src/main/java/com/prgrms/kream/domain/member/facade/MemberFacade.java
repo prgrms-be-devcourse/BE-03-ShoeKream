@@ -41,17 +41,17 @@ public class MemberFacade {
 	private final MemberService memberService;
 	private final ImageService imageService;
 
-	public MemberRegisterResponse register(MemberRegisterRequest memberRegisterRequest) {
-		return memberService.register(memberRegisterRequest);
+	public MemberRegisterResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
+		return memberService.registerMember(memberRegisterRequest);
 	}
 
-	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
-		return memberService.login(memberLoginRequest);
+	public MemberLoginResponse loginMember(MemberLoginRequest memberLoginRequest) {
+		return memberService.loginMember(memberLoginRequest);
 	}
 
 	@Transactional(readOnly = true)
-	public MemberGetResponse get(Long memberId) {
-		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(memberId);
+	public MemberGetResponse getMember(Long memberId) {
+		MemberGetFacadeResponse memberGetFacadeResponse = memberService.getMember(memberId);
 		List<String> imagePaths = imageService.getAllImages(memberId, MEMBER);
 		return toMemberGetResponse(memberGetFacadeResponse, imagePaths);
 	}

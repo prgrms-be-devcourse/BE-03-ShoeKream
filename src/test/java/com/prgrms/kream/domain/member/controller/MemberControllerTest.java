@@ -132,7 +132,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("회원가입 - 성공")
-	void register_success() throws Exception {
+	void registerMember_success() throws Exception {
 		MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
 				"name", "email@naver.com", "01012345678", "aA12345678!", true, ROLE_USER);
 
@@ -147,7 +147,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("로그인 - 성공")
-	void login_success() throws Exception {
+	void loginMember_success() throws Exception {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
 				"hello@naver.com", "Pa!12345678"
 		);
@@ -163,7 +163,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("로그아웃 - 성공")
-	void logout_success() throws Exception {
+	void logoutMember_success() throws Exception {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
 				"hello@naver.com", "Pa!12345678"
 		);
@@ -184,7 +184,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("사용자 정보 조회 성공")
-	void get_success() throws Exception {
+	void getMember_success() throws Exception {
 		mockMvc.perform(get("/api/v1/member/{id}", memberId))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.id").value(memberId))
@@ -197,7 +197,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("사용자 정보 수정 성공")
-	void update_success() throws Exception {
+	void updateMember_success() throws Exception {
 		MockMultipartFile mockImage = new MockMultipartFile(
 				"imageFile",
 				"test.png",
