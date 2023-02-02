@@ -122,8 +122,7 @@ public class MemberService {
 	@Transactional
 	public DeliveryInfoUpdateResponse updateDeliveryInfo(DeliveryInfoUpdateRequest deliveryInfoUpdateRequest) {
 		validateAccess(deliveryInfoUpdateRequest.memberId());
-		DeliveryInfo deliveryInfo = deliveryInfoRepository.findById(deliveryInfoUpdateRequest.deliveryInfoId())
-				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 배송정보입니다."));
+		DeliveryInfo deliveryInfo = getDeliveryInfoEntity(deliveryInfoUpdateRequest.deliveryInfoId());
 
 		deliveryInfo.updateDeliveryInfo(
 				deliveryInfoUpdateRequest.name(),
@@ -138,6 +137,8 @@ public class MemberService {
 
 	@Transactional
 	public void deleteDeliveryInfo(DeliveryInfoDeleteRequest deliveryInfoDeleteRequest) {
+		DeliveryInfo deliveryInfo = getDeliveryInfoEntity(deliveryInfoDeleteRequest.deliveryInfoId());
+		validateAccess(deliveryInfo.getMemberId());
 		deliveryInfoRepository.deleteById(deliveryInfoDeleteRequest.deliveryInfoId());
 	}
 
@@ -188,5 +189,10 @@ public class MemberService {
 	private Member getMemberEntity(Long id) {
 		return memberRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
+	}
+
+	private DeliveryInfo getDeliveryInfoEntity(Long id) {
+		return deliveryInfoRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 배송정보입니다."));
 	}
 }

@@ -39,11 +39,11 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
-import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Following;
 import com.prgrms.kream.domain.member.model.FollowingId;
@@ -532,8 +532,38 @@ class MemberServiceTest {
 	@Test
 	@DisplayName("배송 정보 삭제 성공")
 	void deleteDeliveryInfo_success() {
+		DeliveryInfo deliveryInfo = DeliveryInfo.builder()
+				.id(1L)
+				.name("name")
+				.postCode("12345")
+				.phone("01012345678")
+				.address("서울시 중랑구~")
+				.detail("101호")
+				.memberId(1L)
+				.build();
+
+		when(deliveryInfoRepository.findById(1L))
+				.thenReturn(Optional.of(deliveryInfo));
+
 		memberService.deleteDeliveryInfo(new DeliveryInfoDeleteRequest(1L));
+		verify(deliveryInfoRepository, times(1)).findById(1L);
 		verify(deliveryInfoRepository, times(1)).deleteById(1L);
+	}
+
+	@Test
+	@DisplayName("배송 정보 삭제 실패 - ")
+	void deleteDeliveryInfo_fail() {
+		when(deliveryInfoRepository.findById(1L))
+				.thenReturn(Optional.empty());
+
+		Assertions.assertThatThrownBy(
+						() -> memberService.deleteDeliveryInfo(new DeliveryInfoDeleteRequest(1L))
+				)
+				.isInstanceOf(EntityNotFoundException.class)
+				.hasMessage("존재하지 않는 배송정보입니다.");
+
+		verify(deliveryInfoRepository, times(1)).findById(1L);
+		verify(deliveryInfoRepository, times(0)).deleteById(1L);
 	}
 
 	@Test
