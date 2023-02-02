@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +30,7 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 	private final ProductOptionRepository productOptionRepository;
+	private final CacheManager cacheManager;
 
 	@Transactional
 	public ProductRegisterResponse registerProduct(ProductRegisterFacadeRequest productRegisterFacadeRequest) {
@@ -110,14 +111,18 @@ public class ProductService {
 		changeLowestPrice(productOption, newPrice);
 	}
 
-	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void changeHighestPrice(ProductOption productOption, int newPrice) {
+	private void changeHighestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateHighestPrice(newPrice);
+		evictCache(productOption);
 	}
 
-	@CacheEvict(value = "product", key = "#productOption.product.id")
-	public void changeLowestPrice(ProductOption productOption, int newPrice) {
+	private void changeLowestPrice(ProductOption productOption, int newPrice) {
 		productOption.updateLowestPrice(newPrice);
+		evictCache(productOption);
+	}
+
+	private void evictCache(ProductOption productOption) {
+		cacheManager.getCache("product").evict(productOption.getProduct().getId());
 	}
 
 	private Product getProductEntity(Long productId) {
