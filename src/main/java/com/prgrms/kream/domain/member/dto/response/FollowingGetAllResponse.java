@@ -1,4 +1,4 @@
-package com.prgrms.kream.domain.member.facade;
+package com.prgrms.kream.domain.member.dto.response;
 
 import java.util.List;
 

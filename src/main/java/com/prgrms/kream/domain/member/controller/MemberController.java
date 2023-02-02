@@ -38,7 +38,7 @@ import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
-import com.prgrms.kream.domain.member.facade.FollowingGetAllResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
 import lombok.RequiredArgsConstructor;

@@ -24,6 +24,7 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
