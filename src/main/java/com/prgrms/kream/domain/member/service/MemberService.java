@@ -29,11 +29,11 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
-import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
 import com.prgrms.kream.domain.member.model.Following;
 import com.prgrms.kream.domain.member.model.FollowingId;
@@ -151,6 +151,7 @@ public class MemberService {
 		return MemberMapper.toDeliveryInfoUpdateResponse(deliveryInfo);
 	}
 
+	@Transactional
 	public void deleteDeliveryInfo(DeliveryInfoDeleteRequest deliveryInfoDeleteRequest) {
 		deliveryInfoRepository.deleteById(deliveryInfoDeleteRequest.deliveryInfoId());
 	}
