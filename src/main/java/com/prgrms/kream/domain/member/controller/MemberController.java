@@ -95,7 +95,7 @@ public class MemberController {
 
 	@PostMapping("/{id}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberUpdateResponse> update(
+	public ApiResponse<MemberUpdateResponse> updateMember(
 			@PathVariable Long id,
 			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
 	) {

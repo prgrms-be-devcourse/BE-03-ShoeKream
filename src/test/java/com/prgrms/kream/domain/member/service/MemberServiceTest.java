@@ -226,7 +226,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 수정 성공")
-	void update_success() {
+	void updateMember_success() {
 
 		MemberUpdateServiceRequest memberUpdateServiceRequest
 				= new MemberUpdateServiceRequest(
@@ -263,7 +263,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 실패 - 다른 사용자의 정보를 조회")
-	void update_fail_notValidMember() {
+	void updateMember_fail_notValidMember() {
 		MemberUpdateServiceRequest memberUpdateServiceRequest
 				= new MemberUpdateServiceRequest(
 				2L,

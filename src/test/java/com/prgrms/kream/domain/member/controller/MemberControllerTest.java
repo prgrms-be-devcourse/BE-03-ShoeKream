@@ -197,7 +197,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("사용자 정보 수정 성공")
-	void update_success() throws Exception {
+	void updateMember_success() throws Exception {
 		MockMultipartFile mockImage = new MockMultipartFile(
 				"imageFile",
 				"test.png",
