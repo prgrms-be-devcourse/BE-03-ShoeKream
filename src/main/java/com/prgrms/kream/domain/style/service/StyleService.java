@@ -67,20 +67,11 @@ public class StyleService {
 	}
 
 	@Transactional(readOnly = true)
-	public FeedGetServiceResponses getAllTrendingFeeds(FeedGetServiceRequest feedGetServiceRequest) {
-		List<Feed> feeds = feedRepository.findAllOrderByLikesDesc(
+	public FeedGetServiceResponses getAllFeeds(FeedGetServiceRequest feedGetServiceRequest) {
+		List<Feed> feeds = feedRepository.findAll(
 				feedGetServiceRequest.cursorId(),
-				feedGetServiceRequest.pageSize()
-		);
-
-		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
-	}
-
-	@Transactional(readOnly = true)
-	public FeedGetServiceResponses getAllNewestFeeds(FeedGetServiceRequest feedGetServiceRequest) {
-		List<Feed> feeds = feedRepository.findAllOrderByCreatedAtDesc(
-				feedGetServiceRequest.cursorId(),
-				feedGetServiceRequest.pageSize()
+				feedGetServiceRequest.pageSize(),
+				feedGetServiceRequest.sortType()
 		);
 
 		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
@@ -91,7 +82,8 @@ public class StyleService {
 		List<Feed> feeds = feedRepository.findAllByTag(
 				tag,
 				feedGetServiceRequest.cursorId(),
-				feedGetServiceRequest.pageSize()
+				feedGetServiceRequest.pageSize(),
+				feedGetServiceRequest.sortType()
 		);
 
 		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
@@ -102,7 +94,8 @@ public class StyleService {
 		List<Feed> feeds = feedRepository.findAllByMember(
 				memberId,
 				feedGetServiceRequest.cursorId(),
-				feedGetServiceRequest.pageSize()
+				feedGetServiceRequest.pageSize(),
+				feedGetServiceRequest.sortType()
 		);
 
 		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());
@@ -113,7 +106,8 @@ public class StyleService {
 		List<Feed> feeds = feedRepository.findAllByProduct(
 				productId,
 				feedGetServiceRequest.cursorId(),
-				feedGetServiceRequest.pageSize()
+				feedGetServiceRequest.pageSize(),
+				feedGetServiceRequest.sortType()
 		);
 
 		return getFeedsOnPageSize(feeds, feedGetServiceRequest.pageSize());

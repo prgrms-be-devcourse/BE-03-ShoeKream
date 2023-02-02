@@ -54,24 +54,12 @@ public class StyleController {
 		);
 	}
 
-	@GetMapping("/trending")
+	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<FeedGetResponses> getAllTrendingFeeds(@Valid FeedGetRequest feedGetRequest) {
+	public ApiResponse<FeedGetResponses> getAllFeeds(@Valid FeedGetRequest feedGetRequest) {
 		return ApiResponse.of(
 				toFeedGetResponses(
-						styleFacade.getAllTrendingFeeds(
-								toFeedGetFacadeRequest(feedGetRequest)
-						)
-				)
-		);
-	}
-
-	@GetMapping("/newest")
-	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<FeedGetResponses> getAllNewestFeeds(@Valid FeedGetRequest feedGetRequest) {
-		return ApiResponse.of(
-				toFeedGetResponses(
-						styleFacade.getAllNewestFeeds(
+						styleFacade.getAllFeeds(
 								toFeedGetFacadeRequest(feedGetRequest)
 						)
 				)

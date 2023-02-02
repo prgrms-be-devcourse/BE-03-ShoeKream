@@ -100,11 +100,19 @@ public class StyleMapper {
 	}
 
 	public static FeedGetFacadeRequest toFeedGetFacadeRequest(FeedGetRequest feedGetRequest) {
-		return new FeedGetFacadeRequest(feedGetRequest.cursorId(), feedGetRequest.pageSize());
+		return new FeedGetFacadeRequest(
+				feedGetRequest.cursorId(),
+				feedGetRequest.pageSize(),
+				feedGetRequest.sortType()
+		);
 	}
 
 	public static FeedGetServiceRequest toFeedGetServiceRequest(FeedGetFacadeRequest feedGetFacadeRequest) {
-		return new FeedGetServiceRequest(feedGetFacadeRequest.cursorId(), feedGetFacadeRequest.pageSize());
+		return new FeedGetServiceRequest(
+				feedGetFacadeRequest.cursorId(),
+				feedGetFacadeRequest.pageSize(),
+				feedGetFacadeRequest.sortType()
+		);
 	}
 
 	public static FeedGetServiceResponse toFeedGetServiceResponse(Feed feed) {
@@ -238,7 +246,8 @@ public class StyleMapper {
 				.build();
 	}
 
-	public static FeedCommentGetFacadeRequest toFeedCommentGetFacadeRequest(Long id, FeedCommentGetRequest feedCommentGetRequest) {
+	public static FeedCommentGetFacadeRequest toFeedCommentGetFacadeRequest(Long id,
+			FeedCommentGetRequest feedCommentGetRequest) {
 		return new FeedCommentGetFacadeRequest(
 				id,
 				feedCommentGetRequest.cursorId(),
@@ -265,7 +274,8 @@ public class StyleMapper {
 		);
 	}
 
-	public static FeedCommentGetServiceResponses toFeedCommentGetServiceResponses(List<FeedComment> feedComments, Long lastId) {
+	public static FeedCommentGetServiceResponses toFeedCommentGetServiceResponses(List<FeedComment> feedComments,
+			Long lastId) {
 		return new FeedCommentGetServiceResponses(
 				feedComments.stream()
 						.map(StyleMapper::toFeedCommentGetServiceResponse)
