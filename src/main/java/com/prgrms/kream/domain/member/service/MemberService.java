@@ -180,6 +180,7 @@ public class MemberService {
 		followingRepository.delete(following);
 	}
 
+	@Transactional(readOnly = true)
 	public FollowingGetAllResponse getAllFollowings() {
 		Long followingMemberId = getMemberId();
 		List<Long> followedMemberIds = followingRepository.findAllByFollowingId_FollowingMemberId(followingMemberId)
