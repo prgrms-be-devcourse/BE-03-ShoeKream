@@ -85,8 +85,7 @@ public class MemberService {
 	@Transactional(readOnly = true)
 	public MemberGetFacadeResponse getMember(Long id) {
 		validateAccess(id);
-		Member member = memberRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
+		Member member = getMemberEntity(id);
 		return toMemberGetFacadeResponse(member);
 	}
 
@@ -94,8 +93,7 @@ public class MemberService {
 	public MemberUpdateServiceResponse updateMember(MemberUpdateServiceRequest memberUpdateServiceRequest) {
 		validateAccess(memberUpdateServiceRequest.id());
 
-		Member member = memberRepository.findById(memberUpdateServiceRequest.id())
-				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+		Member member = getMemberEntity(memberUpdateServiceRequest.id());
 		member.updateMember(
 				memberUpdateServiceRequest.name(),
 				memberUpdateServiceRequest.phone(),
@@ -185,5 +183,10 @@ public class MemberService {
 		if (!isValidAccess(id)) {
 			throw new AccessDeniedException("잘못된 접근입니다");
 		}
+	}
+
+	private Member getMemberEntity(Long id) {
+		return memberRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
 	}
 }
