@@ -43,11 +43,14 @@ public class Coupon extends BaseTimeEntity {
 	}
 
 	public void decreaseAmount() {
-		if (amount > 0) {
+		if (!isSoldOut()) {
 			amount--;
 			return;
 		}
 		throw new OutOfStockException("쿠폰 수량이 전부 소진되었습니다.");
 	}
 
+	public boolean isSoldOut() {
+		return amount <= 0;
+	}
 }
