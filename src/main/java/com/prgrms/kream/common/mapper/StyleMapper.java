@@ -3,42 +3,42 @@ package com.prgrms.kream.common.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.GetFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedFacadeRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedServiceRequest;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentFacadeResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentFacadeResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentServiceResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedCommentServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedFacadeResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedFacadeResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedResponses;
-import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponse;
-import com.prgrms.kream.domain.style.dto.response.GetFeedServiceResponses;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedFacadeResponse;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedResponse;
-import com.prgrms.kream.domain.style.dto.response.RegisterFeedServiceResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedFacadeResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedResponse;
-import com.prgrms.kream.domain.style.dto.response.UpdateFeedServiceResponse;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedGetServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedRegisterServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateFacadeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateServiceRequest;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetFacadeResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedCommentGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedGetFacadeResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedGetResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponses;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedRegisterServiceResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateFacadeResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateResponse;
+import com.prgrms.kream.domain.style.dto.response.FeedUpdateServiceResponse;
 import com.prgrms.kream.domain.style.model.Feed;
 import com.prgrms.kream.domain.style.model.FeedComment;
 import com.prgrms.kream.domain.style.model.FeedLike;
@@ -50,29 +50,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StyleMapper {
 
-	public static RegisterFeedFacadeRequest toRegisterFeedFacadeRequest(RegisterFeedRequest registerFeedRequest
+	public static FeedRegisterFacadeRequest toFeedRegisterFacadeRequest(FeedRegisterRequest feedRegisterRequest
 	) {
-		return new RegisterFeedFacadeRequest(
-				registerFeedRequest.content(),
-				registerFeedRequest.authorId(),
-				registerFeedRequest.images(),
-				registerFeedRequest.productIds()
+		return new FeedRegisterFacadeRequest(
+				feedRegisterRequest.content(),
+				feedRegisterRequest.authorId(),
+				feedRegisterRequest.images(),
+				feedRegisterRequest.productIds()
 		);
 	}
 
-	public static RegisterFeedServiceRequest toRegisterFeedServiceRequest(
-			RegisterFeedFacadeRequest registerFeedFacadeRequest) {
-		return new RegisterFeedServiceRequest(
-				registerFeedFacadeRequest.content(),
-				registerFeedFacadeRequest.authorId(),
-				registerFeedFacadeRequest.productIds()
+	public static FeedRegisterServiceRequest toFeedRegisterServiceRequest(
+			FeedRegisterFacadeRequest feedRegisterFacadeRequest) {
+		return new FeedRegisterServiceRequest(
+				feedRegisterFacadeRequest.content(),
+				feedRegisterFacadeRequest.authorId(),
+				feedRegisterFacadeRequest.productIds()
 		);
 	}
 
-	public static Feed toFeed(RegisterFeedServiceRequest registerFeedServiceRequest) {
+	public static Feed toFeed(FeedRegisterServiceRequest feedRegisterServiceRequest) {
 		return Feed.builder()
-				.content(registerFeedServiceRequest.content())
-				.authorId(registerFeedServiceRequest.authorId())
+				.content(feedRegisterServiceRequest.content())
+				.authorId(feedRegisterServiceRequest.authorId())
 				.likes(0L)
 				.build();
 	}
@@ -86,29 +86,37 @@ public class StyleMapper {
 				.toList();
 	}
 
-	public static RegisterFeedServiceResponse toRegisterFeedServiceResponse(Feed feed) {
-		return new RegisterFeedServiceResponse(feed.getId());
+	public static FeedRegisterServiceResponse toFeedRegisterServiceResponse(Feed feed) {
+		return new FeedRegisterServiceResponse(feed.getId());
 	}
 
-	public static RegisterFeedFacadeResponse toRegisterFeedFacadeResponse(
-			RegisterFeedServiceResponse registerFeedServiceResponse) {
-		return new RegisterFeedFacadeResponse(registerFeedServiceResponse.id());
+	public static FeedRegisterFacadeResponse toFeedRegisterFacadeResponse(
+			FeedRegisterServiceResponse feedRegisterServiceResponse) {
+		return new FeedRegisterFacadeResponse(feedRegisterServiceResponse.id());
 	}
 
-	public static RegisterFeedResponse toRegisterFeedResponse(RegisterFeedFacadeResponse registerFeedFacadeResponse) {
-		return new RegisterFeedResponse(registerFeedFacadeResponse.id());
+	public static FeedRegisterResponse toFeedRegisterResponse(FeedRegisterFacadeResponse feedRegisterFacadeResponse) {
+		return new FeedRegisterResponse(feedRegisterFacadeResponse.id());
 	}
 
-	public static GetFeedFacadeRequest toGetFeedFacadeRequest(GetFeedRequest getFeedRequest) {
-		return new GetFeedFacadeRequest(getFeedRequest.cursorId(), getFeedRequest.pageSize());
+	public static FeedGetFacadeRequest toFeedGetFacadeRequest(FeedGetRequest feedGetRequest) {
+		return new FeedGetFacadeRequest(
+				feedGetRequest.cursorId(),
+				feedGetRequest.pageSize(),
+				feedGetRequest.sortType()
+		);
 	}
 
-	public static GetFeedServiceRequest toGetFeedServiceRequest(GetFeedFacadeRequest getFeedFacadeRequest) {
-		return new GetFeedServiceRequest(getFeedFacadeRequest.cursorId(), getFeedFacadeRequest.pageSize());
+	public static FeedGetServiceRequest toFeedGetServiceRequest(FeedGetFacadeRequest feedGetFacadeRequest) {
+		return new FeedGetServiceRequest(
+				feedGetFacadeRequest.cursorId(),
+				feedGetFacadeRequest.pageSize(),
+				feedGetFacadeRequest.sortType()
+		);
 	}
 
-	public static GetFeedServiceResponse toGetFeedServiceResponse(Feed feed) {
-		return new GetFeedServiceResponse(
+	public static FeedGetServiceResponse toFeedGetServiceResponse(Feed feed) {
+		return new FeedGetServiceResponse(
 				feed.getId(),
 				feed.getAuthorId(),
 				feed.getContent(),
@@ -119,143 +127,145 @@ public class StyleMapper {
 		);
 	}
 
-	public static GetFeedServiceResponses toGetFeedServiceResponses(List<Feed> feeds, Long lastId) {
-		return new GetFeedServiceResponses(
+	public static FeedGetServiceResponses toFeedGetServiceResponses(List<Feed> feeds, Long lastId) {
+		return new FeedGetServiceResponses(
 				feeds.stream()
-						.map(StyleMapper::toGetFeedServiceResponse)
+						.map(StyleMapper::toFeedGetServiceResponse)
 						.toList(),
 				lastId
 		);
 	}
 
-	public static GetFeedFacadeResponse toGetFeedFacadeResponse(
-			GetFeedServiceResponse getFeedServiceResponse,
+	public static FeedGetFacadeResponse toFeedGetFacadeResponse(
+			FeedGetServiceResponse feedGetServiceResponse,
 			List<String> images) {
-		return new GetFeedFacadeResponse(
-				getFeedServiceResponse.id(),
-				getFeedServiceResponse.authorId(),
-				getFeedServiceResponse.content(),
-				getFeedServiceResponse.likes(),
-				getFeedServiceResponse.products(),
+		return new FeedGetFacadeResponse(
+				feedGetServiceResponse.id(),
+				feedGetServiceResponse.authorId(),
+				feedGetServiceResponse.content(),
+				feedGetServiceResponse.likes(),
+				feedGetServiceResponse.products(),
 				images,
-				getFeedServiceResponse.createdAt(),
-				getFeedServiceResponse.updatedAt()
+				feedGetServiceResponse.createdAt(),
+				feedGetServiceResponse.updatedAt()
 		);
 	}
 
-	public static GetFeedFacadeResponses toGetFeedFacadeResponses(
-			List<GetFeedFacadeResponse> getFeedFacadeResponses,
+	public static FeedGetFacadeResponses toFeedGetFacadeResponses(
+			List<FeedGetFacadeResponse> feedGetFacadeResponses,
 			Long lastId) {
-		return new GetFeedFacadeResponses(getFeedFacadeResponses, lastId);
+		return new FeedGetFacadeResponses(feedGetFacadeResponses, lastId);
 	}
 
-	public static GetFeedResponse toGetFeedResponse(GetFeedFacadeResponse getFeedFacadeResponse) {
-		return new GetFeedResponse(
-				getFeedFacadeResponse.id(),
-				getFeedFacadeResponse.authorId(),
-				getFeedFacadeResponse.content(),
-				getFeedFacadeResponse.likes(),
-				getFeedFacadeResponse.products(),
-				getFeedFacadeResponse.images(),
-				getFeedFacadeResponse.createdAt(),
-				getFeedFacadeResponse.updatedAt()
+	public static FeedGetResponse toFeedGetResponse(FeedGetFacadeResponse feedGetFacadeResponse) {
+		return new FeedGetResponse(
+				feedGetFacadeResponse.id(),
+				feedGetFacadeResponse.authorId(),
+				feedGetFacadeResponse.content(),
+				feedGetFacadeResponse.likes(),
+				feedGetFacadeResponse.products(),
+				feedGetFacadeResponse.images(),
+				feedGetFacadeResponse.createdAt(),
+				feedGetFacadeResponse.updatedAt()
 		);
 	}
 
-	public static GetFeedResponses toGetFeedResponses(GetFeedFacadeResponses getFeedFacadeResponses) {
-		return new GetFeedResponses(
-				getFeedFacadeResponses.getFeedFacadeResponses().stream()
-						.map(StyleMapper::toGetFeedResponse)
+	public static FeedGetResponses toFeedGetResponses(FeedGetFacadeResponses feedGetFacadeResponses) {
+		return new FeedGetResponses(
+				feedGetFacadeResponses.feedGetFacadeResponses().stream()
+						.map(StyleMapper::toFeedGetResponse)
 						.collect(Collectors.toList()),
-				getFeedFacadeResponses.lastId()
+				feedGetFacadeResponses.lastId()
 		);
 	}
 
-	public static UpdateFeedFacadeRequest toUpdateFeedFacadeRequest(UpdateFeedRequest updateFeedRequest) {
-		return new UpdateFeedFacadeRequest(updateFeedRequest.content(), updateFeedRequest.productIds());
+	public static FeedUpdateFacadeRequest toFeedUpdateFacadeRequest(FeedUpdateRequest feedUpdateRequest) {
+		return new FeedUpdateFacadeRequest(feedUpdateRequest.content(), feedUpdateRequest.productIds());
 	}
 
-	public static UpdateFeedServiceRequest toUpdateFeedServiceRequest(UpdateFeedFacadeRequest updateFeedFacadeRequest) {
-		return new UpdateFeedServiceRequest(updateFeedFacadeRequest.content(), updateFeedFacadeRequest.productIds());
+	public static FeedUpdateServiceRequest toFeedUpdateServiceRequest(FeedUpdateFacadeRequest feedUpdateFacadeRequest) {
+		return new FeedUpdateServiceRequest(feedUpdateFacadeRequest.content(), feedUpdateFacadeRequest.productIds());
 	}
 
-	public static UpdateFeedServiceResponse toUpdateFeedServiceResponse(Feed feed) {
-		return new UpdateFeedServiceResponse(feed.getId());
+	public static FeedUpdateServiceResponse toFeedUpdateServiceResponse(Feed feed) {
+		return new FeedUpdateServiceResponse(feed.getId());
 	}
 
-	public static UpdateFeedFacadeResponse toUpdateFeedFacadeResponse(
-			UpdateFeedServiceResponse updateFeedServiceResponse) {
-		return new UpdateFeedFacadeResponse(updateFeedServiceResponse.id());
+	public static FeedUpdateFacadeResponse toFeedUpdateFacadeResponse(
+			FeedUpdateServiceResponse feedUpdateServiceResponse) {
+		return new FeedUpdateFacadeResponse(feedUpdateServiceResponse.id());
 	}
 
-	public static UpdateFeedResponse toUpdateFeedResponse(UpdateFeedFacadeResponse updateFeedFacadeResponse) {
-		return new UpdateFeedResponse(updateFeedFacadeResponse.id());
+	public static FeedUpdateResponse toFeedUpdateResponse(FeedUpdateFacadeResponse feedUpdateFacadeResponse) {
+		return new FeedUpdateResponse(feedUpdateFacadeResponse.id());
 	}
 
-	public static LikeFeedFacadeRequest toLikeFeedFacadeRequest(long id, LikeFeedRequest likeFeedRequest) {
-		return new LikeFeedFacadeRequest(id, likeFeedRequest.memberId());
+	public static FeedLikeFacadeRequest toFeedLikeFacadeRequest(long id, FeedLikeRequest feedLikeRequest) {
+		return new FeedLikeFacadeRequest(id, feedLikeRequest.memberId());
 	}
 
-	public static LikeFeedServiceRequest toLikeFeedServiceRequest(LikeFeedFacadeRequest likeFeedFacadeRequest) {
-		return new LikeFeedServiceRequest(
-				likeFeedFacadeRequest.feedId(),
-				likeFeedFacadeRequest.memberId());
+	public static FeedLikeServiceRequest toFeedLikeServiceRequest(FeedLikeFacadeRequest feedLikeFacadeRequest) {
+		return new FeedLikeServiceRequest(
+				feedLikeFacadeRequest.feedId(),
+				feedLikeFacadeRequest.memberId());
 	}
 
-	public static FeedLike toFeedLike(LikeFeedServiceRequest likeFeedServiceRequest) {
+	public static FeedLike toFeedLike(FeedLikeServiceRequest feedLikeServiceRequest) {
 		return FeedLike.builder()
-				.feedId(likeFeedServiceRequest.feedId())
-				.memberId(likeFeedServiceRequest.memberId())
+				.feedId(feedLikeServiceRequest.feedId())
+				.memberId(feedLikeServiceRequest.memberId())
 				.build();
 	}
 
-	public static RegisterFeedCommentFacadeRequest toRegisterFeedCommentFacadeRequest(
+	public static FeedCommentRegisterFacadeRequest toFeedCommentRegisterFacadeRequest(
 			Long id,
-			RegisterFeedCommentRequest registerFeedCommentRequest
+			FeedCommentRegisterRequest feedCommentRegisterRequest
 	) {
-		return new RegisterFeedCommentFacadeRequest(
-				registerFeedCommentRequest.content(),
-				registerFeedCommentRequest.memberId(),
+		return new FeedCommentRegisterFacadeRequest(
+				feedCommentRegisterRequest.content(),
+				feedCommentRegisterRequest.memberId(),
 				id
 		);
 	}
 
-	public static RegisterFeedCommentServiceRequest toRegisterFeedCommentServiceRequest(
-			RegisterFeedCommentFacadeRequest registerFeedCommentFacadeRequest
+	public static FeedCommentRegisterServiceRequest toFeedCommentRegisterServiceRequest(
+			FeedCommentRegisterFacadeRequest feedCommentRegisterFacadeRequest
 	) {
-		return new RegisterFeedCommentServiceRequest(
-				registerFeedCommentFacadeRequest.content(),
-				registerFeedCommentFacadeRequest.memberId(),
-				registerFeedCommentFacadeRequest.feedId()
+		return new FeedCommentRegisterServiceRequest(
+				feedCommentRegisterFacadeRequest.content(),
+				feedCommentRegisterFacadeRequest.memberId(),
+				feedCommentRegisterFacadeRequest.feedId()
 		);
 	}
 
-	public static FeedComment toFeedComment(RegisterFeedCommentServiceRequest registerFeedCommentServiceRequest) {
+	public static FeedComment toFeedComment(FeedCommentRegisterServiceRequest feedCommentRegisterServiceRequest) {
 		return FeedComment.builder()
-				.feedId(registerFeedCommentServiceRequest.feedId())
-				.memberId(registerFeedCommentServiceRequest.memberId())
-				.content(registerFeedCommentServiceRequest.content())
+				.feedId(feedCommentRegisterServiceRequest.feedId())
+				.memberId(feedCommentRegisterServiceRequest.memberId())
+				.content(feedCommentRegisterServiceRequest.content())
 				.build();
 	}
 
-	public static GetFeedCommentFacadeRequest toGetFeedCommentFacadeRequest(Long id, GetFeedCommentRequest getFeedCommentRequest) {
-		return new GetFeedCommentFacadeRequest(
+	public static FeedCommentGetFacadeRequest toFeedCommentGetFacadeRequest(Long id,
+			FeedCommentGetRequest feedCommentGetRequest) {
+		return new FeedCommentGetFacadeRequest(
 				id,
-				getFeedCommentRequest.cursorId(),
-				getFeedCommentRequest.pageSize()
+				feedCommentGetRequest.cursorId(),
+				feedCommentGetRequest.pageSize()
 		);
 	}
 
-	public static GetFeedCommentServiceRequest toGetFeedCommentServiceRequest(GetFeedCommentFacadeRequest getFeedCommentFacadeRequest) {
-		return new GetFeedCommentServiceRequest(
-				getFeedCommentFacadeRequest.feedId(),
-				getFeedCommentFacadeRequest.cursorId(),
-				getFeedCommentFacadeRequest.pageSize()
+	public static FeedCommentGetServiceRequest toFeedCommentGetServiceRequest(
+			FeedCommentGetFacadeRequest feedCommentGetFacadeRequest) {
+		return new FeedCommentGetServiceRequest(
+				feedCommentGetFacadeRequest.feedId(),
+				feedCommentGetFacadeRequest.cursorId(),
+				feedCommentGetFacadeRequest.pageSize()
 		);
 	}
 
-	public static GetFeedCommentServiceResponse toGetFeedCommentServiceResponse(FeedComment feedComment) {
-		return new GetFeedCommentServiceResponse(
+	public static FeedCommentGetServiceResponse toFeedCommentGetServiceResponse(FeedComment feedComment) {
+		return new FeedCommentGetServiceResponse(
 				feedComment.getId(),
 				feedComment.getMemberId(),
 				feedComment.getContent(),
@@ -264,54 +274,55 @@ public class StyleMapper {
 		);
 	}
 
-	public static GetFeedCommentServiceResponses toGetFeedCommentServiceResponses(List<FeedComment> feedComments, Long lastId) {
-		return new GetFeedCommentServiceResponses(
+	public static FeedCommentGetServiceResponses toFeedCommentGetServiceResponses(List<FeedComment> feedComments,
+			Long lastId) {
+		return new FeedCommentGetServiceResponses(
 				feedComments.stream()
-						.map(StyleMapper::toGetFeedCommentServiceResponse)
+						.map(StyleMapper::toFeedCommentGetServiceResponse)
 						.toList(),
 				lastId
 		);
 	}
 
-	public static GetFeedCommentFacadeResponse toGetFeedCommentFacadeResponse(
-			GetFeedCommentServiceResponse getFeedCommentServiceResponse) {
-		return new GetFeedCommentFacadeResponse(
-				getFeedCommentServiceResponse.id(),
-				getFeedCommentServiceResponse.memberId(),
-				getFeedCommentServiceResponse.content(),
-				getFeedCommentServiceResponse.createdAt(),
-				getFeedCommentServiceResponse.updatedAt()
+	public static FeedCommentGetFacadeResponse toFeedCommentGetFacadeResponse(
+			FeedCommentGetServiceResponse feedCommentGetServiceResponse) {
+		return new FeedCommentGetFacadeResponse(
+				feedCommentGetServiceResponse.id(),
+				feedCommentGetServiceResponse.memberId(),
+				feedCommentGetServiceResponse.content(),
+				feedCommentGetServiceResponse.createdAt(),
+				feedCommentGetServiceResponse.updatedAt()
 		);
 	}
 
-	public static GetFeedCommentFacadeResponses toGetFeedCommentFacadeResponses(
-			GetFeedCommentServiceResponses getFeedCommentServiceResponses) {
-		return new GetFeedCommentFacadeResponses(
-				getFeedCommentServiceResponses.getFeedCommentServiceResponses().stream()
-						.map(StyleMapper::toGetFeedCommentFacadeResponse)
+	public static FeedCommentGetFacadeResponses toFeedCommentGetFacadeResponses(
+			FeedCommentGetServiceResponses feedCommentGetServiceResponses) {
+		return new FeedCommentGetFacadeResponses(
+				feedCommentGetServiceResponses.feedCommentGetServiceResponses().stream()
+						.map(StyleMapper::toFeedCommentGetFacadeResponse)
 						.toList(),
-				getFeedCommentServiceResponses.lastId()
+				feedCommentGetServiceResponses.lastId()
 		);
 	}
 
-	public static GetFeedCommentResponse toGetFeedCommentResponse(
-			GetFeedCommentFacadeResponse getFeedCommentFacadeResponse) {
-		return new GetFeedCommentResponse(
-				getFeedCommentFacadeResponse.id(),
-				getFeedCommentFacadeResponse.memberId(),
-				getFeedCommentFacadeResponse.content(),
-				getFeedCommentFacadeResponse.createdAt(),
-				getFeedCommentFacadeResponse.updatedAt()
+	public static FeedCommentGetResponse toFeedCommentGetResponse(
+			FeedCommentGetFacadeResponse feedCommentGetFacadeResponse) {
+		return new FeedCommentGetResponse(
+				feedCommentGetFacadeResponse.id(),
+				feedCommentGetFacadeResponse.memberId(),
+				feedCommentGetFacadeResponse.content(),
+				feedCommentGetFacadeResponse.createdAt(),
+				feedCommentGetFacadeResponse.updatedAt()
 		);
 	}
 
-	public static GetFeedCommentResponses toGetFeedCommentResponses(
-			GetFeedCommentFacadeResponses getFeedCommentFacadeResponses) {
-		return new GetFeedCommentResponses(
-				getFeedCommentFacadeResponses.getFeedCommentFacadeResponses().stream()
-						.map(StyleMapper::toGetFeedCommentResponse)
+	public static FeedCommentGetResponses toFeedCommentGetResponses(
+			FeedCommentGetFacadeResponses feedCommentGetFacadeResponses) {
+		return new FeedCommentGetResponses(
+				feedCommentGetFacadeResponses.feedCommentGetFacadeResponses().stream()
+						.map(StyleMapper::toFeedCommentGetResponse)
 						.toList(),
-				getFeedCommentFacadeResponses.lastId()
+				feedCommentGetFacadeResponses.lastId()
 		);
 	}
 

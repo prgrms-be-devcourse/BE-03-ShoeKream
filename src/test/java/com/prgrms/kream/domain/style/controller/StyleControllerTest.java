@@ -25,9 +25,9 @@ import com.prgrms.kream.MysqlTestContainer;
 import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
-import com.prgrms.kream.domain.style.dto.request.LikeFeedRequest;
-import com.prgrms.kream.domain.style.dto.request.RegisterFeedCommentRequest;
-import com.prgrms.kream.domain.style.dto.request.UpdateFeedRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedLikeRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterRequest;
+import com.prgrms.kream.domain.style.dto.request.FeedUpdateRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -68,7 +68,7 @@ class StyleControllerTest extends MysqlTestContainer {
 				"This is a binary data".getBytes()
 		);
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/feed")
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/feeds")
 						.file(mockImage)
 						.param("content", "이 피드의 태그는 #총 #두개 입니다.")
 						.param("authorId", String.valueOf(member.getId()))
@@ -81,10 +81,10 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(2)
 	@DisplayName("피드를 수정할 수 있다.")
 	void testUpdate() throws Exception {
-		mockMvc.perform(put("/api/v1/feed/1")
+		mockMvc.perform(put("/api/v1/feeds/1")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new UpdateFeedRequest("이 피드의 태그는 총 #한개 입니다.", List.of(4L, 5L, 6L))
+								new FeedUpdateRequest("이 피드의 태그는 총 #한개 입니다.", List.of(4L, 5L, 6L))
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -94,10 +94,10 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(3)
 	@DisplayName("피드에 사용자의 좋아요를 등록할 수 있다.")
 	void testLikeFeed() throws Exception {
-		mockMvc.perform(post("/api/v1/feed/1/like")
+		mockMvc.perform(post("/api/v1/feeds/1/likes")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(
-						new LikeFeedRequest(memberId)
+						new FeedLikeRequest(memberId)
 				)))
 				.andExpect(status().isCreated())
 				.andDo(print());
@@ -107,10 +107,10 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(4)
 	@DisplayName("피드에 사용자의 좋아요를 삭제할 수 있다.")
 	void testUnlikeFeed() throws Exception {
-		mockMvc.perform(delete("/api/v1/feed/1/like")
+		mockMvc.perform(delete("/api/v1/feeds/1/likes")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new LikeFeedRequest(memberId)
+								new FeedLikeRequest(memberId)
 						)))
 				.andExpect(status().isOk())
 				.andDo(print());
@@ -120,7 +120,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(5)
 	@DisplayName("태그 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByTag() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/tags/한개"))
+		mockMvc.perform(get("/api/v1/feeds/tags/한개"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
@@ -129,7 +129,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(6)
 	@DisplayName("최신 순으로 피드를 조회할 수 있다.")
 	void testGetNewestFeeds() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/newest"))
+		mockMvc.perform(get("/api/v1/feeds?sortType=newest"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
@@ -138,7 +138,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(7)
 	@DisplayName("좋아요 순으로 피드를 조회할 수 있다.")
 	void testGetTrendingFeeds() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/trending"))
+		mockMvc.perform(get("/api/v1/feeds?sortType=popular"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
@@ -147,7 +147,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(8)
 	@DisplayName("사용자 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByMember() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/members/" + memberId))
+		mockMvc.perform(get("/api/v1/feeds/members/" + memberId))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
@@ -156,7 +156,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(9)
 	@DisplayName("상품 기준으로 피드를 조회할 수 있다.")
 	void testGetFeedsByProduct() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/products/4"))
+		mockMvc.perform(get("/api/v1/feeds/products/4"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
@@ -165,10 +165,10 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(10)
 	@DisplayName("피드의 사용자 댓글을 등록할 수 있다.")
 	void testRegisterFeedComment() throws Exception {
-		mockMvc.perform(post("/api/v1/feed/1/comments")
+		mockMvc.perform(post("/api/v1/feeds/1/comments")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(
-								new RegisterFeedCommentRequest("피드의 댓글입니다.", memberId)
+								new FeedCommentRegisterRequest("피드의 댓글입니다.", memberId)
 						)))
 				.andExpect(status().isCreated())
 				.andDo(print());
@@ -178,7 +178,7 @@ class StyleControllerTest extends MysqlTestContainer {
 	@Order(11)
 	@DisplayName("피드의 댓글을 조회할 수 있다.")
 	void testGetAllFeedComments() throws Exception {
-		mockMvc.perform(get("/api/v1/feed/1/comments"))
+		mockMvc.perform(get("/api/v1/feeds/1/comments"))
 				.andExpect(status().isOk())
 				.andDo(print());
 	}
