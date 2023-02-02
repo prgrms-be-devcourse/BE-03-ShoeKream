@@ -11,26 +11,26 @@ class CouponEventLocalQueueTest {
 
 	@Test
 	@DisplayName("레디스 큐 입력 테스트")
-	void addQueue() {
+	void registerQueue() {
 		//given
 		CouponEventRegisterRequest couponEventRegisterRequest =
 				new CouponEventRegisterRequest(1L, 1L);
 
 		//when
-		CouponEventLocalQueue.addQueue(couponEventRegisterRequest);
+		CouponEventLocalQueue.add(couponEventRegisterRequest);
 
 		//then
-		assertThat(CouponEventLocalQueue.pollQueue()).isEqualTo(couponEventRegisterRequest);
+		assertThat(CouponEventLocalQueue.poll()).isEqualTo(couponEventRegisterRequest);
 	}
 
 	@Test
 	@DisplayName("레디스 큐 크기 테스트")
-	void size() {
+	void sizeTest() {
 		//given when
-		for (int i=0; i<10000; i++) {
+		for (long i=0; i<10000; i++) {
 			CouponEventRegisterRequest couponEventRegisterRequest =
 					new CouponEventRegisterRequest(1L, i);
-			CouponEventLocalQueue.addQueue(couponEventRegisterRequest);
+			CouponEventLocalQueue.add(couponEventRegisterRequest);
 		}
 
 		//then

@@ -40,7 +40,7 @@ class CouponEventControllerTest extends MysqlTestContainer {
 	@Test
 	@Transactional
 	@DisplayName("쿠폰 발급 테스트")
-	void applyCouponEvent() throws Exception {
+	void registerCouponEventTest() throws Exception {
 		//given
 		CouponEventRegisterRequest couponEventRegisterRequest = new CouponEventRegisterRequest(1L, 1L);
 
@@ -62,7 +62,7 @@ class CouponEventControllerTest extends MysqlTestContainer {
 	@Test
 	@Transactional
 	@DisplayName("쿠폰 중복 신청시 덮어쓰기 테스트")
-	void overLapApplyCouponEvent() throws Exception {
+	void overLapRegisterCouponEventTest() throws Exception {
 		//given
 		CouponEventRegisterRequest couponEventRegisterRequest = new CouponEventRegisterRequest(1L, 1L);
 
