@@ -44,7 +44,7 @@ public class StyleFacade {
 		);
 
 		// 이미지 등록 서비스 호출
-		imageService.register(
+		imageService.registerImage(
 				feedRegisterFacadeRequest.images(),
 				feedRegisterFacadeResponse.id(),
 				DomainType.FEED
@@ -86,7 +86,7 @@ public class StyleFacade {
 	@Transactional
 	public void deleteFeed(long id) {
 		styleService.deleteFeed(id);
-		imageService.deleteAllByReference(id, DomainType.FEED);
+		imageService.deleteAllImagesByReference(id, DomainType.FEED);
 	}
 
 	@Transactional
@@ -125,7 +125,7 @@ public class StyleFacade {
 						.map(getFeedServiceResponse ->
 								toFeedGetFacadeResponse(
 										getFeedServiceResponse,
-										imageService.getAll(getFeedServiceResponse.id(), DomainType.FEED)
+										imageService.getAllImages(getFeedServiceResponse.id(), DomainType.FEED)
 								))
 						.collect(Collectors.toList()),
 				feedGetServiceResponses.lastId()
