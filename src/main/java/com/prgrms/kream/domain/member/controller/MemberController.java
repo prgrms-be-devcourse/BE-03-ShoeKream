@@ -75,7 +75,7 @@ public class MemberController {
 
 	@GetMapping("/logout")
 	@ResponseStatus(OK)
-	public ApiResponse<String> logout(HttpServletResponse httpServletResponse) {
+	public ApiResponse<String> logoutMember(HttpServletResponse httpServletResponse) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication != null && !authentication.getPrincipal().equals("anonymousUser")) {

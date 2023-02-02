@@ -163,7 +163,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("로그아웃 - 성공")
-	void logout_success() throws Exception {
+	void logoutMember_success() throws Exception {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
 				"hello@naver.com", "Pa!12345678"
 		);
