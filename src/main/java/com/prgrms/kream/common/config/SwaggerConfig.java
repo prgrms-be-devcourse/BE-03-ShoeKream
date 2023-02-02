@@ -16,11 +16,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 	@Bean
-	public Docket api() {
+	public Docket apiV1() {
 		return new Docket(DocumentationType.SWAGGER_2)
+				.useDefaultResponseMessages(false)
+				.groupName("api v1")
 				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.any())
+				.apis(RequestHandlerSelectors.
+						basePackage("com.prgrms.kream"))
+				.paths(PathSelectors.ant("/api/v1/**"))
 				.build()
 				.apiInfo(apiInfo());
 	}
@@ -28,12 +31,9 @@ public class SwaggerConfig {
 	private ApiInfo apiInfo() {
 
 		return new ApiInfoBuilder()
-				.title("")
-				.description("")
-				.version("")
-				.termsOfServiceUrl("")
-				.license("")
-				.licenseUrl("")
+				.title("Shoe-Kream")
+				.description("명품 중고거래 플랫폼 서비스인 크림의 클론 프로젝트")
+				.version("version 1.0")
 				.build();
 	}
 }

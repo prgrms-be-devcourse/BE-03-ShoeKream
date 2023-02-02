@@ -1,11 +1,20 @@
 package com.prgrms.kream.domain.coupon.dto.request;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel("발급할 쿠폰과 사용자 요청 정보")
 public record CouponEventRegisterRequest(
+		@Positive(message = "잘못된 쿠폰 Id")
 		@NotNull(message = "쿠폰은 필수 입력사항 입니다.")
-		long couponId,
+		@ApiModelProperty(value = "쿠폰 아이디", required = true, example = "1")
+		Long couponId,
+		@Positive(message = "잘못된 사용자 Id")
 		@NotNull(message = "멤버는 필수 입력사항 입니다.")
-		long memberId
+		@ApiModelProperty(value = "사용자 아이디", required = true, example = "1")
+		Long memberId
 ) {
 }

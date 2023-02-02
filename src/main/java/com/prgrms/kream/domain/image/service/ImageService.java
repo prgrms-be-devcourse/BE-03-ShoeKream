@@ -11,11 +11,11 @@ import com.prgrms.kream.domain.image.model.DomainType;
 
 public interface ImageService {
 
-	void register(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType);
+	void registerImage(List<MultipartFile> multipartFiles, Long referenceId, DomainType domainType);
 
-	List<String> getAll(Long referenceId, DomainType domainType);
+	List<String> getAllImages(Long referenceId, DomainType domainType);
 
-	void deleteAllByReference(Long referenceId, DomainType domainType);
+	void deleteAllImagesByReference(Long referenceId, DomainType domainType);
 
 	default String createUniqueName(String originalName) {
 		String extension = extractExtension(originalName);

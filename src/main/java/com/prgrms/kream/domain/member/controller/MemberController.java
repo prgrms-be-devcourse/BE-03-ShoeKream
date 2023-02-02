@@ -27,6 +27,8 @@ import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
@@ -36,6 +38,7 @@ import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
 import lombok.RequiredArgsConstructor;
@@ -134,5 +137,29 @@ public class MemberController {
 	) {
 		memberFacade.deleteDeliveryInfo(deliveryInfoDeleteRequest);
 		return ApiResponse.of("삭제 성공하였습니다.");
+	}
+
+	@PostMapping("/{id}/following")
+	@ResponseStatus(CREATED)
+	public ApiResponse<String> registerFollowing(
+			@RequestBody @Valid FollowingRegisterRequest followingRegisterRequest
+	) {
+		memberFacade.registerFollowing(followingRegisterRequest);
+		return ApiResponse.of("follow 등록에 성공했습니다.");
+	}
+
+	@DeleteMapping("/{id}/following")
+	@ResponseStatus(OK)
+	public ApiResponse<String> deleteFollowing(
+			@RequestBody @Valid FollowingDeleteRequest followingDeleteRequest
+	) {
+		memberFacade.deleteFollowing(followingDeleteRequest);
+		return ApiResponse.of("follow 삭제에 성공했습니다.");
+	}
+
+	@GetMapping("/{id}/following")
+	@ResponseStatus(OK)
+	public ApiResponse<FollowingGetAllResponse> getAllFollowings() {
+		return ApiResponse.of(memberFacade.getAllFollowings());
 	}
 }

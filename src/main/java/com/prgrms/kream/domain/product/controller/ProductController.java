@@ -21,20 +21,21 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
 	private final ProductFacade productFacade;
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductGetResponse> get(@PathVariable Long id) {
-		return ApiResponse.of(productFacade.get(id));
+	public ApiResponse<ProductGetResponse> getProduct(@PathVariable Long id) {
+		return ApiResponse.of(productFacade.getProduct(id));
 	}
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<ProductGetAllResponses> getAll(@RequestBody @Valid ProductGetAllRequest productGetAllRequest) {
-		return ApiResponse.of(productFacade.getAll(productGetAllRequest));
+	public ApiResponse<ProductGetAllResponses> getAllProducts(
+			@RequestBody @Valid ProductGetAllRequest productGetAllRequest) {
+		return ApiResponse.of(productFacade.getAllProducts(productGetAllRequest));
 	}
 }

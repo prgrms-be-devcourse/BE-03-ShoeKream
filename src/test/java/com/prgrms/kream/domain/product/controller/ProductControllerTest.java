@@ -76,7 +76,7 @@ class ProductControllerTest extends MysqlTestContainer {
 
 		//when
 		ResultActions resultActions
-				= mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/product/{id}", productId));
+				= mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/products/{id}", productId));
 
 		//then
 		resultActions
@@ -99,7 +99,7 @@ class ProductControllerTest extends MysqlTestContainer {
 
 		//when
 		ResultActions resultActions
-				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
+				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(objectMapper.writeValueAsString(productGetAllRequest)));
 
@@ -125,7 +125,7 @@ class ProductControllerTest extends MysqlTestContainer {
 
 		//when
 		ResultActions resultActions
-				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product")
+				= mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(objectMapper.writeValueAsString(productGetAllRequest)));
 
