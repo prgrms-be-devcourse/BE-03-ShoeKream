@@ -25,6 +25,7 @@ import com.prgrms.kream.domain.style.dto.request.FeedLikeServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.FeedCommentRegisterServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.FeedRegisterServiceRequest;
 import com.prgrms.kream.domain.style.dto.request.FeedUpdateServiceRequest;
+import com.prgrms.kream.domain.style.dto.request.SortType;
 import com.prgrms.kream.domain.style.dto.response.FeedGetServiceResponses;
 import com.prgrms.kream.domain.style.dto.response.FeedRegisterServiceResponse;
 import com.prgrms.kream.domain.style.dto.response.FeedUpdateServiceResponse;
@@ -227,7 +228,8 @@ class StyleServiceTest {
 		when(feedRepository.findAllByTag(
 				tag,
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize()
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST
 		)).thenReturn(List.of(FEED));
 
 		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByTag(
@@ -237,7 +239,8 @@ class StyleServiceTest {
 		verify(feedRepository).findAllByTag(
 				tag,
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize());
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST);
 		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isNotEmpty();
 	}
 
@@ -247,7 +250,8 @@ class StyleServiceTest {
 		when(feedRepository.findAllByMember(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize()
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST
 		)).thenReturn(List.of(FEED));
 
 		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByMember(
@@ -257,7 +261,8 @@ class StyleServiceTest {
 		verify(feedRepository).findAllByMember(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize());
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST);
 		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isNotEmpty();
 	}
 
@@ -268,7 +273,8 @@ class StyleServiceTest {
 		when(feedRepository.findAllByProduct(
 				1L,
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize()
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST
 		)).thenReturn(Collections.emptyList());
 
 		FeedGetServiceResponses feedGetServiceResponses = styleService.getAllFeedsByProduct(
@@ -278,7 +284,8 @@ class StyleServiceTest {
 		verify(feedRepository).findAllByProduct(
 				1L,
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize());
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST);
 		assertThat(feedGetServiceResponses.feedGetServiceResponses()).isEmpty();
 	}
 
@@ -288,7 +295,8 @@ class StyleServiceTest {
 		when(feedRepository.findAllByMember(
 				MEMBER.getId(),
 				getFeedServiceRequest().cursorId(),
-				getFeedServiceRequest().pageSize()
+				getFeedServiceRequest().pageSize(),
+				SortType.NEWEST
 		)).thenReturn(List.of(FEED));
 		when(feedProductRepository.findAllByFeedId(FEED.getId())).thenReturn(FEED_PRODUCTS);
 
@@ -312,7 +320,7 @@ class StyleServiceTest {
 	}
 
 	private FeedGetServiceRequest getFeedServiceRequest() {
-		return new FeedGetServiceRequest(FEED.getId(), 10);
+		return new FeedGetServiceRequest(FEED.getId(), 10, SortType.NEWEST);
 	}
 
 	private FeedUpdateServiceRequest getUpdateFeedServiceRequest(String content) {
