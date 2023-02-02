@@ -147,7 +147,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("로그인 - 성공")
-	void login_success() throws Exception {
+	void loginMember_success() throws Exception {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest(
 				"hello@naver.com", "Pa!12345678"
 		);

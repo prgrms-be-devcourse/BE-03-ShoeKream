@@ -114,7 +114,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 실패 - 비밀번호 불일치함")
-	void login_fail_password() {
+	void loginMember_fail_password() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -139,7 +139,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 실패 - 존재하지 않는 이메일")
-	void login_fail_notExistEmail() {
+	void loginMember_fail_notExistEmail() {
 		MemberLoginRequest memberLoginRequest = new MemberLoginRequest("wrongEmail", "Pa!12345678");
 		Assertions.assertThatThrownBy(() -> memberService.loginMember(memberLoginRequest))
 				.isInstanceOf(EntityNotFoundException.class);
@@ -150,7 +150,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("로그인 성공")
-	void login_fail() {
+	void loginMember_fail() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)

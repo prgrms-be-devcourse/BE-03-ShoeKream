@@ -63,12 +63,12 @@ public class MemberController {
 
 	@PostMapping("/login")
 	@ResponseStatus(OK)
-	public ApiResponse<String> login(
+	public ApiResponse<String> loginMember(
 			@RequestBody @Valid MemberLoginRequest memberLoginRequest,
 			HttpServletResponse httpServletResponse
 	) {
 		httpServletResponse.addCookie(
-				new Cookie(accessToken, memberFacade.login(memberLoginRequest).token())
+				new Cookie(accessToken, memberFacade.loginMember(memberLoginRequest).token())
 		);
 		return ApiResponse.of("로그인 성공하였습니다.");
 	}

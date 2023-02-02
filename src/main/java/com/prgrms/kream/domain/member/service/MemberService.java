@@ -67,7 +67,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
+	public MemberLoginResponse loginMember(MemberLoginRequest memberLoginRequest) {
 		Member member = memberRepository.findByEmail(memberLoginRequest.email())
 				.orElseThrow(EntityNotFoundException::new);
 

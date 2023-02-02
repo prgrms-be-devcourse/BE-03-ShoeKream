@@ -45,8 +45,8 @@ public class MemberFacade {
 		return memberService.registerMember(memberRegisterRequest);
 	}
 
-	public MemberLoginResponse login(MemberLoginRequest memberLoginRequest) {
-		return memberService.login(memberLoginRequest);
+	public MemberLoginResponse loginMember(MemberLoginRequest memberLoginRequest) {
+		return memberService.loginMember(memberLoginRequest);
 	}
 
 	@Transactional(readOnly = true)
