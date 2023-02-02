@@ -62,10 +62,10 @@ public class OrderFacade {
 			lowestSellingBid =
 					sellingBidService.findLowestSellingBidByProductOptionId(sellingBidFindRequest);
 		} catch (EntityNotFoundException e) {
-			productService.changeHighestPrice(sellingBidFindResponse.productOptionId(), 0);
+			productService.updateLowestPrice(sellingBidFindResponse.productOptionId(), 0);
 		}
 
-		productService.changeHighestPrice(sellingBidFindResponse.productOptionId(), lowestSellingBid.price());
+		productService.updateLowestPrice(sellingBidFindResponse.productOptionId(), lowestSellingBid.price());
 
 		AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
 				new AccountUpdateOtherServiceRequest(orderCreateServiceRequest.buyerId(), TransactionType.DEPOSIT,
@@ -99,10 +99,10 @@ public class OrderFacade {
 			highestBuyingBid =
 					buyingBidService.findHighestBuyingBidByProductOptionId(buyingBidFindRequest);
 		} catch (EntityNotFoundException e) {
-			productService.changeHighestPrice(buyingBidFindResponse.productOptionId(), 0);
+			productService.updateHighestPrice(buyingBidFindResponse.productOptionId(), 0);
 		}
 
-		productService.changeHighestPrice(buyingBidFindResponse.productOptionId(), highestBuyingBid.price());
+		productService.updateHighestPrice(buyingBidFindResponse.productOptionId(), highestBuyingBid.price());
 
 		AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
 				new AccountUpdateOtherServiceRequest(orderCreateServiceRequest.buyerId(), TransactionType.DEPOSIT,
