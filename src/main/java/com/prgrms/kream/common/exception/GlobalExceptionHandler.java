@@ -1,13 +1,11 @@
 package com.prgrms.kream.common.exception;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,66 +20,43 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-		log.warn("", exception);
-		return ApiResponse.error(exception.getMessage());
-	}
-
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
-		log.warn("", exception);
+		log.info("exception : " + exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
-		log.warn("", exception);
+	@ExceptionHandler(BindException.class)
+	public ErrorResponse handleCustomRuntimeException(BindException exception) {
+		log.info("exception : " + exception);
+		return ApiResponse.error(exception.getAllErrors().stream()
+				.map(DefaultMessageSourceResolvable::getDefaultMessage).findFirst().get());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler({
+			DuplicatedEmailException.class, FileUploadFailedException.class,
+			OptimisticLockingFailureException.class, FileDeleteFailedException.class,
+			OutOfStockException.class, DuplicateRequestException.class, IllegalArgumentException.class
+	})
+	public ErrorResponse handleCustomRuntimeException(RuntimeException exception) {
+		log.info("exception : " + exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(DuplicateRequestException.class)
-	public ErrorResponse handleDuplicateRequestException(DuplicateRequestException exception) {
-		log.warn("", exception);
+	@ExceptionHandler(RuntimeException.class)
+	public ErrorResponse handleRuntimeException(RuntimeException exception) {
+		log.error("exception : " + exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(OutOfStockException.class)
-	public ErrorResponse handleOutOfStockException(OutOfStockException exception) {
-		log.warn("", exception);
-		return ApiResponse.error(exception.getMessage());
-	}
-
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(DuplicateKeyException.class)
-	public ErrorResponse handleDuplicateKeyException(DuplicateKeyException exception) {
-		log.warn("중복 참여", exception);
-		return ApiResponse.error(exception.getMessage());
-	}
-
-	@ResponseStatus(HttpStatus.CONFLICT)
-	@ExceptionHandler(OptimisticLockingFailureException.class)
-	public ErrorResponse optimisticLockingFailureException(OptimisticLockingFailureException exception) {
-		log.warn("이미 주문이 완료된 입찰입니다", exception);
-		return ApiResponse.error(exception.getMessage());
-	}
-
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(EntityExistsException.class)
-	public ErrorResponse entityExistsException(EntityExistsException exception) {
-		log.warn("", exception);
-		return ApiResponse.error(exception.getMessage());
-	}
-
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(BalanceNotEnoughException.class)
-	public ErrorResponse balanceNotEnoughException(BalanceNotEnoughException exception) {
-		log.warn("잔액이 부족합니다", exception);
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(Exception.class)
+	public ErrorResponse handleException(Exception exception) {
+		log.error("exception : " + exception);
 		return ApiResponse.error(exception.getMessage());
 	}
 }
