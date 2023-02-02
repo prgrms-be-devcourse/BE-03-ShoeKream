@@ -43,7 +43,7 @@ public class Coupon extends BaseTimeEntity {
 	}
 
 	public void decreaseAmount() {
-		if (amount > 0) {
+		if (!isSoldOut()) {
 			amount--;
 			return;
 		}
