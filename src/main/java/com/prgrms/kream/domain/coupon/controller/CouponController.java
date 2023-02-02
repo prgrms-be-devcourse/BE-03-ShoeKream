@@ -14,11 +14,15 @@ import com.prgrms.kream.domain.coupon.dto.request.CouponRegisterRequest;
 import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.service.CouponService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/coupons")
+@Api(tags = "쿠폰 컨트롤러")
 public class CouponController {
 	private final CouponService couponService;
 
@@ -31,13 +35,13 @@ public class CouponController {
 	 */
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<CouponResponse> registerCoupon(
+	@ApiOperation(value = "쿠폰 생성")
+	public ApiResponse<CouponResponse> couponRegister(
+			@ApiParam(value = "생성할 쿠폰 요청 정보", required = true)
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {
 		CouponResponse couponResponse = couponService.registerCoupon(couponRegisterRequest);
 
 		return ApiResponse.of(couponResponse);
 	}
-
-
 }
