@@ -178,7 +178,7 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 성공")
-	void get_success() {
+	void getMember_success() {
 		String password = "Pa!12345678";
 		Member member = Member.builder()
 				.id(1L)
@@ -193,7 +193,7 @@ class MemberServiceTest {
 		when(memberRepository.findById(1L))
 				.thenReturn(Optional.of(member));
 
-		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(member.getId());
+		MemberGetFacadeResponse memberGetFacadeResponse = memberService.getMember(member.getId());
 
 		Assertions.assertThat(memberGetFacadeResponse)
 				.usingRecursiveComparison()
@@ -204,11 +204,11 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 실패 - id에 해당하는 member 존재하지 않음")
-	void get_fail_notExistMember() {
+	void getMember_fail_notExistMember() {
 		when(memberRepository.findById(1L))
 				.thenReturn(Optional.empty());
 
-		Assertions.assertThatThrownBy(() -> memberService.get(1L))
+		Assertions.assertThatThrownBy(() -> memberService.getMember(1L))
 				.isInstanceOf(EntityNotFoundException.class)
 				.hasMessage("존재하지 않은 회원입니다.");
 
@@ -217,8 +217,8 @@ class MemberServiceTest {
 
 	@Test
 	@DisplayName("회원 정보 조회 실패 - 사용자가 다른 사용자의 정보 조회")
-	void get_fail_otherMember() {
-		Assertions.assertThatThrownBy(() -> memberService.get(2L))
+	void getMember_fail_otherMember() {
+		Assertions.assertThatThrownBy(() -> memberService.getMember(2L))
 				.isInstanceOf(AccessDeniedException.class);
 
 		verify(memberRepository, times(0)).findById(2L);

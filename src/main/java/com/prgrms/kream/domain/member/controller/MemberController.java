@@ -89,8 +89,8 @@ public class MemberController {
 
 	@GetMapping("/{id}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberGetResponse> get(@PathVariable Long id) {
-		return ApiResponse.of(memberFacade.get(id));
+	public ApiResponse<MemberGetResponse> getMember(@PathVariable Long id) {
+		return ApiResponse.of(memberFacade.getMember(id));
 	}
 
 	@PostMapping("/{id}")

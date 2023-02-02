@@ -184,7 +184,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("사용자 정보 조회 성공")
-	void get_success() throws Exception {
+	void getMember_success() throws Exception {
 		mockMvc.perform(get("/api/v1/member/{id}", memberId))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.id").value(memberId))

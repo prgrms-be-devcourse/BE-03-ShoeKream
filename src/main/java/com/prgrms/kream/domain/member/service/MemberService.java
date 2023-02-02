@@ -84,7 +84,7 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public MemberGetFacadeResponse get(Long id) {
+	public MemberGetFacadeResponse getMember(Long id) {
 		if (!Objects.equals(getMemberId(), id)) {
 			throw new AccessDeniedException("잘못된 접근입니다");
 		}

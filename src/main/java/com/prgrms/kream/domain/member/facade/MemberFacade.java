@@ -50,8 +50,8 @@ public class MemberFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public MemberGetResponse get(Long memberId) {
-		MemberGetFacadeResponse memberGetFacadeResponse = memberService.get(memberId);
+	public MemberGetResponse getMember(Long memberId) {
+		MemberGetFacadeResponse memberGetFacadeResponse = memberService.getMember(memberId);
 		List<String> imagePaths = imageService.getAllImages(memberId, MEMBER);
 		return toMemberGetResponse(memberGetFacadeResponse, imagePaths);
 	}
