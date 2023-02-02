@@ -4,7 +4,6 @@ import static com.prgrms.kream.common.jwt.JwtUtil.*;
 import static com.prgrms.kream.common.mapper.MemberMapper.*;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -85,10 +84,7 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public MemberGetFacadeResponse getMember(Long id) {
-		if (!Objects.equals(getMemberId(), id)) {
-			throw new AccessDeniedException("잘못된 접근입니다");
-		}
-
+		validateAccess(id);
 		Member member = memberRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("존재하지 않은 회원입니다."));
 		return toMemberGetFacadeResponse(member);
@@ -96,13 +92,10 @@ public class MemberService {
 
 	@Transactional
 	public MemberUpdateServiceResponse updateMember(MemberUpdateServiceRequest memberUpdateServiceRequest) {
-		if (!isValidAccess(memberUpdateServiceRequest.id())) {
-			throw new AccessDeniedException("잘못된 접근입니다");
-		}
+		validateAccess(memberUpdateServiceRequest.id());
 
 		Member member = memberRepository.findById(memberUpdateServiceRequest.id())
 				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
-
 		member.updateMember(
 				memberUpdateServiceRequest.name(),
 				memberUpdateServiceRequest.phone(),
@@ -114,9 +107,7 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Page<DeliveryInfoGetResponse> getDeliveryInfoPage(Long memberId, Pageable pageable) {
-		if (!isValidAccess(memberId)) {
-			throw new AccessDeniedException("잘못된 접근입니다.");
-		}
+		validateAccess(memberId);
 
 		return deliveryInfoRepository.findAllByMemberId(memberId, pageable)
 				.map(MemberMapper::toDeliveryInfoGetResponse);
@@ -124,19 +115,15 @@ public class MemberService {
 
 	@Transactional
 	public DeliveryInfoRegisterResponse registerDeliveryInfo(DeliveryInfoRegisterRequest deliveryInfoRegisterRequest) {
-		if (!isValidAccess(deliveryInfoRegisterRequest.memberId())) {
-			throw new AccessDeniedException("잘못된 접근입니다.");
-		}
+		validateAccess(deliveryInfoRegisterRequest.memberId());
+
 		DeliveryInfo deliveryInfo = deliveryInfoRepository.save(toDeliveryInfo(deliveryInfoRegisterRequest));
 		return new DeliveryInfoRegisterResponse(deliveryInfo.getId());
 	}
 
 	@Transactional
 	public DeliveryInfoUpdateResponse updateDeliveryInfo(DeliveryInfoUpdateRequest deliveryInfoUpdateRequest) {
-		if (!isValidAccess(deliveryInfoUpdateRequest.memberId())) {
-			throw new AccessDeniedException("잘못된 접근입니다.");
-		}
-
+		validateAccess(deliveryInfoUpdateRequest.memberId());
 		DeliveryInfo deliveryInfo = deliveryInfoRepository.findById(deliveryInfoUpdateRequest.deliveryInfoId())
 				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 배송정보입니다."));
 
@@ -192,5 +179,11 @@ public class MemberService {
 				.toList();
 
 		return new FollowingGetAllResponse(followedMemberIds);
+	}
+
+	private void validateAccess(Long id) {
+		if (!isValidAccess(id)) {
+			throw new AccessDeniedException("잘못된 접근입니다");
+		}
 	}
 }
