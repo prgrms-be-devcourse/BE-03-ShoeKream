@@ -140,7 +140,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/{id}/following")
-	@ResponseStatus(OK)
+	@ResponseStatus(CREATED)
 	public ApiResponse<String> registerFollowing(
 			@RequestBody @Valid FollowingRegisterRequest followingRegisterRequest
 	) {

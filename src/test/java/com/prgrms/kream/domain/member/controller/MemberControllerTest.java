@@ -416,7 +416,7 @@ class MemberControllerTest extends MysqlTestContainer {
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(followingRegisterRequest))
 				)
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.data").value("follow 등록에 성공했습니다."))
 				.andDo(print());
 	}
