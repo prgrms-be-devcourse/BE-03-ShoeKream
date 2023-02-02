@@ -3,6 +3,7 @@ package com.prgrms.kream.domain.member.service;
 import static com.prgrms.kream.common.jwt.JwtUtil.*;
 import static com.prgrms.kream.common.mapper.MemberMapper.*;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.EntityNotFoundException;
@@ -20,6 +21,8 @@ import com.prgrms.kream.common.mapper.MemberMapper;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
@@ -30,9 +33,13 @@ import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
+import com.prgrms.kream.domain.member.model.Following;
+import com.prgrms.kream.domain.member.model.FollowingId;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
+import com.prgrms.kream.domain.member.repository.FollowingRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +51,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 
 	private final DeliveryInfoRepository deliveryInfoRepository;
+	private final FollowingRepository followingRepository;
 
 	private final Jwt jwt;
 
@@ -145,5 +153,43 @@ public class MemberService {
 
 	public void deleteDeliveryInfo(DeliveryInfoDeleteRequest deliveryInfoDeleteRequest) {
 		deliveryInfoRepository.deleteById(deliveryInfoDeleteRequest.deliveryInfoId());
+	}
+
+	@Transactional
+	public void registerFollowing(FollowingRegisterRequest followingRegisterRequest) {
+		FollowingId followId = new FollowingId(
+				getMemberId(), followingRegisterRequest.followedMemberId()
+		);
+
+		if (memberRepository.existsById(followId.getFollowedMemberId())
+				&& !followingRepository.existsById(followId)) {
+			followingRepository.save(new Following(followId));
+		}
+	}
+
+	@Transactional
+	public void deleteFollowing(FollowingDeleteRequest followingDeleteRequest) {
+		FollowingId followingId = new FollowingId(
+				followingDeleteRequest.followingMemberId(),
+				followingDeleteRequest.followedMemberId()
+		);
+
+		Following following = followingRepository.findById(followingId)
+				.orElseThrow(() -> new EntityNotFoundException("entity가 존재하지 않습니다."));
+
+		followingRepository.delete(following);
+	}
+
+	@Transactional(readOnly = true)
+	public FollowingGetAllResponse getAllFollowings() {
+		Long followingMemberId = getMemberId();
+		List<Long> followedMemberIds = followingRepository.findAllByFollowingId_FollowingMemberId(followingMemberId)
+				.stream()
+				.map(following -> following
+						.getFollowingId()
+						.getFollowedMemberId())
+				.toList();
+
+		return new FollowingGetAllResponse(followedMemberIds);
 	}
 }

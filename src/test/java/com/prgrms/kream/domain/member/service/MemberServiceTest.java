@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +31,8 @@ import com.prgrms.kream.common.jwt.Jwt;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoUpdateRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingDeleteRequest;
+import com.prgrms.kream.domain.member.dto.request.FollowingRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberLoginRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
@@ -40,9 +43,13 @@ import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.model.DeliveryInfo;
+import com.prgrms.kream.domain.member.model.Following;
+import com.prgrms.kream.domain.member.model.FollowingId;
 import com.prgrms.kream.domain.member.model.Member;
 import com.prgrms.kream.domain.member.repository.DeliveryInfoRepository;
+import com.prgrms.kream.domain.member.repository.FollowingRepository;
 import com.prgrms.kream.domain.member.repository.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,6 +66,9 @@ class MemberServiceTest {
 
 	@Mock
 	private DeliveryInfoRepository deliveryInfoRepository;
+
+	@Mock
+	private FollowingRepository followRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -84,7 +94,8 @@ class MemberServiceTest {
 				.authority(ROLE_USER)
 				.build();
 
-		MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
+		MemberRegisterRequest memberRegisterRequest
+				= new MemberRegisterRequest(
 				"name", "email@naver.com", "01012345678", "aA12345678!", true, ROLE_USER
 		);
 
@@ -331,24 +342,40 @@ class MemberServiceTest {
 				.memberId(1L)
 				.build();
 
-		List<DeliveryInfo> deliveryInfoList = List.of(
-				deliveryInfo1, deliveryInfo2, deliveryInfo3, deliveryInfo4, deliveryInfo5, deliveryInfo6
-		);
+		List<DeliveryInfo> deliveryInfoList =
+				List.of(
+						deliveryInfo1, deliveryInfo2, deliveryInfo3,
+						deliveryInfo4, deliveryInfo5, deliveryInfo6
+				);
 
-		PageImpl<DeliveryInfo> result = new PageImpl<>(
+		List<DeliveryInfoGetResponse> deliveryInfoGetResponseList = deliveryInfoList.stream()
+				.map(deliveryInfo -> DeliveryInfoGetResponse.builder()
+						.id(deliveryInfo.getId())
+						.name(deliveryInfo.getName())
+						.phone(deliveryInfo.getPhone())
+						.postCode(deliveryInfo.getPostCode())
+						.address(deliveryInfo.getAddress())
+						.detail(deliveryInfo.getDetail())
+						.build())
+				.toList();
+
+		PageImpl<DeliveryInfo> foundDeliveryInfoPage = new PageImpl<>(
 				deliveryInfoList, PageRequest.of(0, 5), 6);
+
+		PageImpl<DeliveryInfoGetResponse> expectedResult = new PageImpl<>(
+				deliveryInfoGetResponseList, PageRequest.of(0, 5), 6);
 
 		when(deliveryInfoRepository.findAllByMemberId(
 				eq(1L),
 				eq(PageRequest.of(0, 5)))
-		).thenReturn(result);
+		).thenReturn(foundDeliveryInfoPage);
 
 		Page<DeliveryInfoGetResponse> deliveryInfoPage =
 				memberService.getDeliveryInfoPage(1L, PageRequest.of(0, 5));
 
-		Assertions.assertThat(result)
+		Assertions.assertThat(deliveryInfoPage)
 				.usingRecursiveComparison()
-				.isEqualTo(deliveryInfoPage);
+				.isEqualTo(expectedResult);
 
 		verify(deliveryInfoRepository, times(1))
 				.findAllByMemberId(eq(1L), eq(PageRequest.of(0, 5)));
@@ -507,5 +534,123 @@ class MemberServiceTest {
 	void deleteDeliveryInfo_success() {
 		memberService.deleteDeliveryInfo(new DeliveryInfoDeleteRequest(1L));
 		verify(deliveryInfoRepository, times(1)).deleteById(1L);
+	}
+
+	@Test
+	@DisplayName("팔로우 등록 성공 - 이미 등록된 경우")
+	void registerFollow_success_alreadyExistFollow() {
+
+		when(memberRepository.existsById(2L))
+				.thenReturn(false);
+
+		memberService.registerFollowing(new FollowingRegisterRequest(2L));
+
+		verify(memberRepository, times(1)).existsById(2L);
+		verify(followRepository, times(0)).existsById(any(FollowingId.class));
+		verify(followRepository, times(0)).save(any(Following.class));
+
+	}
+
+	@Test
+	@DisplayName("팔로우 등록 성공 - 아직 등록되지 않은 경우")
+	void registerFollow_success_notYetExistFollow() {
+
+		FollowingId followId = new FollowingId(1L, 2L);
+		Following follow = new Following(followId);
+
+		when(memberRepository.existsById(2L))
+				.thenReturn(true);
+		when(followRepository.existsById(any(FollowingId.class)))
+				.thenReturn(false);
+		when(followRepository.save(any(Following.class)))
+				.thenReturn(follow);
+
+		memberService.registerFollowing(new FollowingRegisterRequest(2L));
+
+		verify(memberRepository, times(1)).existsById(2L);
+		verify(followRepository, times(1)).existsById(any(FollowingId.class));
+		verify(followRepository, times(1)).save(any(Following.class));
+
+	}
+
+	@Test
+	@DisplayName("팔로우 삭제 성공")
+	void deleteFollow_success() {
+
+		FollowingId followingId = new FollowingId(1L, 2L);
+		Following following = new Following(followingId);
+
+		when(followRepository.findById(any(FollowingId.class)))
+				.thenReturn(Optional.of(following));
+
+		memberService.deleteFollowing(new FollowingDeleteRequest(1L, 2L));
+		ArgumentCaptor<FollowingId> followingIdArgumentCaptor = ArgumentCaptor.forClass(FollowingId.class);
+		ArgumentCaptor<Following> followingArgumentCaptor = ArgumentCaptor.forClass(Following.class);
+
+		verify(followRepository, times(1))
+				.findById(followingIdArgumentCaptor.capture());
+
+		Assertions.assertThat(1L)
+				.isEqualTo(followingIdArgumentCaptor.getValue().getFollowingMemberId());
+		Assertions.assertThat(2L)
+				.isEqualTo(followingIdArgumentCaptor.getValue().getFollowedMemberId());
+
+		verify(followRepository, times(1))
+				.delete(followingArgumentCaptor.capture());
+
+		Assertions.assertThat(followingId)
+				.usingRecursiveComparison()
+				.isEqualTo(followingArgumentCaptor.getValue().getFollowingId());
+	}
+
+	@Test
+	@DisplayName("팔로우 등록 실패 - 존재하지 않는 following 관계")
+	void deleteFollow_fail_notExistFollowing() {
+
+		FollowingId followingId = new FollowingId(1L, 2L);
+		Following following = new Following(followingId);
+
+		when(followRepository.findById(any(FollowingId.class)))
+				.thenReturn(Optional.empty());
+
+		Assertions.assertThatThrownBy(
+						() -> memberService.deleteFollowing(new FollowingDeleteRequest(1L, 2L))
+				)
+				.isInstanceOf(EntityNotFoundException.class);
+
+		verify(followRepository, times(1))
+				.findById(any(FollowingId.class));
+
+		verify(followRepository, times(0))
+				.delete(following);
+	}
+
+	@Test
+	@DisplayName("팔로우 하는 followedMemberIds 조회 성공")
+	void getAllFollowing_success() {
+
+		FollowingId followingId1 = new FollowingId(1L, 2L);
+		FollowingId followingId2 = new FollowingId(1L, 3L);
+		FollowingId followingId3 = new FollowingId(1L, 4L);
+
+		Following following1 = new Following(followingId1);
+		Following following2 = new Following(followingId2);
+		Following following3 = new Following(followingId3);
+
+		List<Following> followingList = List.of(following1, following2, following3);
+		List<Long> memberIds = followingList.stream()
+				.map(following -> following.getFollowingId().getFollowedMemberId())
+				.toList();
+
+		when(followRepository.findAllByFollowingId_FollowingMemberId(1L))
+				.thenReturn(followingList);
+
+		FollowingGetAllResponse followingGetAllResponse = memberService.getAllFollowings();
+
+		Assertions.assertThat(followingGetAllResponse.FollowedMemberIds())
+				.isEqualTo(memberIds);
+
+		verify(followRepository, times(1))
+				.findAllByFollowingId_FollowingMemberId(1L);
 	}
 }
