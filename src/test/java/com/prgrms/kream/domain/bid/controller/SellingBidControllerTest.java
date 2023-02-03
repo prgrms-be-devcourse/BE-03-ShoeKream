@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.persistence.OptimisticLockException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -119,7 +118,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		// When
 		ResultActions resultActions =
 				mockMvc.perform(
-						post("/api/v1/selling-bid")
+						post("/api/v1/selling-bids")
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
@@ -140,7 +139,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		addFiveSellingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/selling-bid/{id}", 2));
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/selling-bids/{id}", 2));
 
 		// Then
 		resultActions
@@ -158,7 +157,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		addFiveSellingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/api/v1/selling-bid/delete/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/selling-bids/delete/{id}", 1));
 
 		// Then
 		resultActions
@@ -175,7 +174,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 		addFiveSellingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/api/v1/selling-bid/restore/{id}", 3));
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/selling-bids/restore/{id}", 3));
 
 		// Then
 		resultActions
