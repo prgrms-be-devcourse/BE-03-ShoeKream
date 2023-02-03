@@ -47,6 +47,13 @@ public class StyleController {
 
 	private final StyleFacade styleFacade;
 
+	/**
+	 * 사용자가 피드를 등록한다.
+	 * @author Kim-Changgyu
+	 * @param feedRegisterRequest 본문, 작성자 식별자, 피드 이미지 리스트, 상품 식별자 리스트
+	 * @return ApiResponse<FeedRegisterResponses>
+	 * @see StyleFacade
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = "피드 등록", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -68,6 +75,13 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 전체 피드를 조회한다.
+	 * @author Kim-Changgyu
+	 * @param feedGetRequest 커서 식별자, 페이지 크기, 정렬 조건
+	 * @return ApiResponse<FeedGetResponses>
+	 * @see StyleFacade
+	 */
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 조회 (전체)")
@@ -88,6 +102,14 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 태그 기준으로 피드를 조회한다.
+	 * @author Kim-Changgyu
+	 * @param tag 태그 키워드
+	 * @param feedGetRequest 커서 식별자, 페이지 크기, 정렬 조건
+	 * @return ApiResponse<FeedGetResponses>
+	 * @see StyleFacade
+	 */
 	@GetMapping("/tags/{tag}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 조회 (태그 기준)")
@@ -109,6 +131,14 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 사용자 기준으로 피드를 조회한다.
+	 * @author Kim-Changgyu
+	 * @param memberId 사용자 식별자
+	 * @param feedGetRequest 커서 식별자, 페이지 크기, 정렬 조건
+	 * @return ApiResponse<FeedGetResponses>
+	 * @see StyleFacade
+	 */
 	@GetMapping("/members/{memberId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 조회 (사용자 기준)")
@@ -130,6 +160,14 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 사용자 기준으로 피드를 조회한다.
+	 * @author Kim-Changgyu
+	 * @param productId 상품 식별자
+	 * @param feedGetRequest 커서 식별자, 페이지 크기, 정렬 조건
+	 * @return ApiResponse<FeedGetResponses>
+	 * @see StyleFacade
+	 */
 	@GetMapping("/products/{productId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 조회 (사용자 기준)")
@@ -151,6 +189,14 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 피드를 수정한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @param feedUpdateRequest 본문, 상품 식별자 리스트
+	 * @return ApiResponse<FeedUpdateResponse>
+	 * @see StyleFacade
+	 */
 	@PutMapping("/{feedId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 수정")
@@ -170,17 +216,32 @@ public class StyleController {
 		);
 	}
 
+	/**
+	 * 사용자가 피드를 삭제한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @return ApiResponse<String>
+	 * @see StyleFacade
+	 */
 	@DeleteMapping("/{feedId}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 삭제")
 	public ApiResponse<String> deleteFeed(
-			@ApiParam(value = "수정 대상 피드 식별자", required = true)
+			@ApiParam(value = "삭제 대상 피드 식별자", required = true)
 			@PathVariable Long feedId
 	) {
 		styleFacade.deleteFeed(feedId);
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
+	/**
+	 * 사용자가 특정 피드에 좋아요를 등록한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @param feedLikeRequest 사용자 식별자
+	 * @return ApiResponse<String>
+	 * @see StyleFacade
+	 */
 	@PostMapping("/{feedId}/likes")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = "피드 좋아요 등록")
@@ -198,6 +259,14 @@ public class StyleController {
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
+	/**
+	 * 사용자가 특정 피드에 좋아요를 삭제한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @param feedLikeRequest 사용자 식별자
+	 * @return ApiResponse<String>
+	 * @see StyleFacade
+	 */
 	@DeleteMapping("/{feedId}/likes")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 좋아요 삭제")
@@ -215,6 +284,14 @@ public class StyleController {
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
+	/**
+	 * 사용자가 특정 피드에 댓글을 등록한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @param feedCommentRegisterRequest 본문, 사용자 식별자
+	 * @return ApiResponse<String>
+	 * @see StyleFacade
+	 */
 	@PostMapping("/{feedId}/comments")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation(value = "피드 댓글 등록")
@@ -231,6 +308,14 @@ public class StyleController {
 		return ApiResponse.of(SUCCESS_MESSAGE);
 	}
 
+	/**
+	 * 사용자가 특정 피드에 댓글을 등록한다.
+	 * @author Kim-Changgyu
+	 * @param feedId 피드 식별자
+	 * @param feedCommentGetRequest 커서 식별자, 페이지 크기, 정렬 조건
+	 * @return ApiResponse<FeedCommentGetResponses>
+	 * @see StyleFacade
+	 */
 	@GetMapping("/{feedId}/comments")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "피드 댓글 조회")
