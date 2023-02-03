@@ -33,11 +33,11 @@ public class AccountController {
 	@PostMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "계좌 생성")
-	public ApiResponse<AccountCreateResponse> register(
+	public ApiResponse<AccountCreateResponse> registerAccount(
 			@PathVariable("id")
 			@ApiParam(value = "계좌를 만들고자 하는 회원 id", required = true, example = "1")
 			Long id) {
-		return ApiResponse.of(accountFacade.register(id));
+		return ApiResponse.of(accountFacade.registerAccount(id));
 	}
 
 	@PutMapping
@@ -54,7 +54,7 @@ public class AccountController {
 	@GetMapping("transaction-histories/{memberId}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "거래 내역 조회")
-	public ApiResponse<List<TransactionHistoryGetResponse>> getAllByMemberId(
+	public ApiResponse<List<TransactionHistoryGetResponse>> getAll(
 			@PathVariable("memberId")
 			@ApiParam(value = "거래 내역을 조회하고자 하는 회원 id", required = true, example = "1")
 			Long memberId) {

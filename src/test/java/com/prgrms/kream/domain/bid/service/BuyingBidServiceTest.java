@@ -47,7 +47,7 @@ public class BuyingBidServiceTest {
 				.build();
 
 		when(repository.save(any(BuyingBid.class))).thenReturn(buyingBid);
-		BuyingBidCreateResponse buyingBidCreateResponse = service.register(buyingBidCreateRequest);
+		BuyingBidCreateResponse buyingBidCreateResponse = service.registerBuyingBid(buyingBidCreateRequest);
 
 		assertThat(buyingBidCreateResponse.id()).isEqualTo(buyingBid.getId());
 	}
@@ -68,7 +68,7 @@ public class BuyingBidServiceTest {
 		when(repository.findById(id)).thenReturn(Optional.of(buyingBid));
 
 		// When
-		BuyingBidFindResponse buyingBidFindResponse = service.findById(buyingBidFindRequest);
+		BuyingBidFindResponse buyingBidFindResponse = service.getBuyingBid(buyingBidFindRequest);
 
 		// Then
 		assertThat(buyingBidFindResponse.id()).isEqualTo(buyingBid.getId());
@@ -93,10 +93,10 @@ public class BuyingBidServiceTest {
 
 		// When
 		when(repository.save(any(BuyingBid.class))).thenReturn(buyingBid);
-		service.register(buyingBidCreateRequest);
+		service.registerBuyingBid(buyingBidCreateRequest);
 
 		// Then
-		assertThatThrownBy(() -> service.findById(buyingBidFindRequest))
+		assertThatThrownBy(() -> service.getBuyingBid(buyingBidFindRequest))
 				.isInstanceOf(EntityNotFoundException.class);
 	}
 

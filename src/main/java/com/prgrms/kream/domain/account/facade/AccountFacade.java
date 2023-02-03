@@ -26,12 +26,12 @@ public class AccountFacade {
 
 	private final Long myId = 0L;
 
-	// todo 자신의 id를 가져오는 방법 생각하기
+	// todo myId JwtUtils.getMemberId 사용하기
 	@Transactional
-	public AccountCreateResponse register(Long id) {
+	public AccountCreateResponse registerAccount(Long id) {
 		AccountCreateRequest accountCreateRequest =
 				new AccountCreateRequest(id, myId);
-		return accountService.register(accountCreateRequest);
+		return accountService.registerAccount(accountCreateRequest);
 	}
 
 	@Transactional
@@ -40,17 +40,20 @@ public class AccountFacade {
 				toAccountUpdateServiceRequest(accountUpdateFacadeRequest);
 		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
 		if (accountUpdateResponse.isSucceed()) {
-			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateFacadeRequest));
+			transactionHistoryService.registerTransactionHistory(
+					toTransactionHistoryCreateRequest(accountUpdateFacadeRequest));
 		}
 		return accountUpdateResponse;
 	}
+
 	@Transactional
 	public AccountUpdateResponse updateBalance(AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest) {
 		AccountUpdateServiceRequest accountUpdateServiceRequest =
 				toAccountUpdateServiceRequest(accountUpdateOtherServiceRequest);
 		AccountUpdateResponse accountUpdateResponse = accountService.updateBalance(accountUpdateServiceRequest);
 		if (accountUpdateResponse.isSucceed()) {
-			transactionHistoryService.register(toTransactionHistoryCreateRequest(accountUpdateOtherServiceRequest));
+			transactionHistoryService.registerTransactionHistory(
+					toTransactionHistoryCreateRequest(accountUpdateOtherServiceRequest));
 		}
 		return accountUpdateResponse;
 	}

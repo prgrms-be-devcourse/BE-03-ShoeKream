@@ -22,7 +22,7 @@ public class AccountService {
 	private final AccountRepository accountRepository;
 
 	@Transactional
-	public AccountCreateResponse register(AccountCreateRequest accountCreateRequest) {
+	public AccountCreateResponse registerAccount(AccountCreateRequest accountCreateRequest) {
 		if (accountRepository.findByMemberId(accountCreateRequest.memberId()).isPresent()) {
 			throw new EntityExistsException();
 		}

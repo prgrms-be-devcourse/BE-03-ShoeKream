@@ -21,25 +21,25 @@ public class SellingBidService {
 	private final SellingBidRepository repository;
 
 	@Transactional
-	public SellingBidCreateResponse register(SellingBidCreateRequest request) {
+	public SellingBidCreateResponse registerSellingBid(SellingBidCreateRequest request) {
 		return toSellingBidCreateResponse(repository.save(toSellingBid(request)));
 	}
 
 	@Transactional(readOnly = true)
-	public SellingBidFindResponse findById(SellingBidFindRequest request) {
+	public SellingBidFindResponse getSellingBid(SellingBidFindRequest request) {
 		return repository.findById(request.ids().get(0))
 				.map(BidMapper::toSellingBidFindResponse)
 				.orElseThrow(EntityNotFoundException::new);
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
+	public void deleteSellingBid(Long id) {
 		SellingBid sellingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 		sellingBid.delete();
 	}
 
 	@Transactional
-	public void restoreById(Long id) {
+	public void restoreSellingBid(Long id) {
 		SellingBid sellingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 		if (sellingBid.getValidUntil().isAfter(LocalDateTime.now())) {
 			sellingBid.restore();

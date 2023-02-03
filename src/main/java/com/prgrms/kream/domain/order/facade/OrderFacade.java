@@ -40,12 +40,12 @@ public class OrderFacade {
 	private final Long myId = 0L;
 
 	@Transactional
-	public OrderCreateResponse registerBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
+	public OrderCreateResponse registerOrderBySellingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
 		SellingBidFindResponse sellingBidFindResponse =
-				sellingBidService.findById(new SellingBidFindRequest(
+				sellingBidService.getSellingBid(new SellingBidFindRequest(
 						Collections.singletonList(orderCreateFacadeRequest.bidId())));
 
-		// TODO 자신의 ID를 가져오는 방법 생각하기
+		// TODO myId JwtUtils.getMemberId 로 수정하기
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), orderCreateFacadeRequest.bidId(), true,
 						myId, sellingBidFindResponse.memberId(),
@@ -55,7 +55,7 @@ public class OrderFacade {
 		SellingBidFindRequest sellingBidFindRequest =
 				new SellingBidFindRequest(Collections.singletonList(orderCreateFacadeRequest.bidId()));
 
-		sellingBidService.deleteById(sellingBidFindResponse.id());
+		sellingBidService.deleteSellingBid(sellingBidFindResponse.id());
 
 		SellingBidFindResponse lowestSellingBid = null;
 		try {
@@ -72,16 +72,16 @@ public class OrderFacade {
 						orderCreateServiceRequest.price());
 		accountFacade.updateBalance(accountUpdateOtherServiceRequest);
 
-		return orderService.register(orderCreateServiceRequest);
+		return orderService.registerOrder(orderCreateServiceRequest);
 	}
 
 	@Transactional
-	public OrderCreateResponse registerByBuyingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
+	public OrderCreateResponse registerOrderByBuyingBid(OrderCreateFacadeRequest orderCreateFacadeRequest) {
 		BuyingBidFindResponse buyingBidFindResponse =
-				buyingBidService.findById(new BuyingBidFindRequest(
+				buyingBidService.getBuyingBid(new BuyingBidFindRequest(
 						Collections.singletonList(orderCreateFacadeRequest.bidId())));
 
-		// TODO 자신의 ID를 가져오는 방법 생각하기
+		// TODO myId JwtUtils.getMemberId 로 수정하기
 		OrderCreateServiceRequest orderCreateServiceRequest =
 				new OrderCreateServiceRequest(orderCreateFacadeRequest.orderId(), orderCreateFacadeRequest.bidId(),
 						false,
@@ -89,7 +89,7 @@ public class OrderFacade {
 						buyingBidFindResponse.productOptionId(), buyingBidFindResponse.price(),
 						orderCreateFacadeRequest.orderRequest());
 
-		buyingBidService.deleteById(buyingBidFindResponse.id());
+		buyingBidService.deleteBuyingBid(buyingBidFindResponse.id());
 
 		BuyingBidFindRequest buyingBidFindRequest =
 				new BuyingBidFindRequest(Collections.singletonList(orderCreateFacadeRequest.bidId()));
@@ -109,16 +109,16 @@ public class OrderFacade {
 						orderCreateServiceRequest.price());
 		accountFacade.updateBalance(accountUpdateOtherServiceRequest);
 
-		return orderService.register(orderCreateServiceRequest);
+		return orderService.registerOrder(orderCreateServiceRequest);
 	}
 
 	@Transactional(readOnly = true)
-	public OrderFindResponse findById(OrderFindRequest orderFindRequest) {
+	public OrderFindResponse getOrder(OrderFindRequest orderFindRequest) {
 		return orderService.findById(orderFindRequest);
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
+	public void deleteOrder(Long id) {
 		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
 		OrderFindRequest orderFindRequest = new OrderFindRequest(id);
 		Order order = toOrder(orderService.findById(orderFindRequest));
@@ -126,23 +126,23 @@ public class OrderFacade {
 		// todo 주문 취소시 패널티를 준다(거래 금지 일시 or 수수료)
 		if (order.getIsBasedOnSellingBid()) {
 			SellingBidFindResponse sellingBidFindResponse =
-					sellingBidService.findById(new SellingBidFindRequest(Collections.singletonList(order.getBidId())));
-			sellingBidService.restoreById(order.getBidId());
+					sellingBidService.getSellingBid(new SellingBidFindRequest(Collections.singletonList(order.getBidId())));
+			sellingBidService.restoreSellingBid(order.getBidId());
 			productService.compareLowestPrice(order.getProductOptionId(), sellingBidFindResponse.price());
 		} else {
 			BuyingBidFindResponse buyingBidFindResponse =
-					buyingBidService.findById(new BuyingBidFindRequest(Collections.singletonList(order.getBidId())));
-			buyingBidService.restoreById(order.getBidId());
+					buyingBidService.getBuyingBid(new BuyingBidFindRequest(Collections.singletonList(order.getBidId())));
+			buyingBidService.restoreBuyingBid(order.getBidId());
 			productService.compareHighestPrice(order.getProductOptionId(), buyingBidFindResponse.price());
 		}
 
-		orderService.deleteById(orderCancelRequest);
+		orderService.deleteOrder(orderCancelRequest);
 	}
 
 	@Transactional
 	public OrderUpdateStatusResponse updateOrderStatus(OrderUpdateStatusRequest orderUpdateStatusRequest) {
 		OrderUpdateStatusResponse orderUpdateStatusResponse =
-				orderService.updateStatus(orderUpdateStatusRequest);
+				orderService.updateOrderStatus(orderUpdateStatusRequest);
 		if (orderUpdateStatusResponse.orderStatus() == OrderStatus.ORDER_CONFIRMED) {
 			AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
 					new AccountUpdateOtherServiceRequest(
@@ -152,6 +152,6 @@ public class OrderFacade {
 					);
 			accountFacade.updateBalance(accountUpdateOtherServiceRequest);
 		}
-		return orderService.updateStatus(orderUpdateStatusRequest);
+		return orderService.updateOrderStatus(orderUpdateStatusRequest);
 	}
 }

@@ -36,16 +36,16 @@ public class Account extends BaseTimeEntity {
 		this.balance = Objects.requireNonNullElse(balance, 0);
 	}
 
-	public void updateBalance(TransactionType transactionType, int amount){
-		if (amount <= 0){
+	public void updateBalance(TransactionType transactionType, int amount) {
+		if (amount <= 0) {
 			throw new IllegalArgumentException();
 		}
-		if (transactionType == TransactionType.WITHDRAW && balance < amount){
+		if (transactionType == TransactionType.WITHDRAW && balance < amount) {
 			throw new BalanceNotEnoughException("");
 		}
-		if (transactionType == TransactionType.DEPOSIT){
+		if (transactionType == TransactionType.DEPOSIT) {
 			balance += amount;
-		}else if(transactionType == TransactionType.WITHDRAW){
+		} else if (transactionType == TransactionType.WITHDRAW) {
 			balance -= amount;
 		}
 	}

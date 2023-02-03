@@ -196,7 +196,7 @@ public class SellingBidControllerTest extends MysqlTestContainer {
 
 		// When
 		for (int i = 0; i < threadNum; i++) {
-			futures.add(executorService.submit(() -> sellingBidService.deleteById(1L)));
+			futures.add(executorService.submit(() -> sellingBidService.deleteSellingBid(1L)));
 		}
 
 		try {

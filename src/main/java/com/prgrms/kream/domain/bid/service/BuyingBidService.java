@@ -21,25 +21,25 @@ public class BuyingBidService {
 	private final BuyingBidRepository repository;
 
 	@Transactional
-	public BuyingBidCreateResponse register(BuyingBidCreateRequest buyingBidCreateRequest) {
+	public BuyingBidCreateResponse registerBuyingBid(BuyingBidCreateRequest buyingBidCreateRequest) {
 		return toBuyingBidCreateResponse(repository.save(toBuyingBid(buyingBidCreateRequest)));
 	}
 
 	@Transactional(readOnly = true)
-	public BuyingBidFindResponse findById(BuyingBidFindRequest buyingBidFindRequest) {
+	public BuyingBidFindResponse getBuyingBid(BuyingBidFindRequest buyingBidFindRequest) {
 		return repository.findById(buyingBidFindRequest.ids().get(0))
 				.map(BidMapper::toBuyingBidFindResponse)
 				.orElseThrow(EntityNotFoundException::new);
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
+	public void deleteBuyingBid(Long id) {
 		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 		buyingBid.delete();
 	}
 
 	@Transactional
-	public void restoreById(Long id) {
+	public void restoreBuyingBid(Long id) {
 		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 		if (buyingBid.getValidUntil().isAfter(LocalDateTime.now())) {
 			buyingBid.restore();

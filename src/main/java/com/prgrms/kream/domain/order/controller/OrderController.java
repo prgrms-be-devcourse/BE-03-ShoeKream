@@ -36,7 +36,7 @@ public class OrderController {
 			@ApiParam(value = "판매 입찰 정보", required = true)
 			OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
-		OrderCreateResponse orderCreateResponse = orderFacade.registerBySellingBid(orderCreateFacadeRequest);
+		OrderCreateResponse orderCreateResponse = orderFacade.registerOrderBySellingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
 	}
 
@@ -48,28 +48,28 @@ public class OrderController {
 			@ApiParam(value = "구매 입찰 정보", required = true)
 			OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
-		OrderCreateResponse orderCreateResponse = orderFacade.registerByBuyingBid(orderCreateFacadeRequest);
+		OrderCreateResponse orderCreateResponse = orderFacade.registerOrderByBuyingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "주문 조회")
-	public ApiResponse<OrderFindResponse> findById(
+	public ApiResponse<OrderFindResponse> getOrder(
 			@Valid @RequestBody
 			@ApiParam(value = "조회할 주문 정보 목록", required = true)
 			OrderFindRequest orderFindRequest) {
-		return ApiResponse.of(orderFacade.findById(orderFindRequest));
+		return ApiResponse.of(orderFacade.getOrder(orderFindRequest));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ApiOperation(value = "주문 삭제")
-	public ApiResponse<String> deleteById(
+	public ApiResponse<String> deleteOrder(
 			@PathVariable("id")
 			@ApiParam(value = "삭제하고자 하는 주문 id", required = true, example = "1")
 			Long id) {
-		orderFacade.deleteById(id);
+		orderFacade.deleteOrder(id);
 		return ApiResponse.of("주문이 삭제되었습니다");
 	}
 }
