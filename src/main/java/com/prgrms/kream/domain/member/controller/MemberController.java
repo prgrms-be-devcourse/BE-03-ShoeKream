@@ -35,16 +35,16 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
+import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
-import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/member")
+@RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -87,34 +87,34 @@ public class MemberController {
 		return ApiResponse.of("로그아웃 성공하였습니다.");
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{memberId}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberGetResponse> getMember(@PathVariable Long id) {
+	public ApiResponse<MemberGetResponse> getMember(@PathVariable("memberId") Long id) {
 		return ApiResponse.of(memberFacade.getMember(id));
 	}
 
-	@PostMapping("/{id}")
+	@PostMapping("/{memberId}")
 	@ResponseStatus(OK)
 	public ApiResponse<MemberUpdateResponse> updateMember(
-			@PathVariable Long id,
+			@PathVariable Long memberId,
 			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
 	) {
 		return ApiResponse.of(
-				memberFacade.updateMember(toMemberUpdateFacadeRequest(id, memberUpdateRequest))
+				memberFacade.updateMember(toMemberUpdateFacadeRequest(memberId, memberUpdateRequest))
 		);
 	}
 
-	@GetMapping("/{id}/delivery-infos")
+	@GetMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	public ApiResponse<Page<DeliveryInfoGetResponse>> getDeliveryInfoPage(
-			@PathVariable("id") Long memberId, Pageable pageable
+			@PathVariable("memberId") Long memberId, Pageable pageable
 	) {
 		return ApiResponse.of(
 				memberFacade.getDeliveryInfoPage(memberId, pageable)
 		);
 	}
 
-	@PostMapping("/{id}/delivery-infos")
+	@PostMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	public ApiResponse<DeliveryInfoRegisterResponse> registerDeliveryInfo(
 			@RequestBody @Valid DeliveryInfoRegisterRequest deliveryInfoRegisterRequest
@@ -122,7 +122,7 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.registerDeliveryInfo(deliveryInfoRegisterRequest));
 	}
 
-	@PutMapping("/{id}/delivery-infos")
+	@PutMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	public ApiResponse<DeliveryInfoUpdateResponse> updateDeliveryInfo(
 			@RequestBody @Valid DeliveryInfoUpdateRequest deliveryInfoUpdateRequest
@@ -130,7 +130,7 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.updateDeliveryInfo(deliveryInfoUpdateRequest));
 	}
 
-	@DeleteMapping("/{id}/delivery-infos")
+	@DeleteMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	public ApiResponse<String> deleteDeliveryInfo(
 			@RequestBody @Valid DeliveryInfoDeleteRequest deliveryInfoDeleteRequest
@@ -139,7 +139,7 @@ public class MemberController {
 		return ApiResponse.of("삭제 성공하였습니다.");
 	}
 
-	@PostMapping("/{id}/following")
+	@PostMapping("/{memberId}/followings")
 	@ResponseStatus(CREATED)
 	public ApiResponse<String> registerFollowing(
 			@RequestBody @Valid FollowingRegisterRequest followingRegisterRequest
@@ -148,7 +148,7 @@ public class MemberController {
 		return ApiResponse.of("follow 등록에 성공했습니다.");
 	}
 
-	@DeleteMapping("/{id}/following")
+	@DeleteMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
 	public ApiResponse<String> deleteFollowing(
 			@RequestBody @Valid FollowingDeleteRequest followingDeleteRequest
@@ -157,7 +157,7 @@ public class MemberController {
 		return ApiResponse.of("follow 삭제에 성공했습니다.");
 	}
 
-	@GetMapping("/{id}/following")
+	@GetMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
 	public ApiResponse<FollowingGetAllResponse> getAllFollowings() {
 		return ApiResponse.of(memberFacade.getAllFollowings());
