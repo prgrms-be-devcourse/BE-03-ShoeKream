@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("주문 조회 요청")
 public record OrderFindRequest(
-		@ApiModelProperty(value = "주문 id", example = "1")
+		@ApiModelProperty(value = "주문 id", required = true, example = "1")
 		Long id
 ) {
 }

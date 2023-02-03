@@ -42,7 +42,7 @@ public class SellingBidController {
 	@ApiOperation(value = "판매 입찰 조회")
 	public ApiResponse<SellingBidFindResponse> findOne(
 			@PathVariable("id")
-			@ApiParam(value = "찾고자 하는 판매 입찰의 id", required = true)
+			@ApiParam(value = "찾고자 하는 판매 입찰의 id", required = true, example = "1")
 			Long id) {
 		return ApiResponse.of(facade.findById(id));
 	}
@@ -52,7 +52,7 @@ public class SellingBidController {
 	@ApiOperation(value = "판매 입찰 삭제")
 	public ApiResponse<String> delete(
 			@PathVariable("id")
-			@ApiParam(value = "삭제 하고자 하는 판매 입찰의 id", required = true)
+			@ApiParam(value = "삭제 하고자 하는 판매 입찰의 id", required = true, example = "2")
 			Long id) {
 		facade.deleteById(id);
 		return ApiResponse.of("판매 입찰이 삭제되었습니다");
@@ -63,7 +63,7 @@ public class SellingBidController {
 	@ApiOperation(value = "판매 입찰 복구")
 	public ApiResponse<String> restore(
 			@PathVariable("id")
-			@ApiParam(value = "복구 하고자 하는 판매 입찰의 id", required = true)
+			@ApiParam(value = "복구 하고자 하는 판매 입찰의 id", required = true, example = "3")
 			Long id) {
 		facade.restoreById(id);
 		return ApiResponse.of("판매 입찰이 복구되었습니다");

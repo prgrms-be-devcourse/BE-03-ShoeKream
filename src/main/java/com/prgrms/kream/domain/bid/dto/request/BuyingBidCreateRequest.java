@@ -24,7 +24,7 @@ public record BuyingBidCreateRequest(
 		@NotNull(message = "상품의 가격은 필수 입력값입니다")
 		@Positive(message = "가격은 0월 보다 많아야 합니다")
 		int price,
-		@ApiModelProperty(value = "구매 입찰 유효 기간", example = "2023-02-03T00:43:45.494741")
+		@ApiModelProperty(value = "구매 입찰 유효 기간", required = true, example = "2023-02-03T00:43:45.494741")
 		@NotNull(message = "구매 입찰의 유효 기간을 정확하게 입력해주세요")
 		LocalDateTime validUntil
 ) {
