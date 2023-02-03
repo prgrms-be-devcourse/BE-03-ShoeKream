@@ -38,7 +38,7 @@ public class ProductAdminController {
 	/**
 	 * 관리자가 상품을 등록한다.
 	 * @author kimtaehee
-	 * @param productRegisterRequest 상품 등록 요청 정보
+	 * @param productRegisterRequest 상품 등록 요청 정보(등록할 상품 아이디, 상품 출시가격, 상품 설명, 상품 신발 사이즈, 상품 이미지)
 	 * @return ProductRegisterResponse
 	 * @see ProductFacade
 	 */
@@ -59,9 +59,9 @@ public class ProductAdminController {
 	}
 
 	/**
-	 * 관리자가 상품을 등록한다.
+	 * 관리자가 상품을 수정한다.
 	 * @author kimtaehee
-	 * @param productUpdateRequest 상품 수정 요청 정보
+	 * @param productUpdateRequest 상품 수정 요청 정보(수정할 상품 아이디, 상품 출시가격, 상품 설명, 상품 신발 사이즈, 상품 이미지)
 	 * @return ProductUpdateResponse
 	 * @see ProductFacade
 	 */
