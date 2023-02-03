@@ -20,35 +20,37 @@ class CouponEventRedisServiceTest {
 	CouponEventRedisService couponEventRedisService;
 
 	@BeforeEach
-	void addData() {
+	void registerData() {
 	ReflectionTestUtils.setField(CouponProperties.class, "throughput", 100L);
 	ReflectionTestUtils.setField(CouponProperties.class, "key", "couponTest");
-		for (int i=0; i<10000; i++) {
+		for (long i=0; i<10000; i++) {
 			CouponEventRegisterRequest couponEventRegisterRequest =
 					new CouponEventRegisterRequest(1L, i);
-			couponEventRedisService.addRedisQueue(couponEventRegisterRequest);
+			couponEventRedisService.registerCouponEventToRedis(couponEventRegisterRequest);
 		}
 	}
 
 	@AfterEach
 	void deleteData() {
-		couponEventRedisService.removeAll(CouponProperties.getKey());
+		couponEventRedisService.deleteAllCouponEvent(CouponProperties.getKey());
 	}
 
 	@Test
-	@DisplayName("add 호출 테스트")
-	void addRedisQueue() {
-		//given when
+	@DisplayName("Redis 추가 테스트")
+	void registerCouponEventToRedisTest() {
+		//given
+
+		//when
 
 		//then
-		assertThat(couponEventRedisService.getSize(CouponProperties.getKey())).isEqualTo(10000);
+		assertThat(couponEventRedisService.getRedisSize(CouponProperties.getKey())).isEqualTo(10000);
 	}
 
 	@Test
 	@DisplayName("Local Queue 추가 테스트")
-	void toLocalQueue() {
+	void registerCouponEventToLocalQueue() {
 		//given when
-		couponEventRedisService.toQueue(CouponProperties.getKey());
+		couponEventRedisService.registerCouponEventToLocalQueue(CouponProperties.getKey());
 
 		//then
 		assertThat(CouponEventLocalQueue.size()).isEqualTo(15L);

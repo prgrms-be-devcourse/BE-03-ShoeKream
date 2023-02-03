@@ -24,44 +24,44 @@ public class CouponFacade {
 	private final CouponService couponService;
 	private final CouponEventService couponEventService;
 	private final CouponEventRedisService couponEventRedisService;
-	private boolean soldOutFlag = false;
+	private boolean soldOut = false;
 
 	@Transactional
 	public CouponEventResponse registerCouponEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
 		couponService.decreaseCouponAmount(couponEventRegisterRequest.couponId());
 		isSoldOut(couponEventRegisterRequest.couponId());
-		validCouponEventRegisterRequest(couponEventRegisterRequest);
+		validateCouponEventRegisterRequest(couponEventRegisterRequest);
 		return couponEventService.registerCouponEvent(couponEventRegisterRequest);
 	}
 
 	@Transactional
-	public long applyCountEvent(CouponEventRegisterRequest couponEventRegisterRequest) {
-		return couponEventRedisService.addRedisQueue(couponEventRegisterRequest);
+	public long registerCouponEventToRedis(CouponEventRegisterRequest couponEventRegisterRequest) {
+		return couponEventRedisService.registerCouponEventToRedis(couponEventRegisterRequest);
 	}
 
 	@Scheduled(fixedRate = 1000, initialDelay = 1_000 * 60 * 5)
-	public void couponEventSchedule() {
-		if (soldOutFlag) {
-			couponEventRedisService.removeAll(CouponProperties.getKey());
+	public void registerRedisToLocalQueueSchedule() {
+		if (soldOut) {
+			couponEventRedisService.deleteAllCouponEvent(CouponProperties.getKey());
 			return;
 		}
-		couponEventRedisService.toQueue(CouponProperties.getKey());
+		couponEventRedisService.registerCouponEventToLocalQueue(CouponProperties.getKey());
 	}
 
 	@Scheduled(fixedDelay = 1000, initialDelay = 1_000 * 60 * 5)
-	public void couponEventMethod() {
-		if (soldOutFlag) {
+	public void registerCouponEventFromLocalQueue() {
+		if (soldOut) {
 			CouponEventLocalQueue.removeAll();
 		}
 		while (CouponEventLocalQueue.size() > 0) {
 			registerCouponEvent(
-					CouponEventLocalQueue.pollQueue()
+					CouponEventLocalQueue.poll()
 			);
 		}
 	}
 
-	private void validCouponEventRegisterRequest(CouponEventRegisterRequest couponEventRegisterRequest) {
-		if (!couponService.validCouponId(couponEventRegisterRequest.couponId())) {
+	private void validateCouponEventRegisterRequest(CouponEventRegisterRequest couponEventRegisterRequest) {
+		if (!couponService.validateCouponId(couponEventRegisterRequest.couponId())) {
 			throw new EntityNotFoundException("존재하지 않는 Coupon Id : " + couponEventRegisterRequest.couponId());
 		}
 		if (JwtUtil.isValidAccess(couponEventRegisterRequest.memberId())) {
@@ -70,7 +70,7 @@ public class CouponFacade {
 	}
 
 	private void isSoldOut(long couponId) {
-		soldOutFlag = couponService.isSoldOut(couponId);
+		soldOut = couponService.isSoldOut(couponId);
 	}
 
 }

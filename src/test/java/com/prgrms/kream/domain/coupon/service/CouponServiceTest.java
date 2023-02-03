@@ -27,17 +27,18 @@ public class CouponServiceTest {
 	@InjectMocks
 	CouponService couponService;
 
+	CouponRegisterRequest couponRegisterRequest = new CouponRegisterRequest(100, "테스트 쿠폰", 10000);
+	Coupon coupon = Coupon.builder()
+			.id(1L)
+			.amount(couponRegisterRequest.amount())
+			.name(couponRegisterRequest.name())
+			.discountValue(couponRegisterRequest.discountValue())
+			.build();
+
 	@Test
 	@DisplayName("쿠폰 생성 테스트")
 	void registerCouponTest() {
 		//given
-		CouponRegisterRequest couponRegisterRequest = new CouponRegisterRequest(100, "테스트 쿠폰", 10000);
-		Coupon coupon = Coupon.builder()
-				.id(1L)
-				.amount(couponRegisterRequest.amount())
-				.name(couponRegisterRequest.name())
-				.discountValue(couponRegisterRequest.discountValue())
-				.build();
 
 		//when
 		when(couponRepository.save(any(Coupon.class))).thenReturn(coupon);
@@ -51,13 +52,6 @@ public class CouponServiceTest {
 	@DisplayName("쿠폰 조회 테스트")
 	void getCouponByIdTest() {
 		//given
-		CouponRegisterRequest couponRegisterRequest = new CouponRegisterRequest(100, "테스트 쿠폰", 10000);
-		Coupon coupon = Coupon.builder()
-				.id(1L)
-				.amount(couponRegisterRequest.amount())
-				.name(couponRegisterRequest.name())
-				.discountValue(couponRegisterRequest.discountValue())
-				.build();
 		when(couponRepository.findById(1L)).thenReturn(Optional.of(coupon));
 
 		//when
@@ -79,5 +73,4 @@ public class CouponServiceTest {
 				couponService.getCouponById(1L)).isInstanceOf(EntityNotFoundException.class)
 				.hasMessage("존재하지 않는 Coupon couponId: 1");
 	}
-
 }

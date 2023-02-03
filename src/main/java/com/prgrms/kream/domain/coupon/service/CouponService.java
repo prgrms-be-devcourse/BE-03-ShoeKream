@@ -23,16 +23,16 @@ public class CouponService {
 
 	@Transactional
 	public CouponResponse getCouponById(long couponId) {
-		return toCouponResponse(getCoupon(couponId));
+		return toCouponResponse(getCouponEntity(couponId));
 	}
 
-	public boolean validCouponId(long couponId) {
+	public boolean validateCouponId(long couponId) {
 		return couponRepository.existsById(couponId);
 	}
 
 	@Transactional
 	public void decreaseCouponAmount(long couponId) {
-		Coupon coupon = getCoupon(couponId);
+		Coupon coupon = getCouponEntity(couponId);
 		coupon.decreaseAmount();
 	}
 
@@ -46,10 +46,10 @@ public class CouponService {
 	}
 
 	public boolean isSoldOut(long couponId) {
-		return getCoupon(couponId).isSoldOut();
+		return getCouponEntity(couponId).isSoldOut();
 	}
 
-	private Coupon getCoupon(long couponId) {
+	private Coupon getCouponEntity(long couponId) {
 		return couponRepository.findById(couponId)
 				.orElseThrow(
 						() -> new EntityNotFoundException("존재하지 않는 Coupon couponId: " + couponId)

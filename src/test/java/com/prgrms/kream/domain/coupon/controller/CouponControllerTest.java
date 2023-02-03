@@ -30,7 +30,7 @@ public class CouponControllerTest extends MysqlTestContainer {
 
 	@Test
 	@DisplayName("쿠폰 생성 테스트")
-	void couponRegisterTest() throws Exception {
+	void registerCouponTest() throws Exception {
 		//given
 		CouponRegisterRequest couponRegisterRequest = new CouponRegisterRequest(100, "테스트 쿠폰", 10000);
 
