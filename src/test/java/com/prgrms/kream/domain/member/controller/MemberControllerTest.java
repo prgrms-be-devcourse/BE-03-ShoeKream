@@ -136,7 +136,7 @@ class MemberControllerTest extends MysqlTestContainer {
 		MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
 				"name", "email@naver.com", "01012345678", "aA12345678!", true, ROLE_USER);
 
-		mockMvc.perform(post("/api/v1/member/signup")
+		mockMvc.perform(post("/api/v1/members/signup")
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberRegisterRequest))
 				).andExpect(status().isCreated())
@@ -152,7 +152,7 @@ class MemberControllerTest extends MysqlTestContainer {
 				"hello@naver.com", "Pa!12345678"
 		);
 
-		mockMvc.perform(post("/api/v1/member/login")
+		mockMvc.perform(post("/api/v1/members/login")
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberLoginRequest))
 				).andExpect(status().isOk())
@@ -168,7 +168,7 @@ class MemberControllerTest extends MysqlTestContainer {
 				"hello@naver.com", "Pa!12345678"
 		);
 
-		MvcResult mvcResult = mockMvc.perform(post("/api/v1/member/login")
+		MvcResult mvcResult = mockMvc.perform(post("/api/v1/members/login")
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(memberLoginRequest))
 				).andExpect(status().isOk())
@@ -176,7 +176,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 		Cookie tokenCookie = mvcResult.getResponse().getCookie(accessToken);
 
-		mockMvc.perform(get("/api/v1/member/logout").cookie(tokenCookie))
+		mockMvc.perform(get("/api/v1/members/logout").cookie(tokenCookie))
 				.andExpect(status().isOk())
 				.andExpect(header().string("Set-Cookie", Matchers.startsWith(accessToken + "=; Max-Age=0;")))
 				.andDo(print());
@@ -185,14 +185,16 @@ class MemberControllerTest extends MysqlTestContainer {
 	@Test
 	@DisplayName("사용자 정보 조회 성공")
 	void getMember_success() throws Exception {
-		mockMvc.perform(get("/api/v1/member/{id}", memberId))
+		mockMvc.perform(get("/api/v1/members/{id}", memberId))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.data.id").value(memberId))
 				.andExpect(jsonPath("$.data.name").value("name"))
 				.andExpect(jsonPath("$.data.email").value("hello@naver.com"))
 				.andExpect(jsonPath("$.data.phone").value("01012345678"))
 				.andExpect(jsonPath("$.data.imagePaths[0]").value(
-						"https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png"));
+						"https://shoe-kream-2023.s3.ap-northeast-2.amazonaws.com/"
+								+ "912eb38e-3b82-4e04-83f7-48b9f030057a-2023-02-01.png")
+				);
 	}
 
 	@Test
@@ -208,7 +210,7 @@ class MemberControllerTest extends MysqlTestContainer {
 		when(amazonS3.getUrl(eq(bucket), anyString()))
 				.thenReturn(new URL("http://testURL"));
 
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/member/{memberId}", memberId)
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/members/{memberId}", memberId)
 						.file(mockImage)
 						.param("name", "updatedName")
 						.param("phone", "01023456789")
@@ -288,7 +290,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 		deliveryInfoRepository.saveAll(deliveryInfoList);
 
-		mockMvc.perform(get("/api/v1/member/{id}/delivery-infos", memberId)
+		mockMvc.perform(get("/api/v1/members/{id}/addresses", memberId)
 						.param("page", "0")
 						.param("size", "5")
 				)
@@ -316,7 +318,7 @@ class MemberControllerTest extends MysqlTestContainer {
 						memberId
 				);
 
-		mockMvc.perform(post("/api/v1/member/{id}/delivery-infos", memberId)
+		mockMvc.perform(post("/api/v1/members/{id}/addresses", memberId)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(deliveryInfoRegisterRequest))
 				)
@@ -356,7 +358,7 @@ class MemberControllerTest extends MysqlTestContainer {
 						memberId
 				);
 
-		mockMvc.perform(put("/api/v1/member/{id}/delivery-infos", memberId)
+		mockMvc.perform(put("/api/v1/members/{id}/addresses", memberId)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(deliveryInfoUpdateRequest))
 				)
@@ -385,7 +387,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 		DeliveryInfoDeleteRequest deliveryInfoDeleteRequest = new DeliveryInfoDeleteRequest(deliveryInfo.getId());
 
-		mockMvc.perform(delete("/api/v1/member/{id}/delivery-infos", memberId)
+		mockMvc.perform(delete("/api/v1/members/{id}/addresses", memberId)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(deliveryInfoDeleteRequest))
 				)
@@ -412,7 +414,7 @@ class MemberControllerTest extends MysqlTestContainer {
 
 		FollowingRegisterRequest followingRegisterRequest = new FollowingRegisterRequest(followedMember.getId());
 
-		mockMvc.perform(post("/api/v1/member/{id}/following", memberId)
+		mockMvc.perform(post("/api/v1/members/{id}/followings", memberId)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(followingRegisterRequest))
 				)
@@ -431,7 +433,7 @@ class MemberControllerTest extends MysqlTestContainer {
 		FollowingDeleteRequest followingDeleteRequest =
 				new FollowingDeleteRequest(1L, 2L);
 
-		mockMvc.perform(delete("/api/v1/member/{id}/following", memberId)
+		mockMvc.perform(delete("/api/v1/members/{id}/followings", memberId)
 						.contentType(APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(followingDeleteRequest))
 				)
@@ -455,7 +457,7 @@ class MemberControllerTest extends MysqlTestContainer {
 		followRepository.save(following2);
 		followRepository.save(following3);
 
-		mockMvc.perform(get("/api/v1/member/{id}/following", memberId))
+		mockMvc.perform(get("/api/v1/members/{id}/followings", memberId))
 				.andExpect(jsonPath("$.data.FollowedMemberIds[0]").value("2"))
 				.andExpect(jsonPath("$.data.FollowedMemberIds[1]").value("3"))
 				.andExpect(jsonPath("$.data.FollowedMemberIds[2]").value("4"))
