@@ -114,14 +114,14 @@ public class OrderFacade {
 
 	@Transactional(readOnly = true)
 	public OrderFindResponse getOrder(OrderFindRequest orderFindRequest) {
-		return orderService.findById(orderFindRequest);
+		return orderService.getOrder(orderFindRequest);
 	}
 
 	@Transactional
 	public void deleteOrder(Long id) {
 		OrderCancelRequest orderCancelRequest = new OrderCancelRequest(id);
 		OrderFindRequest orderFindRequest = new OrderFindRequest(id);
-		Order order = toOrder(orderService.findById(orderFindRequest));
+		Order order = toOrder(orderService.getOrder(orderFindRequest));
 
 		// todo 주문 취소시 패널티를 준다(거래 금지 일시 or 수수료)
 		if (order.getIsBasedOnSellingBid()) {
@@ -146,9 +146,9 @@ public class OrderFacade {
 		if (orderUpdateStatusResponse.orderStatus() == OrderStatus.ORDER_CONFIRMED) {
 			AccountUpdateOtherServiceRequest accountUpdateOtherServiceRequest =
 					new AccountUpdateOtherServiceRequest(
-							orderService.findById(new OrderFindRequest(orderUpdateStatusRequest.id())).sellerId(),
+							orderService.getOrder(new OrderFindRequest(orderUpdateStatusRequest.id())).sellerId(),
 							TransactionType.DEPOSIT,
-							orderService.findById(new OrderFindRequest(orderUpdateStatusRequest.id())).price()
+							orderService.getOrder(new OrderFindRequest(orderUpdateStatusRequest.id())).price()
 					);
 			accountFacade.updateBalance(accountUpdateOtherServiceRequest);
 		}

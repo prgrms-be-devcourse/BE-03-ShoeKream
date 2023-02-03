@@ -31,11 +31,11 @@ public class OrderService {
 	}
 
 	@Transactional(readOnly = true)
-	public OrderFindResponse findById(OrderFindRequest orderFindRequest) {
+	public OrderFindResponse getOrder(OrderFindRequest orderFindRequest) {
 		return orderRepository
 				.findById(orderFindRequest.id())
 				.map(OrderMapper::toOrderFindResponse)
-				.orElseThrow(EntityNotFoundException::new);
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다."));
 	}
 
 	@Transactional
@@ -43,7 +43,7 @@ public class OrderService {
 		orderRepository.updateOrderStatusById(orderUpdateStatusRequest.orderStatus(), orderUpdateStatusRequest.id());
 		return new OrderUpdateStatusResponse(
 				orderRepository.findById(orderUpdateStatusRequest.id())
-						.orElseThrow(EntityNotFoundException::new)
+						.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다, 주문의 상태를 변경할 수 없습니다."))
 						.getOrderStatus()
 		);
 	}

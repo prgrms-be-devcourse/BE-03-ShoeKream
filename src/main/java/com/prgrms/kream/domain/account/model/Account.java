@@ -38,10 +38,10 @@ public class Account extends BaseTimeEntity {
 
 	public void updateBalance(TransactionType transactionType, int amount) {
 		if (amount <= 0) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("거래 금액은 자연수여야합니다.");
 		}
 		if (transactionType == TransactionType.WITHDRAW && balance < amount) {
-			throw new BalanceNotEnoughException("");
+			throw new BalanceNotEnoughException("잔액이 부족합니다");
 		}
 		if (transactionType == TransactionType.DEPOSIT) {
 			balance += amount;

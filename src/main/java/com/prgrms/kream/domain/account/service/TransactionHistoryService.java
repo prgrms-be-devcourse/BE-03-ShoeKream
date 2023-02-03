@@ -32,6 +32,6 @@ public class TransactionHistoryService {
 	}
 
 	private TransactionHistory findTransactionHistoryEntityById(Long id) {
-		return transactionHistoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		return transactionHistoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("거래 내역을 찾을 수 없습니다"));
 	}
 }

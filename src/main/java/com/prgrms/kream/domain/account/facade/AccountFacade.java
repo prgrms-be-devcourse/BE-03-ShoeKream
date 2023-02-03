@@ -61,7 +61,7 @@ public class AccountFacade {
 	@Transactional(readOnly = true)
 	public List<TransactionHistoryGetResponse> getAllTransactionHistories(
 			TransactionHistoryGetFacadeRequest transactionHistoryGetFacadeRequest) {
-		Long accountId = accountService.get(new AccountGetRequest(transactionHistoryGetFacadeRequest.memberId())).id();
+		Long accountId = accountService.getAccount(new AccountGetRequest(transactionHistoryGetFacadeRequest.memberId())).id();
 		return transactionHistoryService.getAll(new TransactionHistoryGetServiceRequest(accountId));
 	}
 }

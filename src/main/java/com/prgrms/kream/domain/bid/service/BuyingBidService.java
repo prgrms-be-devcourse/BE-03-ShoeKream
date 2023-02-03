@@ -29,18 +29,20 @@ public class BuyingBidService {
 	public BuyingBidFindResponse getBuyingBid(BuyingBidFindRequest buyingBidFindRequest) {
 		return repository.findById(buyingBidFindRequest.ids().get(0))
 				.map(BidMapper::toBuyingBidFindResponse)
-				.orElseThrow(EntityNotFoundException::new);
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 구매 입찰입니다"));
 	}
 
 	@Transactional
 	public void deleteBuyingBid(Long id) {
-		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+		BuyingBid buyingBid =
+				repository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재 하지 않는 구매 입찰을 삭제할 수 없습니다."));
 		buyingBid.delete();
 	}
 
 	@Transactional
 	public void restoreBuyingBid(Long id) {
-		BuyingBid buyingBid = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+		BuyingBid buyingBid =
+				repository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재 하지 않는 구매 입찰을 복구할 수 없습니다."));
 		if (buyingBid.getValidUntil().isAfter(LocalDateTime.now())) {
 			buyingBid.restore();
 		}
