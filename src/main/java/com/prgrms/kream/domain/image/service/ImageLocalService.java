@@ -71,7 +71,7 @@ public class ImageLocalService implements ImageService {
 		try {
 			Files.delete(path);
 		} catch (IOException e) {
-			throw new FileDeleteFailedException("Failed to delete (local)");
+			throw new FileDeleteFailedException("로컬에서 이미지 삭제를 실패하였습니다.");
 		}
 	}
 
@@ -103,7 +103,7 @@ public class ImageLocalService implements ImageService {
 			}
 			multipartFile.transferTo(new File(getFullPath(uniqueName)));
 		} catch (IOException e) {
-			throw new FileUploadFailedException("Failed to save (local)");
+			throw new FileUploadFailedException("로컬에 이미지 업로드를 실패하였습니다.");
 		}
 	}
 

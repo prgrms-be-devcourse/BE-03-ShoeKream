@@ -63,7 +63,7 @@ public class ImageS3Service implements ImageService {
 		try {
 			amazonS3.deleteObject(bucket, fileName);
 		} catch (AmazonServiceException e) {
-			throw new FileDeleteFailedException("Failed to delete (S3)");
+			throw new FileDeleteFailedException("S3에서 이미지 삭제를 실패하였습니다.");
 		}
 	}
 
@@ -103,7 +103,7 @@ public class ImageS3Service implements ImageService {
 			objectMetadata.setContentLength(multipartFile.getInputStream().available());
 			amazonS3.putObject(bucket, uniqueName, multipartFile.getInputStream(), objectMetadata);
 		} catch (IOException e) {
-			throw new FileUploadFailedException("Failed to save (S3)");
+			throw new FileUploadFailedException("S3에 이미지 업로드를 실패하였습니다.");
 		}
 
 		return amazonS3.getUrl(bucket, uniqueName).toString();
