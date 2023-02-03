@@ -7,6 +7,9 @@ import com.prgrms.kream.domain.account.dto.response.AccountCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.AccountUpdateResponse;
 import com.prgrms.kream.domain.account.dto.response.TransactionHistoryGetResponse;
 import com.prgrms.kream.domain.account.facade.AccountFacade;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,26 +26,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
+@Api(tags = "계좌 컨트롤러")
 public class AccountController {
 	private final AccountFacade accountFacade;
 
 	@PostMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ApiResponse<AccountCreateResponse> register(@PathVariable("id") Long id) {
+	@ApiOperation(value = "계좌 생성")
+	public ApiResponse<AccountCreateResponse> register(
+			@PathVariable("id")
+			@ApiParam(value = "계좌를 만들고자 하는 회원 id", required = true, example = "1")
+			Long id) {
 		return ApiResponse.of(accountFacade.register(id));
 	}
 
 	@PutMapping
 	@ResponseStatus(code = HttpStatus.OK)
+	@ApiOperation(value = "계좌 입출금")
 	public ApiResponse<AccountUpdateResponse> updateBalance(
-			@RequestBody @Valid AccountUpdateFacadeRequest accountUpdateFacadeRequest
+			@RequestBody @Valid
+			@ApiParam(value = "거래 정보", required = true)
+			AccountUpdateFacadeRequest accountUpdateFacadeRequest
 	) {
 		return ApiResponse.of(accountFacade.updateBalance(accountUpdateFacadeRequest));
 	}
 
 	@GetMapping("transaction-histories/{memberId}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ApiResponse<List<TransactionHistoryGetResponse>> getAllByMemberId(@PathVariable("memberId")Long memberId){
+	@ApiOperation(value = "거래 내역 조회")
+	public ApiResponse<List<TransactionHistoryGetResponse>> getAllByMemberId(
+			@PathVariable("memberId")
+			@ApiParam(value = "거래 내역을 조회하고자 하는 회원 id", required = true, example = "1")
+			Long memberId) {
 		TransactionHistoryGetFacadeRequest transactionHistoryGetFacadeRequest =
 				new TransactionHistoryGetFacadeRequest(memberId);
 		return ApiResponse.of(accountFacade.getAllTransactionHistories(transactionHistoryGetFacadeRequest));

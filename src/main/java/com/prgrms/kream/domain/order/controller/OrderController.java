@@ -1,12 +1,14 @@
 package com.prgrms.kream.domain.order.controller;
 
 import com.prgrms.kream.common.api.ApiResponse;
-import com.prgrms.kream.domain.order.dto.request.OrderCancelRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderCreateFacadeRequest;
 import com.prgrms.kream.domain.order.dto.request.OrderFindRequest;
 import com.prgrms.kream.domain.order.dto.response.OrderCreateResponse;
 import com.prgrms.kream.domain.order.dto.response.OrderFindResponse;
 import com.prgrms.kream.domain.order.facade.OrderFacade;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,23 +23,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/order")
+@RequestMapping("/api/v1/orders")
+@Api(tags = "주문 컨트롤러")
 public class OrderController {
 	private final OrderFacade orderFacade;
 
-	@PostMapping("/selling-bid")
+	@PostMapping("/selling-bids")
 	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "판매 입찰 기반 주문 생성")
 	public ApiResponse<OrderCreateResponse> registerBySellingBid(
-			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
+			@Valid @RequestBody
+			@ApiParam(value = "판매 입찰 정보", required = true)
+			OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
 		OrderCreateResponse orderCreateResponse = orderFacade.registerBySellingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
 	}
 
-	@PostMapping("/buying-bid")
+	@PostMapping("/buying-bids")
 	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "구매 입찰 기반 주문 생성")
 	public ApiResponse<OrderCreateResponse> registerByBuyingBid(
-			@Valid @RequestBody OrderCreateFacadeRequest orderCreateFacadeRequest
+			@Valid @RequestBody
+			@ApiParam(value = "구매 입찰 정보", required = true)
+			OrderCreateFacadeRequest orderCreateFacadeRequest
 	) {
 		OrderCreateResponse orderCreateResponse = orderFacade.registerByBuyingBid(orderCreateFacadeRequest);
 		return ApiResponse.of(orderCreateResponse);
@@ -45,13 +54,21 @@ public class OrderController {
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<OrderFindResponse> findById(@Valid @RequestBody OrderFindRequest orderFindRequest) {
+	@ApiOperation(value = "주문 조회")
+	public ApiResponse<OrderFindResponse> findById(
+			@Valid @RequestBody
+			@ApiParam(value = "조회할 주문 정보 목록", required = true)
+			OrderFindRequest orderFindRequest) {
 		return ApiResponse.of(orderFacade.findById(orderFindRequest));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<String> deleteById(@PathVariable("id") Long id) {
+	@ApiOperation(value = "주문 삭제")
+	public ApiResponse<String> deleteById(
+			@PathVariable("id")
+			@ApiParam(value = "삭제하고자 하는 주문 id", required = true, example = "1")
+			Long id) {
 		orderFacade.deleteById(id);
 		return ApiResponse.of("주문이 삭제되었습니다");
 	}
