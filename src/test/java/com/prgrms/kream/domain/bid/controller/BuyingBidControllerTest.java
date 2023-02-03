@@ -118,7 +118,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		// When
 		ResultActions resultActions =
 				mockMvc.perform(
-						post("/api/v1/buying-bid")
+						post("/api/v1/buying-bids")
 								.contentType(MediaType.APPLICATION_JSON)
 								.characterEncoding("UTF-8")
 								.content(
@@ -139,7 +139,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		addFiveBuyingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bid/{id}", 2));
+		ResultActions resultActions = mockMvc.perform(get("/api/v1/buying-bids/{id}", 2));
 
 		// Then
 		resultActions
@@ -157,7 +157,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		addFiveBuyingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bid/delete/{id}", 1));
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bids/delete/{id}", 1));
 
 		// Then
 		resultActions
@@ -173,7 +173,7 @@ public class BuyingBidControllerTest extends MysqlTestContainer {
 		addFiveBuyingBids();
 
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bid/restore/{id}", 3));
+		ResultActions resultActions = mockMvc.perform(put("/api/v1/buying-bids/restore/{id}", 3));
 
 		// Then
 		resultActions

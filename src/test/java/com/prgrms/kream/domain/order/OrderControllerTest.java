@@ -180,7 +180,7 @@ public class OrderControllerTest extends MysqlTestContainer {
 
 		// When
 		ResultActions resultActions =
-				mockMvc.perform(post("/api/v1/order/selling-bid")
+				mockMvc.perform(post("/api/v1/orders/selling-bids")
 						.contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("UTF-8")
 						.content(
@@ -209,7 +209,7 @@ public class OrderControllerTest extends MysqlTestContainer {
 
 		// When
 		ResultActions resultAction =
-				mockMvc.perform(delete("/api/v1/order/{id}", 1L)
+				mockMvc.perform(delete("/api/v1/orders/{id}", 1L)
 						.contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("UTF-8")
 				);
