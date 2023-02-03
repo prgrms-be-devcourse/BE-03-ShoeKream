@@ -11,7 +11,9 @@ public record FeedGetRequest(
 		SortType sortType
 ) {
 	public FeedGetRequest {
-		if (pageSize == null || pageSize < 0) pageSize = 10;
-		if (sortType == null) sortType = SortType.POPULAR;
+		if (pageSize == null || pageSize < 0)
+			pageSize = 10;
+		if (sortType == null)
+			sortType = SortType.POPULAR;
 	}
 }
