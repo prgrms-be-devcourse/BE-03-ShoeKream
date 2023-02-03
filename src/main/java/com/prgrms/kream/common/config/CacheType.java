@@ -14,7 +14,7 @@ public enum CacheType {
 	private final int maximumSize;
 
 	static class ConstantConfig {
-		static final int DEFAULT_TTL_SEC = 300;
+		static final int DEFAULT_TTL_SEC = 3600;
 		static final int DEFAULT_MAX_SIZE = 10000;
 	}
 }
