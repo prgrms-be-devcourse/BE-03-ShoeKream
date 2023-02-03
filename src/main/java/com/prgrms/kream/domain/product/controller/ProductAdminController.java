@@ -3,6 +3,7 @@ package com.prgrms.kream.domain.product.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,13 +37,13 @@ public class ProductAdminController {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	@ApiOperation(value = "상품 등록")
+	@ApiOperation(value = "상품 등록", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "name", value = "상품 이름", required = true),
-			@ApiImplicitParam(name = "releasePrice", value = "상품 출시가격", required = true),
-			@ApiImplicitParam(name = "description", value = "상품 설명", required = true),
-			@ApiImplicitParam(name = "sizes", value = "상품 신발 사이즈", required = true),
-			@ApiImplicitParam(name = "images", value = "상품 이미지", required = true)
+			@ApiImplicitParam(name = "name", value = "상품 이름", dataType = "string", paramType = "form", required = true),
+			@ApiImplicitParam(name = "releasePrice", value = "상품 출시가격", dataType = "int", paramType = "form", required = true),
+			@ApiImplicitParam(name = "description", value = "상품 설명", dataType = "string", paramType = "form", required = true),
+			@ApiImplicitParam(name = "sizes", value = "상품 신발 사이즈", dataType = "int", paramType = "form", required = true, allowMultiple = true),
+			@ApiImplicitParam(name = "images", value = "상품 이미지", dataType = "multipart-file", paramType = "form", required = true, allowMultiple = true)
 	})
 	public ApiResponse<ProductRegisterResponse> registerProduct(
 			@ModelAttribute @Valid ProductRegisterRequest productRegisterRequest) {
@@ -52,13 +53,13 @@ public class ProductAdminController {
 
 	@PatchMapping
 	@ResponseStatus(code = HttpStatus.OK)
-	@ApiOperation(value = "상품 수정")
+	@ApiOperation(value = "상품 수정", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "id", value = "수정할 상품 아이디", required = true),
-			@ApiImplicitParam(name = "releasePrice", value = "상품 출시가격", required = true),
-			@ApiImplicitParam(name = "description", value = "상품 설명", required = true),
-			@ApiImplicitParam(name = "sizes", value = "상품 신발 사이즈", required = true),
-			@ApiImplicitParam(name = "images", value = "상품 이미지", required = true)
+			@ApiImplicitParam(name = "id", value = "수정할 상품 아이디", dataType = "long", paramType = "form", required = true),
+			@ApiImplicitParam(name = "releasePrice", value = "상품 출시가격", dataType = "int", paramType = "form", required = true),
+			@ApiImplicitParam(name = "description", value = "상품 설명", dataType = "string", paramType = "form", required = true),
+			@ApiImplicitParam(name = "sizes", value = "상품 신발 사이즈", dataType = "int", paramType = "form", required = true, allowMultiple = true),
+			@ApiImplicitParam(name = "images", value = "상품 이미지", dataType = "multipart-file", paramType = "form", required = true, allowMultiple = true)
 	})
 	public ApiResponse<ProductUpdateResponse> updateProduct(
 			@ApiParam(value = "상품 수정 요청 정보", required = true)
