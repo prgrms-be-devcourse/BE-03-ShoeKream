@@ -15,36 +15,36 @@ public class CouponEventRedisService {
 	private final CouponEventRedisRepository couponEventRedisRepository;
 	private long throughput = CouponProperties.getThroughput();
 
-	public long addRedisQueue(CouponEventRegisterRequest couponEventRegisterRequest) {
-		couponEventRedisRepository.add(couponEventRegisterRequest);
-		return getSize(CouponProperties.getKey());
+	public long registerCouponEventToRedis(CouponEventRegisterRequest couponEventRegisterRequest) {
+		couponEventRedisRepository.register(couponEventRegisterRequest);
+		return getRedisSize(CouponProperties.getKey());
 	}
 
-	public Long getSize(String key) {
-		return couponEventRedisRepository.size(key);
+	public Long getRedisSize(String key) {
+		return couponEventRedisRepository.getSize(key);
 	}
 
-	public void toQueue(String key) {
+	public void registerCouponEventToLocalQueue(String key) {
 		tuneThroughput();
-		long size = getSize(key);
+		long size = getRedisSize(key);
 
 		if (size > throughput) {
-			addToQueue(key, throughput);
+			registerToLocalQueue(key, throughput);
 			return;
 		}
 		if (size <= throughput) {
-			addToQueue(key, size);
+			registerToLocalQueue(key, size);
 			return;
 		}
 	}
 
-	public void removeAll(String key) {
-		couponEventRedisRepository.removeAll(key);
+	public void deleteAllCouponEvent(String key) {
+		couponEventRedisRepository.deleteAll(key);
 	}
 
-	private void addToQueue(String key, long size) {
+	private void registerToLocalQueue(String key, long size) {
 		for (int i = 0; i < size; i++) {
-			CouponEventLocalQueue.addQueue(
+			CouponEventLocalQueue.add(
 					couponEventRedisRepository.pop(key)
 			);
 		}

@@ -17,6 +17,7 @@ import com.prgrms.kream.domain.coupon.dto.response.CouponResponse;
 import com.prgrms.kream.domain.coupon.model.Coupon;
 import com.prgrms.kream.domain.coupon.model.CouponEvent;
 import com.prgrms.kream.domain.coupon.repository.CouponEventRepository;
+import com.prgrms.kream.domain.member.model.Authority;
 import com.prgrms.kream.domain.member.model.Member;
 import com.sun.jdi.request.DuplicateRequestException;
 
@@ -28,65 +29,51 @@ class CouponEventServiceTest {
 	@InjectMocks
 	CouponEventService couponEventService;
 
+	Coupon coupon = Coupon.builder()
+			.id(1L)
+			.amount(100)
+			.name("쿠폰 이름")
+			.discountValue(50)
+			.build();
+
+	Member member = Member.builder()
+			.id(1L)
+			.email("test@test.com")
+			.phone("01012345678")
+			.password("1234asdf!@#$")
+			.isMale(true)
+			.authority(Authority.ROLE_ADMIN)
+			.name("name")
+			.build();
+	CouponResponse couponResponse = toCouponResponse(coupon);
+
+	CouponEventRegisterRequest couponEventRegisterRequest =
+			new CouponEventRegisterRequest(member.getId(), couponResponse.id());
+
+	CouponEvent couponEvent = CouponEvent.builder()
+			.id(1L)
+			.couponId(coupon.getId())
+			.memberId(couponEventRegisterRequest.memberId())
+			.build();
+
 	@Test
 	@DisplayName("쿠폰 발급 테스트")
 	void registerCouponEventTest() {
 		//given
-		Coupon coupon = Coupon.builder()
-				.id(1L)
-				.amount(100)
-				.name("쿠폰 이름")
-				.discountValue(50)
-				.build();
-		CouponResponse couponResponse = toCouponResponse(coupon);
-		Member member = Member.builder()
-				.id(1L)
-				.email("test@test.com")
-				.phone("01012345678")
-				.password("1234asdf!@#$")
-				.isMale(true)
-				// .authority("ADMIN")
-				.name("name")
-				.build();
-		CouponEventRegisterRequest couponEventRegisterRequest =
-				new CouponEventRegisterRequest(member.getId(), couponResponse.id());
-		CouponEvent couponEvent = CouponEvent.builder()
-				.id(1L)
-				.couponId(coupon.getId())
-				.memberId(couponEventRegisterRequest.memberId())
-				.build();
 
 		//when
 		when(couponEventRepository.save(any(CouponEvent.class)))
 				.thenReturn(couponEvent);
-		CouponEventResponse couponEventControllerResponse = couponEventService.registerCouponEvent(couponEventRegisterRequest);
+		CouponEventResponse couponEventResponse = couponEventService.registerCouponEvent(couponEventRegisterRequest);
 
 		//then
-		assertThat(couponEventControllerResponse.id()).isEqualTo(couponEvent.getId());
+		assertThat(couponEventResponse.id()).isEqualTo(couponEvent.getId());
 	}
 
 	@Test
 	@DisplayName("중복 발급 테스트")
-	void OverLapCouponEventTest() {
+	void DuplicateCouponEventTest() {
 		//given
-		Coupon coupon = Coupon.builder()
-				.id(1L)
-				.amount(100)
-				.name("쿠폰 이름")
-				.discountValue(50)
-				.build();
-		CouponResponse couponResponse = toCouponResponse(coupon);
-		Member member = Member.builder()
-				.id(1L)
-				.email("test@test.com")
-				.phone("01012345678")
-				.password("1234asdf!@#$")
-				.isMale(true)
-				// .authority("ADMIN")
-				.name("name")
-				.build();
-		CouponEventRegisterRequest couponEventRegisterRequest =
-				new CouponEventRegisterRequest(member.getId(), couponResponse.id());
 
 		//when
 		when(couponEventRepository.existsByMemberIdAndCouponId(any(Long.class), any(Long.class)))

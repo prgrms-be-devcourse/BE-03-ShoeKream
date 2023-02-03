@@ -26,5 +26,4 @@ public record CouponRegisterRequest(
 		@ApiModelProperty(value = "쿠폰 수량", required = true, example = "1000")
 		int amount
 ) {
-
 }

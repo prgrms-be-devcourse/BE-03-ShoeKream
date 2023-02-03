@@ -36,7 +36,7 @@ public class CouponController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "쿠폰 생성")
-	public ApiResponse<CouponResponse> couponRegister(
+	public ApiResponse<CouponResponse> registerCoupon(
 			@ApiParam(value = "생성할 쿠폰 요청 정보", required = true)
 			@RequestBody @Valid CouponRegisterRequest couponRegisterRequest
 	) {

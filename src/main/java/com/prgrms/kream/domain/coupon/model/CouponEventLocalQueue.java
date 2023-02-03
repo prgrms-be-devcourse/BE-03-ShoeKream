@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class CouponEventLocalQueue {
 	private static Queue<CouponEventRegisterRequest> couponEventQueue = new ArrayDeque<>();
 
-	public static boolean addQueue(CouponEventRegisterRequest couponEventRegisterRequest) {
+	public static boolean add(CouponEventRegisterRequest couponEventRegisterRequest) {
 		return couponEventQueue.add(couponEventRegisterRequest);
 	}
 
-	public static CouponEventRegisterRequest pollQueue() {
+	public static CouponEventRegisterRequest poll() {
 		return couponEventQueue.poll();
 	}
 
