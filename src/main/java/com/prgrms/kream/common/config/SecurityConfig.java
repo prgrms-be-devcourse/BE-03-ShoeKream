@@ -39,7 +39,14 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.anyRequest().permitAll()
+				.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+				.antMatchers(
+						"/api/v1/members/signup",
+						"/api/v1/members/login",
+						"/api/v1/products",
+						"/api/v1/feeds"
+				).permitAll()
+				.anyRequest().hasRole("USER")
 				.and()
 				.csrf().disable()
 				.headers().disable()
