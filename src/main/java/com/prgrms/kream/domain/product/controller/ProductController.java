@@ -30,6 +30,13 @@ public class ProductController {
 
 	private final ProductFacade productFacade;
 
+	/**
+	 * 사용자가 상품 상세 정보를 조회한다.
+	 * @author kimtaehee
+	 * @param id 상세 조회할 상품 아이디
+	 * @return ProductGetResponse
+	 * @see ProductFacade
+	 */
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "상품 상세 조회")
@@ -38,6 +45,13 @@ public class ProductController {
 		return ApiResponse.of(productFacade.getProduct(id));
 	}
 
+	/**
+	 * 사용자가 상품 목록을 조회한다.
+	 * @author kimtaehee
+	 * @param productGetAllRequest 상품 목록 조회 요청 정보(커서 아이디, 페이지 사이즈, 검색어)
+	 * @return ProductGetAllResponses
+	 * @see ProductFacade
+	 */
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "상품 목록 조회")

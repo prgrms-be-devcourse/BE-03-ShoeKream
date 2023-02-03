@@ -35,6 +35,13 @@ public class ProductAdminController {
 
 	private final ProductFacade productFacade;
 
+	/**
+	 * 관리자가 상품을 등록한다.
+	 * @author kimtaehee
+	 * @param productRegisterRequest 상품 등록 요청 정보
+	 * @return ProductRegisterResponse
+	 * @see ProductFacade
+	 */
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "상품 등록", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -51,6 +58,13 @@ public class ProductAdminController {
 		return ApiResponse.of(productFacade.registerProduct(productRegisterRequest));
 	}
 
+	/**
+	 * 관리자가 상품을 등록한다.
+	 * @author kimtaehee
+	 * @param productUpdateRequest 상품 수정 요청 정보
+	 * @return ProductUpdateResponse
+	 * @see ProductFacade
+	 */
 	@PatchMapping
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "상품 수정", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -68,6 +82,13 @@ public class ProductAdminController {
 		return ApiResponse.of(productFacade.updateProduct(productUpdateRequest));
 	}
 
+	/**
+	 * 관리자가 상품을 삭제한다.
+	 * @author kimtaehee
+	 * @param id 삭제할 상품 아이디
+	 * @return String
+	 * @see ProductFacade
+	 */
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "상품 삭제")
 	@ResponseStatus(code = HttpStatus.OK)
