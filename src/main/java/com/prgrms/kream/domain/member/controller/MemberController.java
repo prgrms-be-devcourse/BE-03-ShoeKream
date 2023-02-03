@@ -96,11 +96,11 @@ public class MemberController {
 	@PostMapping("/{memberId}")
 	@ResponseStatus(OK)
 	public ApiResponse<MemberUpdateResponse> updateMember(
-			@PathVariable("memberId") Long id,
+			@PathVariable Long memberId,
 			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
 	) {
 		return ApiResponse.of(
-				memberFacade.updateMember(toMemberUpdateFacadeRequest(id, memberUpdateRequest))
+				memberFacade.updateMember(toMemberUpdateFacadeRequest(memberId, memberUpdateRequest))
 		);
 	}
 
