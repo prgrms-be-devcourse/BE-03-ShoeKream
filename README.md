@@ -18,9 +18,11 @@
 
 <img src="https://play-lh.googleusercontent.com/Gh73JjkOE27zN6F8l4tWqlzgpHMEyEZJLOOg8-RQfYtPBAwsSCWNcqvdhgTaqGSOLA" width="60%"/>
 
-### 명품 중고거래 플랫폼 서비스인 크림의 클론 프로젝트입니다.
+### 한정판 명품 중고거래 플랫폼 서비스인 [Kream](https://kream.co.kr/?utm_source=google&utm_medium=cpc&utm_campaign=NEW_%EC%9E%90%EC%82%AC%EB%AA%85_PC&utm_term=%ED%81%AC%EB%A6%BC&utm_content=A.%20%EC%9E%90%EC%82%AC%EB%AA%85)의 클론 프로젝트입니다.
 
 <br/>
+
+###  [프로젝트 목표 및 선정 과정](https://backend-devcourse.notion.site/6894fc473fc7477cbc54dc9f9c9f1a0f)
 
 ---
 
@@ -28,9 +30,9 @@
 
 - ### 🏀 [노션](https://backend-devcourse.notion.site/2-8a46cbf23a3b4bfbb67cc3065bc8984a)
 
-- ### 🎱 [회고](추가 예정)
+- ### 🎱 [회고](https://backend-devcourse.notion.site/227d1ad1ed7e4a10822d6231ac9d7c61)
 
-- ### ⚾️ [API 명세서](추가 예정)
+- ### ⚾️ [API 명세서](https://backend-devcourse.notion.site/API-43b32470db8d4d389e02f81103cab47e)
 
 
 
@@ -61,8 +63,8 @@
         </a>
     </td>
     <td>
-        <a href=“https://github.com/boompatron”>
-            <img src=“https://avatars.githubusercontent.com/u/39071638?v=4” width=“100px” />
+        <a href="https://github.com/boompatron">
+            <img src="https://avatars.githubusercontent.com/u/39071638?v=4" width="100px" />
         </a>
     </td>
     <td>
@@ -118,11 +120,14 @@
 <p align="center">
 <img src="https://img.shields.io/badge/MySQL 8.0-4479A1?style=flat-square&logo=MySQL&logoColor=white"/></img>
 <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=Gradle&logoColor=white"/></img>
+<img src="https://img.shields.io/badge/TestContainers-01334B?style=flat-square&logo=TestContainers&logoColor=white"/></img>
 </p>
 
 <p align="center">
 <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white"/>
 <img src="https://img.shields.io/badge/Amazon S3-569A31?style=flat-square&logo=Amazon S3&logoColor=white"/>
+<img src="https://img.shields.io/badge/nGrinder-FF9900?style=flat-square&logo=nGrinder&logoColor=white"/>
+</>
 </>
 
 
@@ -131,26 +136,24 @@
 <img src="https://img.shields.io/badge/Jira Software-0052CC?style=flat-square&logo=Jira Software&logoColor=white"/>
 <img src="https://img.shields.io/badge/Git-F05032.svg?style=flat-square&logo=Git&logoColor=white"/>
 <img src="https://img.shields.io/badge/GitHub-181717.svg?style=flat-square&logo=GitHub&logoColor=white"/>
-<img src="https://img.shields.io/badge/IntelliJ IDEA-000000.svg?style=flat-square&logo=IntelliJ IDEA&logoColor=white"/>
-
-
 <img src="https://img.shields.io/badge/Notion-000000?style=flat-square&logo=Notion&logoColor=white"/>
 <img src="https://img.shields.io/badge/Salck-4A154B?style=flat-square&logo=Slack&logoColor=white"/>
+
+
+<img src="https://img.shields.io/badge/IntelliJ IDEA-000000.svg?style=flat-square&logo=IntelliJ IDEA&logoColor=white"/>
 <img src="https://img.shields.io/badge/Postman-FF6C37.svg?style=flat-square&logo=Postman&logoColor=white"/>
 <img src="https://img.shields.io/badge/Swagger 2.9.2-85EA2D?style=flat-square&logo=Swagger&logoColor=white"/>
 
 </p>
 
 ---
-
-<br/>
-
 ## 🍰 ERD
 
-슈크림.png
+![image](https://user-images.githubusercontent.com/85796588/216571976-14a1a0de-7b46-44a3-ad99-bfde5c809d7b.png)
 
 
-🔗[ERD 보러가기](https://www.erdcloud.com/d/ZGfSkrq8AhFs8RpLY)
+🔗[ERD 보러가기](https://www.erdcloud.com/d/ZGfSkrq8AhFs8RpLY)
+
 
 ---
 <br/>
@@ -179,4 +182,3 @@
 | Refactor | 코드 리펙토링 |
 | Test | 테스트 코드, 리펙토링 테스트 코드 추가 |
 
-<br/>
