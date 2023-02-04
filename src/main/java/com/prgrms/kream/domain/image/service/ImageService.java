@@ -28,7 +28,7 @@ public interface ImageService {
 		try {
 			return originalName.substring(originalName.lastIndexOf("."));
 		} catch (StringIndexOutOfBoundsException e) {
-			throw new FileUploadFailedException("invalid file format");
+			throw new FileUploadFailedException("올바르지 않은 파일 형식입니다.");
 		}
 	}
 }
