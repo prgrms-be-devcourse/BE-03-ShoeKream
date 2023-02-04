@@ -61,6 +61,12 @@ public class MemberController {
 	@Value("${jwt.accessToken}")
 	private String accessToken;
 
+	/**
+	 * 사용자가 회원가입을 한다.
+	 * @author KimJuHyeong
+	 * @return MemberRegisterResponse
+	 * @see MemberFacade
+	 */
 	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
 	@ApiOperation(value = "사용자 회원가입")
@@ -71,6 +77,12 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.registerMember(memberRegisterRequest));
 	}
 
+	/**
+	 * 사용자가 로그인을 한다.
+	 * @author KimJuHyeong
+	 * @return String
+	 * @see MemberFacade
+	 */
 	@PostMapping("/login")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "사용자 로그인")
@@ -86,6 +98,12 @@ public class MemberController {
 		return ApiResponse.of(token);
 	}
 
+	/**
+	 * 사용자가 로그아웃을 한다.
+	 * @author KimJuHyeong
+	 * @return String
+	 * @see MemberFacade
+	 */
 	@GetMapping("/logout")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "사용자 로그아웃")
@@ -101,6 +119,12 @@ public class MemberController {
 		return ApiResponse.of("로그아웃 성공하였습니다.");
 	}
 
+	/**
+	 * 사용자 정보를 조회한다.
+	 * @author KimJuHyeong
+	 * @return MemberGetResponse
+	 * @see MemberFacade
+	 */
 	@GetMapping("/{memberId}")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "사용자 조회")
@@ -110,6 +134,13 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.getMember(id));
 	}
 
+	/**
+	 * 특정 사용자의 배송 정보를 페이지 단위로 조회한다.
+	 * @author KimJuHyeong
+	 * @param memberId 조회하고자 하는 사용자의 아이디
+	 * @return Page<MemberUpdateResponse>
+	 * @see MemberFacade
+	 */
 	@PostMapping(value = "/{memberId}")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "사용자 수정")
@@ -133,6 +164,14 @@ public class MemberController {
 		);
 	}
 
+	/**
+	 * 특정 사용자의 배송 정보를 페이지 단위로 조회한다.
+	 * @author KimJuHyeong
+	 * @param memberId 조회하고자 하는 사용자의 아이디
+	 * @param pageable 조회하고자 하는 페이지 정보
+	 * @return Page<DeliveryInfoGetResponse>
+	 * @see MemberFacade
+	 */
 	@GetMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "배송정보 조회")
@@ -148,6 +187,13 @@ public class MemberController {
 		);
 	}
 
+	/**
+	 * 특정 사용자의 배송 정보를 등록한다.
+	 * @author KimJuHyeong
+	 * @param deliveryInfoRegisterRequest 배송정보 등록 요청 정보
+	 * @return DeliveryInfoRegisterResponse
+	 * @see MemberFacade
+	 */
 	@PostMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "배송정보 등록")
@@ -158,6 +204,13 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.registerDeliveryInfo(deliveryInfoRegisterRequest));
 	}
 
+	/**
+	 * 특정 사용자의 배송 정보를 페이지 단위로 조회한다.
+	 * @author KimJuHyeong
+	 * @param deliveryInfoUpdateRequest 배송정보 수정 요청 정보
+	 * @return DeliveryInfoUpdateResponse
+	 * @see MemberFacade
+	 */
 	@PutMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "배송정보 수정")
@@ -168,6 +221,13 @@ public class MemberController {
 		return ApiResponse.of(memberFacade.updateDeliveryInfo(deliveryInfoUpdateRequest));
 	}
 
+	/**
+	 * 특정 사용자의 배송 정보를 삭제한다.
+	 * @author KimJuHyeong
+	 * @param deliveryInfoDeleteRequest 배송정보 삭제 요청 정보
+	 * @return String
+	 * @see MemberFacade
+	 */
 	@DeleteMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "배송정보 삭제")
@@ -179,6 +239,13 @@ public class MemberController {
 		return ApiResponse.of("삭제 성공하였습니다.");
 	}
 
+	/**
+	 * 특정 사용자가 다른 사용자를 팔로잉 목록에 등록한다.
+	 * @author KimJuHyeong
+	 * @param followingRegisterRequest 팔로잉 등록 요청 정보
+	 * @return String
+	 * @see MemberFacade
+	 */
 	@PostMapping("/{memberId}/followings")
 	@ResponseStatus(CREATED)
 	@ApiOperation(value = "팔로잉 등록")
@@ -190,6 +257,13 @@ public class MemberController {
 		return ApiResponse.of("follow 등록에 성공했습니다.");
 	}
 
+	/**
+	 * 특정 사용자가 다른 사용자를 팔로잉 목록에서 삭제 한다.
+	 * @author KimJuHyeong
+	 * @param followingDeleteRequest 팔로잉 삭제 요청 정보
+	 * @return String
+	 * @see MemberFacade
+	 */
 	@DeleteMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "팔로잉 삭제")
@@ -201,6 +275,12 @@ public class MemberController {
 		return ApiResponse.of("follow 삭제에 성공했습니다.");
 	}
 
+	/**
+	 * 특정 사용자의 팔로잉 목록 조회한다.
+	 * @author KimJuHyeong
+	 * @return FollowingGetAllResponse
+	 * @see MemberFacade
+	 */
 	@GetMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
 	@ApiOperation(value = "팔로잉 조회")
