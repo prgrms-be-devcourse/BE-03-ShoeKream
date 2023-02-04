@@ -13,7 +13,7 @@ import com.prgrms.kream.domain.member.dto.request.MemberUpdateRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateServiceRequest;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
-import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberGetServiceResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberGetResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
@@ -36,7 +36,7 @@ public class MemberMapper {
 				.build();
 	}
 
-	public static Member toMember(MemberGetFacadeResponse memberGetFacadeResponse) {
+	public static Member toMember(MemberGetServiceResponse memberGetFacadeResponse) {
 		return Member.builder()
 				.id(memberGetFacadeResponse.id())
 				.name(memberGetFacadeResponse.name())
@@ -47,8 +47,8 @@ public class MemberMapper {
 				.build();
 	}
 
-	public static MemberGetFacadeResponse toMemberGetFacadeResponse(Member member) {
-		return MemberGetFacadeResponse.builder()
+	public static MemberGetServiceResponse toMemberGetFacadeResponse(Member member) {
+		return MemberGetServiceResponse.builder()
 				.id(member.getId())
 				.name(member.getName())
 				.email(member.getEmail())
@@ -60,7 +60,7 @@ public class MemberMapper {
 	}
 
 	public static MemberGetResponse toMemberGetResponse(
-			MemberGetFacadeResponse memberGetFacadeResponse,
+			MemberGetServiceResponse memberGetFacadeResponse,
 			List<String> imagePaths
 	) {
 		return MemberGetResponse.builder()
