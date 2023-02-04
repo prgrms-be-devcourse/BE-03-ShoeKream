@@ -41,11 +41,17 @@ import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateResponse;
 import com.prgrms.kream.domain.member.facade.MemberFacade;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
+@Api(tags = "사용자 컨트롤러")
 public class MemberController {
 
 	private final MemberFacade memberFacade;
@@ -55,7 +61,9 @@ public class MemberController {
 
 	@PostMapping("/signup")
 	@ResponseStatus(CREATED)
+	@ApiOperation(value = "사용자 회원가입")
 	public ApiResponse<MemberRegisterResponse> registerMember(
+			@ApiParam(value = "회원가입 요청 정보", required = true)
 			@RequestBody @Valid MemberRegisterRequest memberRegisterRequest
 	) {
 		return ApiResponse.of(memberFacade.registerMember(memberRegisterRequest));
@@ -63,7 +71,9 @@ public class MemberController {
 
 	@PostMapping("/login")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "사용자 로그인")
 	public ApiResponse<String> loginMember(
+			@ApiParam(value = "로그인 요청 정보", required = true)
 			@RequestBody @Valid MemberLoginRequest memberLoginRequest,
 			HttpServletResponse httpServletResponse
 	) {
@@ -75,6 +85,7 @@ public class MemberController {
 
 	@GetMapping("/logout")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "사용자 로그아웃")
 	public ApiResponse<String> logoutMember(HttpServletResponse httpServletResponse) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -89,13 +100,23 @@ public class MemberController {
 
 	@GetMapping("/{memberId}")
 	@ResponseStatus(OK)
-	public ApiResponse<MemberGetResponse> getMember(@PathVariable("memberId") Long id) {
+	@ApiOperation(value = "사용자 조회")
+	public ApiResponse<MemberGetResponse> getMember(
+			@ApiParam(value = "조회할 사용자 아이디", required = true, example = "1")
+			@PathVariable("memberId") Long id) {
 		return ApiResponse.of(memberFacade.getMember(id));
 	}
 
-	@PostMapping("/{memberId}")
+	@PostMapping(value = "/{memberId}")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "사용자 수정")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "name", value = "수정할 이름", required = true, paramType = "form"),
+			@ApiImplicitParam(name = "phone", value = "수정할 핸드폰 번호", required = true, paramType = "form"),
+			@ApiImplicitParam(name = "password", value = "수정할 비밀번호", required = true, paramType = "form")
+	})
 	public ApiResponse<MemberUpdateResponse> updateMember(
+			@ApiParam(value = "수정할 사용자 아이디", required = true, example = "1")
 			@PathVariable Long memberId,
 			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
 	) {
@@ -106,8 +127,13 @@ public class MemberController {
 
 	@GetMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "배송정보 조회")
 	public ApiResponse<Page<DeliveryInfoGetResponse>> getDeliveryInfoPage(
-			@PathVariable("memberId") Long memberId, Pageable pageable
+			@ApiParam(value = "배송정보를 가진 사용자 아이디", required = true, example = "1")
+			@PathVariable("memberId") Long memberId,
+
+			@ApiParam(value = "페이지 네이션을 위한 정보", required = false)
+			Pageable pageable
 	) {
 		return ApiResponse.of(
 				memberFacade.getDeliveryInfoPage(memberId, pageable)
@@ -116,7 +142,9 @@ public class MemberController {
 
 	@PostMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "배송정보 등록")
 	public ApiResponse<DeliveryInfoRegisterResponse> registerDeliveryInfo(
+			@ApiParam(value = "배송정보 등록 요청 정보", required = true)
 			@RequestBody @Valid DeliveryInfoRegisterRequest deliveryInfoRegisterRequest
 	) {
 		return ApiResponse.of(memberFacade.registerDeliveryInfo(deliveryInfoRegisterRequest));
@@ -124,7 +152,9 @@ public class MemberController {
 
 	@PutMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "배송정보 수정")
 	public ApiResponse<DeliveryInfoUpdateResponse> updateDeliveryInfo(
+			@ApiParam(value = "배송정보 수정 요청 정보", required = true)
 			@RequestBody @Valid DeliveryInfoUpdateRequest deliveryInfoUpdateRequest
 	) {
 		return ApiResponse.of(memberFacade.updateDeliveryInfo(deliveryInfoUpdateRequest));
@@ -132,7 +162,9 @@ public class MemberController {
 
 	@DeleteMapping("/{memberId}/addresses")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "배송정보 삭제")
 	public ApiResponse<String> deleteDeliveryInfo(
+			@ApiParam(value = "배송정보 삭제 요청 정보", required = true)
 			@RequestBody @Valid DeliveryInfoDeleteRequest deliveryInfoDeleteRequest
 	) {
 		memberFacade.deleteDeliveryInfo(deliveryInfoDeleteRequest);
@@ -141,7 +173,9 @@ public class MemberController {
 
 	@PostMapping("/{memberId}/followings")
 	@ResponseStatus(CREATED)
+	@ApiOperation(value = "팔로잉 등록")
 	public ApiResponse<String> registerFollowing(
+			@ApiParam(value = "팔로잉 등록 요청 정보", required = true)
 			@RequestBody @Valid FollowingRegisterRequest followingRegisterRequest
 	) {
 		memberFacade.registerFollowing(followingRegisterRequest);
@@ -150,7 +184,9 @@ public class MemberController {
 
 	@DeleteMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "팔로잉 삭제")
 	public ApiResponse<String> deleteFollowing(
+			@ApiParam(value = "팔로잉 삭제 요청 정보", required = true)
 			@RequestBody @Valid FollowingDeleteRequest followingDeleteRequest
 	) {
 		memberFacade.deleteFollowing(followingDeleteRequest);
@@ -159,6 +195,7 @@ public class MemberController {
 
 	@GetMapping("/{memberId}/followings")
 	@ResponseStatus(OK)
+	@ApiOperation(value = "팔로잉 조회")
 	public ApiResponse<FollowingGetAllResponse> getAllFollowings() {
 		return ApiResponse.of(memberFacade.getAllFollowings());
 	}
