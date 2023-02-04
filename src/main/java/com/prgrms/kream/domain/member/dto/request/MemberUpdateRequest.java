@@ -20,10 +20,5 @@ public record MemberUpdateRequest(
 		@NotBlank(message = "비밀번호는 빈값일 수 없습니다")
 		@Length(min = 8, max = 16, message = "비밀번호는 8 ~ 16자 이내여야 합니다")
 		String password
-
-		// @ApiParam(value = "test", required = false)
-		// @RequestPart(value = "image", required = false)
-		// @ApiModelProperty(value = "사용자 프로필 이미지", required = false, dataType = "Multipart")
-		// MultipartFile imageFile
 ) {
 }
