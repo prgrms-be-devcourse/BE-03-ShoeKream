@@ -4,6 +4,8 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberRegisterRequest;
 import com.prgrms.kream.domain.member.dto.request.MemberUpdateFacadeRequest;
@@ -72,14 +74,15 @@ public class MemberMapper {
 
 	public static MemberUpdateFacadeRequest toMemberUpdateFacadeRequest(
 			Long memberId,
-			MemberUpdateRequest memberUpdateRequest
+			MemberUpdateRequest memberUpdateRequest,
+			MultipartFile multipartFile
 	) {
 		return new MemberUpdateFacadeRequest(
 				memberId,
 				memberUpdateRequest.name(),
 				memberUpdateRequest.phone(),
 				memberUpdateRequest.password(),
-				memberUpdateRequest.imageFile()
+				multipartFile
 		);
 	}
 

@@ -118,10 +118,15 @@ public class MemberController {
 	public ApiResponse<MemberUpdateResponse> updateMember(
 			@ApiParam(value = "수정할 사용자 아이디", required = true, example = "1")
 			@PathVariable Long memberId,
-			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest
+
+			@ModelAttribute @Valid MemberUpdateRequest memberUpdateRequest,
+
+			@RequestPart(value = "imageFile", required = false) MultipartFile imageFile
 	) {
 		return ApiResponse.of(
-				memberFacade.updateMember(toMemberUpdateFacadeRequest(memberId, memberUpdateRequest))
+				memberFacade.updateMember(
+						toMemberUpdateFacadeRequest(memberId, memberUpdateRequest, imageFile)
+				)
 		);
 	}
 
