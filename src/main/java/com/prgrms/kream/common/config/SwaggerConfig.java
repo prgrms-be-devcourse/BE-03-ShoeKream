@@ -1,7 +1,11 @@
 package com.prgrms.kream.common.config;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -18,11 +22,13 @@ public class SwaggerConfig {
 	@Bean
 	public Docket apiV1() {
 		return new Docket(DocumentationType.SWAGGER_2)
+				.consumes(getConsumeContentTypes())
+				.produces(getProduceContentTypes())
 				.useDefaultResponseMessages(false)
 				.groupName("api v1")
 				.select()
-				.apis(RequestHandlerSelectors.
-						basePackage("com.prgrms.kream"))
+				.apis(RequestHandlerSelectors
+						.basePackage("com.prgrms.kream"))
 				.paths(PathSelectors.ant("/api/v1/**"))
 				.build()
 				.apiInfo(apiInfo());
@@ -36,4 +42,18 @@ public class SwaggerConfig {
 				.version("version 1.0")
 				.build();
 	}
+
+	private Set<String> getConsumeContentTypes() {
+		Set<String> consumes = new HashSet<>();
+		consumes.add(MediaType.APPLICATION_JSON_VALUE);
+		consumes.add(MediaType.MULTIPART_FORM_DATA_VALUE);
+		return consumes;
+	}
+
+	private Set<String> getProduceContentTypes() {
+		Set<String> produces = new HashSet<>();
+		produces.add(MediaType.APPLICATION_JSON_VALUE);
+		return produces;
+	}
+
 }

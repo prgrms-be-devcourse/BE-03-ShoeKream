@@ -127,11 +127,11 @@ public class ProductService {
 
 	private Product getProductEntity(Long productId) {
 		return productRepository.findById(productId)
-				.orElseThrow(() -> new EntityNotFoundException("productId does not exist"));
+				.orElseThrow(() -> new EntityNotFoundException("해당하는 상품이 존재하지 않습니다."));
 	}
 
 	private ProductOption getProductOptionEntity(Long productOptionId) {
 		return productOptionRepository.findById(productOptionId)
-				.orElseThrow(() -> new EntityNotFoundException("productOptionId does not exist"));
+				.orElseThrow(() -> new EntityNotFoundException("해당하는 상품옵션이 존재하지 않습니다."));
 	}
 }
