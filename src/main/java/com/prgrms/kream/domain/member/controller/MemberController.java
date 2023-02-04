@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.prgrms.kream.common.api.ApiResponse;
 import com.prgrms.kream.domain.member.dto.request.DeliveryInfoDeleteRequest;
@@ -77,10 +79,11 @@ public class MemberController {
 			@RequestBody @Valid MemberLoginRequest memberLoginRequest,
 			HttpServletResponse httpServletResponse
 	) {
+		String token = memberFacade.loginMember(memberLoginRequest).token();
 		httpServletResponse.addCookie(
-				new Cookie(accessToken, memberFacade.loginMember(memberLoginRequest).token())
+				new Cookie(accessToken, token)
 		);
-		return ApiResponse.of("로그인 성공하였습니다.");
+		return ApiResponse.of(token);
 	}
 
 	@GetMapping("/logout")
