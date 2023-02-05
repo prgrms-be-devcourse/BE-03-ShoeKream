@@ -71,7 +71,7 @@ public class SwaggerConfig {
 	}
 
 	private Set<String> getConsumeContentTypes() {
-		HashSet<String> consumes = new HashSet<>();
+		Set<String> consumes = new HashSet<>();
 		consumes.add(MediaType.APPLICATION_JSON_VALUE);
 		consumes.add(MediaType.MULTIPART_FORM_DATA_VALUE);
 		return consumes;
