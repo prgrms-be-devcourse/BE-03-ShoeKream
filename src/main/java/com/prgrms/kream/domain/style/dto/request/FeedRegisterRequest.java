@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public record FeedRegisterRequest(
 		@NotEmpty(message = "피드 본문이 비어있을 수 없습니다.")
-		@Length(max = 255, message = "최대 글자수를 초과했습니다.")
+		@Length(max = 255, message = "최대 글자수({max})를 초과했습니다.")
 		String content,
 
 		@NotNull(message = "작성자 식별값은 비어있을 수 없습니다.")
