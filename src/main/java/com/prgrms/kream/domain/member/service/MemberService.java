@@ -29,7 +29,7 @@ import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
-import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberGetServiceResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
@@ -83,7 +83,7 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public MemberGetFacadeResponse getMember(Long id) {
+	public MemberGetServiceResponse getMember(Long id) {
 		validateAccess(id);
 		Member member = getMemberEntity(id);
 		return toMemberGetFacadeResponse(member);
