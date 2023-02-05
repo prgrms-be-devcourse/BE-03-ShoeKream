@@ -5,7 +5,7 @@ import com.prgrms.kream.domain.member.model.Authority;
 import lombok.Builder;
 
 @Builder
-public record MemberGetFacadeResponse(
+public record MemberGetServiceResponse(
 		Long id,
 		String name,
 		String email,

@@ -40,7 +40,7 @@ import com.prgrms.kream.domain.member.dto.response.DeliveryInfoGetResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.DeliveryInfoUpdateResponse;
 import com.prgrms.kream.domain.member.dto.response.FollowingGetAllResponse;
-import com.prgrms.kream.domain.member.dto.response.MemberGetFacadeResponse;
+import com.prgrms.kream.domain.member.dto.response.MemberGetServiceResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberLoginResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberRegisterResponse;
 import com.prgrms.kream.domain.member.dto.response.MemberUpdateServiceResponse;
@@ -193,7 +193,7 @@ class MemberServiceTest {
 		when(memberRepository.findById(1L))
 				.thenReturn(Optional.of(member));
 
-		MemberGetFacadeResponse memberGetFacadeResponse = memberService.getMember(member.getId());
+		MemberGetServiceResponse memberGetFacadeResponse = memberService.getMember(member.getId());
 
 		Assertions.assertThat(memberGetFacadeResponse)
 				.usingRecursiveComparison()
