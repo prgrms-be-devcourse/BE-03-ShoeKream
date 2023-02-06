@@ -4,6 +4,7 @@ import static com.prgrms.kream.common.mapper.StyleMapper.*;
 
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,11 @@ public class StyleFacade {
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable(
+			cacheNames = "topPopular",
+			key = "#feedGetFacadeRequest",
+			condition = "{#feedGetFacadeRequest.cursorId() == null && #feedGetFacadeRequest.pageSize() == 10 && #feedGetFacadeRequest.sortType().name() == 'POPULAR'}"
+	)
 	public FeedGetFacadeResponses getAllFeeds(FeedGetFacadeRequest feedGetFacadeRequest) {
 		return merge(styleService.getAllFeeds(toFeedGetServiceRequest(feedGetFacadeRequest)));
 	}
