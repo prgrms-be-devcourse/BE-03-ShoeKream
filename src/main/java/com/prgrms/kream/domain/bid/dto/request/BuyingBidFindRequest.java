@@ -3,7 +3,6 @@ package com.prgrms.kream.domain.bid.dto.request;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
-
 import javax.validation.constraints.NotNull;
 
 @ApiModel("구매 입찰 조회 요청")

@@ -40,7 +40,7 @@ public class TransactionHistoryServiceTest {
 		// When
 		when(transactionHistoryRepository.save(any(TransactionHistory.class))).thenReturn(transactionHistory);
 		TransactionHistoryCreateResponse transactionHistoryCreateResponse =
-				transactionHistoryService.register(transactionHistoryCreateRequest);
+				transactionHistoryService.registerTransactionHistory(transactionHistoryCreateRequest);
 
 		// Then
 		assertThat(transactionHistoryCreateResponse.id()).isEqualTo(1L);

@@ -30,42 +30,31 @@ public class BuyingBidController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "구매 입찰 등록")
-	public ApiResponse<BuyingBidCreateResponse> register(
+	public ApiResponse<BuyingBidCreateResponse> registerBuyingBid(
 			@RequestBody @Valid
 			@ApiParam(value = "구매 입찰을 등록하기 위한 정보", required = true)
 			BuyingBidCreateRequest buyingBidCreateRequest) {
-		return ApiResponse.of(facade.register(buyingBidCreateRequest));
+		return ApiResponse.of(facade.registerBuyingBid(buyingBidCreateRequest));
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "구매 입찰 조회")
-	public ApiResponse<BuyingBidFindResponse> findOne(
+	public ApiResponse<BuyingBidFindResponse> getBuyingBid(
 			@PathVariable("id")
 			@ApiParam(value = "찾고자 하는 구매 입찰의 id", required = true, example = "1")
 			Long id) {
-		return ApiResponse.of(facade.findById(id));
+		return ApiResponse.of(facade.getBuyingBid(id));
 	}
 
 	@PutMapping("/delete/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "구매 입찰 삭제")
-	public ApiResponse<String> delete(
+	public ApiResponse<String> deleteBuyingBid(
 			@PathVariable("id")
 			@ApiParam(value = "삭제 하고자 하는 구매 입찰의 id", required = true, example = "1")
 			Long id) {
-		facade.deleteById(id);
+		facade.deleteBuyingBid(id);
 		return ApiResponse.of("구매 입찰이 삭제되었습니다");
-	}
-
-	@PutMapping("/restore/{id}")
-	@ResponseStatus(code = HttpStatus.OK)
-	@ApiOperation(value = "구매 입찰 복구")
-	public ApiResponse<String> restore(
-			@PathVariable("id")
-			@ApiParam(value = "복구 하고자 하는 구매 입찰의 id", required = true, example = "1")
-			Long id) {
-		facade.restoreById(id);
-		return ApiResponse.of("구매 입찰이 복구되었습니다");
 	}
 }

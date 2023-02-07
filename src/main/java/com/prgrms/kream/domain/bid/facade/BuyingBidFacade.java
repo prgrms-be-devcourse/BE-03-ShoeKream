@@ -20,25 +20,20 @@ public class BuyingBidFacade {
 	private final ProductService productService;
 
 	@Transactional
-	public BuyingBidCreateResponse register(BuyingBidCreateRequest buyingBidCreateRequest) {
+	public BuyingBidCreateResponse registerBuyingBid(BuyingBidCreateRequest buyingBidCreateRequest) {
 		productService.compareHighestPrice(buyingBidCreateRequest.productOptionId(), buyingBidCreateRequest.price());
-		return buyingBidService.register(buyingBidCreateRequest);
+		return buyingBidService.registerBuyingBid(buyingBidCreateRequest);
 	}
 
 	@Transactional(readOnly = true)
-	public BuyingBidFindResponse findById(Long id) {
+	public BuyingBidFindResponse getBuyingBid(Long id) {
 		List<Long> ids = Collections.singletonList(id);
 		BuyingBidFindRequest buyingBidFindRequest = new BuyingBidFindRequest(ids);
-		return buyingBidService.findById(buyingBidFindRequest);
+		return buyingBidService.getBuyingBid(buyingBidFindRequest);
 	}
 
 	@Transactional
-	public void deleteById(Long id) {
-		buyingBidService.deleteById(id);
-	}
-
-	@Transactional
-	public void restoreById(Long id) {
-		buyingBidService.restoreById(id);
+	public void deleteBuyingBid(Long id) {
+		buyingBidService.deleteBuyingBid(id);
 	}
 }
