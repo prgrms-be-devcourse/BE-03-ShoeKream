@@ -1,5 +1,6 @@
 package com.prgrms.kream.domain.order.model;
 
+import com.prgrms.kream.common.model.BaseTimeEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,15 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import lombok.Builder;
-import org.checkerframework.checker.units.qual.C;
-import org.hibernate.validator.constraints.Length;
-
-import com.prgrms.kream.common.model.BaseTimeEntity;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -69,7 +65,7 @@ public class Order extends BaseTimeEntity {
 		this.orderStatus = Objects.requireNonNullElse(orderStatus, OrderStatus.PAYED);
 	}
 
-	public boolean getIsBasedOnSellingBid(){
+	public boolean getIsBasedOnSellingBid() {
 		return this.isBasedOnSellingBid;
 	}
 }

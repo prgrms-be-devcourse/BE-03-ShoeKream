@@ -2,7 +2,6 @@ package com.prgrms.kream.domain.account.service;
 
 import static com.prgrms.kream.common.mapper.AccountMapper.*;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryCreateRequest;
-import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetFacadeRequest;
 import com.prgrms.kream.domain.account.dto.request.TransactionHistoryGetServiceRequest;
 import com.prgrms.kream.domain.account.dto.response.TransactionHistoryCreateResponse;
 import com.prgrms.kream.domain.account.dto.response.TransactionHistoryGetResponse;
@@ -20,18 +19,19 @@ public class TransactionHistoryService {
 	private final TransactionHistoryRepository transactionHistoryRepository;
 
 	@Transactional
-	public TransactionHistoryCreateResponse register(TransactionHistoryCreateRequest transactionHistoryCreateRequest) {
+	public TransactionHistoryCreateResponse registerTransactionHistory(
+			TransactionHistoryCreateRequest transactionHistoryCreateRequest) {
 		return toTransactionHistoryCreateResponse(
 				transactionHistoryRepository.save(toTransactionHistory(transactionHistoryCreateRequest)));
 	}
 
 	@Transactional(readOnly = true)
 	public List<TransactionHistoryGetResponse> getAll(
-			TransactionHistoryGetServiceRequest transactionHistoryGetServiceRequest){
+			TransactionHistoryGetServiceRequest transactionHistoryGetServiceRequest) {
 		return transactionHistoryRepository.findAllByAccountId(transactionHistoryGetServiceRequest.accountId());
 	}
 
 	private TransactionHistory findTransactionHistoryEntityById(Long id) {
-		return transactionHistoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+		return transactionHistoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("거래 내역을 찾을 수 없습니다"));
 	}
 }

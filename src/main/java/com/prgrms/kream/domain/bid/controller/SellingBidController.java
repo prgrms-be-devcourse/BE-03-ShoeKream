@@ -30,42 +30,31 @@ public class SellingBidController {
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	@ApiOperation(value = "판매 입찰 등록")
-	public ApiResponse<SellingBidCreateResponse> register(
+	public ApiResponse<SellingBidCreateResponse> registerSellingBid(
 			@RequestBody @Valid
 			@ApiParam(value = "판매 입찰을 등록하기 위한 정보", required = true)
 			SellingBidCreateRequest request) {
-		return ApiResponse.of(facade.register(request));
+		return ApiResponse.of(facade.registerSellingBid(request));
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "판매 입찰 조회")
-	public ApiResponse<SellingBidFindResponse> findOne(
+	public ApiResponse<SellingBidFindResponse> getSellingBid(
 			@PathVariable("id")
 			@ApiParam(value = "찾고자 하는 판매 입찰의 id", required = true, example = "1")
 			Long id) {
-		return ApiResponse.of(facade.findById(id));
+		return ApiResponse.of(facade.getSellingBid(id));
 	}
 
 	@PutMapping("/delete/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	@ApiOperation(value = "판매 입찰 삭제")
-	public ApiResponse<String> delete(
+	public ApiResponse<String> deleteSellingBid(
 			@PathVariable("id")
 			@ApiParam(value = "삭제 하고자 하는 판매 입찰의 id", required = true, example = "2")
 			Long id) {
-		facade.deleteById(id);
+		facade.deleteSellingBid(id);
 		return ApiResponse.of("판매 입찰이 삭제되었습니다");
-	}
-
-	@PutMapping("/restore/{id}")
-	@ResponseStatus(code = HttpStatus.OK)
-	@ApiOperation(value = "판매 입찰 복구")
-	public ApiResponse<String> restore(
-			@PathVariable("id")
-			@ApiParam(value = "복구 하고자 하는 판매 입찰의 id", required = true, example = "3")
-			Long id) {
-		facade.restoreById(id);
-		return ApiResponse.of("판매 입찰이 복구되었습니다");
 	}
 }

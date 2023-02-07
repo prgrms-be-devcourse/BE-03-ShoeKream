@@ -26,6 +26,7 @@ public record OrderCreateServiceRequest(
 		@NotNull(message = "가격은 필수 입력사항입니다")
 		@PositiveOrZero
 		int price,
+
 		@Length(max = 50, message = "주문 요청사항은 최대 50자 까지만 입력 가능합니다")
 		String orderRequest
 ) {

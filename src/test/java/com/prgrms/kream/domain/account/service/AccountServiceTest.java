@@ -44,7 +44,7 @@ public class AccountServiceTest {
 
 		// When
 		when(accountRepository.save(any(Account.class))).thenReturn(account);
-		AccountCreateResponse accountCreateResponse = accountService.register(accountCreateRequest);
+		AccountCreateResponse accountCreateResponse = accountService.registerAccount(accountCreateRequest);
 
 		// Then
 		assertThat(accountCreateResponse.id()).isEqualTo(1L);
@@ -64,7 +64,7 @@ public class AccountServiceTest {
 
 		// Then
 		assertThatThrownBy(
-				() -> accountService.register(accountCreateRequest)
+				() -> accountService.registerAccount(accountCreateRequest)
 		).isInstanceOf(EntityExistsException.class);
 	}
 

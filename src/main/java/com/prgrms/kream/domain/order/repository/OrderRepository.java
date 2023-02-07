@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Modifying
 	@Query("update Order o set o.orderStatus = :orderStatus where o.id = :id")
-	int updateOrderStatusById(@Param("orderStatus")OrderStatus orderStatus, @Param("id")Long id);
+	int updateOrderStatusById(@Param("orderStatus") OrderStatus orderStatus, @Param("id") Long id);
 }

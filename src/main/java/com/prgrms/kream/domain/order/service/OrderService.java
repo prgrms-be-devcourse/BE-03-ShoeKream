@@ -18,32 +18,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-	private final OrderRepository repository;
+	private final OrderRepository orderRepository;
 
 	@Transactional
-	public OrderCreateResponse register(OrderCreateServiceRequest orderCreateServiceRequest) {
-		return toOrderCreateResponse(repository.save(toOrder(orderCreateServiceRequest)));
+	public OrderCreateResponse registerOrder(OrderCreateServiceRequest orderCreateServiceRequest) {
+		return toOrderCreateResponse(orderRepository.save(toOrder(orderCreateServiceRequest)));
 	}
 
 	@Transactional
-	public void deleteById(OrderCancelRequest orderCancelRequest) {
-		repository.deleteById(orderCancelRequest.id());
+	public void deleteOrder(OrderCancelRequest orderCancelRequest) {
+		orderRepository.deleteById(orderCancelRequest.id());
 	}
 
 	@Transactional(readOnly = true)
-	public OrderFindResponse findById(OrderFindRequest orderFindRequest) {
-		return repository
+	public OrderFindResponse getOrder(OrderFindRequest orderFindRequest) {
+		return orderRepository
 				.findById(orderFindRequest.id())
 				.map(OrderMapper::toOrderFindResponse)
-				.orElseThrow(EntityNotFoundException::new);
+				.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다."));
 	}
 
 	@Transactional
-	public OrderUpdateStatusResponse updateStatus(OrderUpdateStatusRequest orderUpdateStatusRequest) {
-		repository.updateOrderStatusById(orderUpdateStatusRequest.orderStatus(), orderUpdateStatusRequest.id());
+	public OrderUpdateStatusResponse updateOrderStatus(OrderUpdateStatusRequest orderUpdateStatusRequest) {
+		orderRepository.updateOrderStatusById(orderUpdateStatusRequest.orderStatus(), orderUpdateStatusRequest.id());
 		return new OrderUpdateStatusResponse(
-				repository.findById(orderUpdateStatusRequest.id())
-						.orElseThrow(EntityNotFoundException::new)
+				orderRepository.findById(orderUpdateStatusRequest.id())
+						.orElseThrow(() -> new EntityNotFoundException("존재하지 않는 주문입니다, 주문의 상태를 변경할 수 없습니다."))
 						.getOrderStatus()
 		);
 	}

@@ -43,7 +43,8 @@ public class SellingBid extends BaseTimeEntity {
 	private Long version;
 
 	@Builder
-	public SellingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil, boolean isDeleted) {
+	public SellingBid(Long id, Long memberId, Long productOptionId, int price, LocalDateTime validUntil,
+			boolean isDeleted) {
 		this.id = id;
 		this.memberId = memberId;
 		this.productOptionId = productOptionId;

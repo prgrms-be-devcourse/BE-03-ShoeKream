@@ -22,9 +22,9 @@ public class AccountService {
 	private final AccountRepository accountRepository;
 
 	@Transactional
-	public AccountCreateResponse register(AccountCreateRequest accountCreateRequest) {
+	public AccountCreateResponse registerAccount(AccountCreateRequest accountCreateRequest) {
 		if (accountRepository.findByMemberId(accountCreateRequest.memberId()).isPresent()) {
-			throw new EntityExistsException();
+			throw new EntityExistsException("이미 계좌가 존재하는 회원입니다");
 		}
 		return toAccountCreateResponse(accountRepository.save(toAccount(accountCreateRequest)));
 	}
@@ -41,16 +41,17 @@ public class AccountService {
 	}
 
 	@Transactional(readOnly = true)
-	public AccountGetResponse get(AccountGetRequest accountGetRequest) {
+	public AccountGetResponse getAccount(AccountGetRequest accountGetRequest) {
 		return toAccountGetResponse(
-				accountRepository.findByMemberId(accountGetRequest.memberId()).orElseThrow(EntityNotFoundException::new));
+				accountRepository.findByMemberId(accountGetRequest.memberId())
+						.orElseThrow(() -> new EntityNotFoundException("계좌가 존재하지 않습니다")));
 	}
 
 	private Account getAccountEntityByMemberId(Long memberId) {
-		return accountRepository.findByMemberId(memberId).orElseThrow(EntityNotFoundException::new);
+		return accountRepository.findByMemberId(memberId).orElseThrow(() -> new EntityNotFoundException("계좌가 존재하지 않습니다"));
 	}
 
 	private Account getAccountEntityById(Long id) {
-		return accountRepository.findById(id).orElseThrow(EntityExistsException::new);
+		return accountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("계좌가 존재하지 않습니다"));
 	}
 }
