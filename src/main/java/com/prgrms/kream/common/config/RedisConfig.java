@@ -26,8 +26,7 @@ public class RedisConfig {
 		config.useSingleServer()
 				.setAddress(
 						"redis://" + redisProperties.getHost() + ":" + redisProperties.getPort()
-				)
-				.setPassword(redisProperties.getPassword());
+				);
 		return Redisson.create(config);
 	}
 
