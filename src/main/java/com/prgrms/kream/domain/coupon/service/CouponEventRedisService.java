@@ -16,8 +16,8 @@ public class CouponEventRedisService {
 	private long throughput = CouponProperties.getThroughput();
 
 	public long registerCouponEventToRedis(CouponEventRegisterRequest couponEventRegisterRequest) {
-		couponEventRedisRepository.register(couponEventRegisterRequest);
-		return getRedisSize(CouponProperties.getKey());
+		return couponEventRedisRepository.register(couponEventRegisterRequest);
+
 	}
 
 	public Long getRedisSize(String key) {
