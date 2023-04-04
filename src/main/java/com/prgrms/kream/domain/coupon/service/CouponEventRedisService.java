@@ -17,6 +17,7 @@ public class CouponEventRedisService {
 
 	public long registerCouponEventToRedis(CouponEventRegisterRequest couponEventRegisterRequest) {
 		return couponEventRedisRepository.register(couponEventRegisterRequest);
+
 	}
 
 	public Long getRedisSize(String key) {
